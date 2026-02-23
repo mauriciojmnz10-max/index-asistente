@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Asistente de Ventas - Bio Link</title>
+    <style>
+        /* ESTILOS PREMIUM FULL SCREEN */
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: #ffffff;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        header {
+            background: #1a1a1a;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            z-index: 10;
+        }
+
+        header h1 { font-size: 1.1rem; letter-spacing: 1px; text-transform: uppercase; }
+        header p { font-size: 0.75rem; opacity: 0.7; margin-top: 4px; }
+
+        #chat-window {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            background: #fdfdfd;
+        }
+
+        .msg {
+            max-width: 85%;
+            padding: 12px 16px;
+            border-radius: 20px;
+            font-size: 15px;
+            line-height: 1.5;
+            animation: fadeIn 0.3s ease forwards;
+        }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        .bot { align-self: flex-start; background: #f0f0f0; color: #1a1a1a; border-bottom-left-radius: 2px; }
+        .user { align-self: flex-end; background: #1a1a1a; color: white; border-bottom-right-radius: 2px; }
+
+        /* BOTONES DE RESPUESTA RÁPIDA */
+        .quick-replies {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 12px;
+        }
+
+        .btn-quick {
+            background: white;
+            border: 1.5px solid #1a1a1a;
+            color: #1a1a1a;
+            padding: 8px 14px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .btn-quick:hover { background: #1a1a1a; color: white; }
+
+        /* BOTÓN DE WHATSAPP INTELIGENTE */
+        .btn-ws {
+            background: #25D366;
+            color: white !important;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 15px;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 12px;
+            box-shadow: 0 4px 12px rgba(37, 211, 102, 0.3);
+            animation: bounceIn 0.5s cubic-bezier(0.36, 0, 0.66, -0.56);
+        }
+
+        @keyframes bounceIn { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+
+        .input-container {
+            padding: 15px;
+            background: white;
+            border-top: 1px solid #eee;
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            padding-bottom: 30px; 
+        }
+
+        input {
+            flex: 1;
+            padding: 12px 18px;
+            border: 1px solid #ddd;
+            border-radius: 25px;
+            outline: none;
+            font-size: 16px; 
+        }
+
+        .send-btn {
+            background: #1a1a1a;
+            color: white;
+            border: none;
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+        }
+
+        .typing { font-size: 12px; color: #999; margin: 10px 20px; display: none; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1 id="shop-name">ELECTROVENTAS CUMANÁ</h1>
+        <p>Asistente de Ventas con IA</p>
+    </header>
+
+    <div id="chat-window">
+        </div>
+
+    <div id="typing" class="typing">Javier está analizando...</div>
+
+    <div class="input-container">
+        <input type="text" id="user-input" placeholder="Pregúntame lo que necesites..." autocomplete="off">
+        <button class="send-btn" onclick="enviarMensaje()">➤</button>
+    </div>
+
+    <script>
+        // CONFIGURACIÓN CENTRAL
+        const URL_API = 'https://asistente-javier.onrender.com/chat'; 
+        const LINK_WHATSAPP = "https://wa.me/584120000000?text=Hola Javier, quiero concretar una compra.";
+        
+        const chatWindow = document.getElementById('chat-window');
+        const typing = document.getElementById('typing');
+        let historial = [];
+
+        // SALUDO INICIAL CON PREGUNTAS RÁPIDAS PERSONALIZADAS
+        window.onload = () => {
+            setTimeout(() => {
+                mostrarMensajeInicial("¡Hola! 👋 Soy **Javier**. Estoy aquí para ayudarte con precios y disponibilidad en nuestra tienda de Cumaná.\n\n¿Qué te gustaría consultar?");
+            }, 600);
+        };
+
+        function mostrarMensajeInicial(texto) {
+            const div = document.createElement('div');
+            div.className = `msg bot`;
+            let formattedText = texto.replace(/\*\*(.*?)\*\*/g, '<b>$1</b>');
+            div.innerHTML = formattedText.replace(/\n/g, '<br>');
+
+            // Botones rápidos: Catálogo, Ubicación, Ofertas
+            const quickDiv = document.createElement('div');
+            quickDiv.className = 'quick-replies';
+            quickDiv.innerHTML = `
+                <button class="btn-quick" onclick="autoPregunta('¿Cuál es su catálogo de productos?')">💰 Catálogo</button>
+                <button class="btn-quick" onclick="autoPregunta('¿Dónde están ubicados?')">📍 Ubicación</button>
+                <button class="btn-quick" onclick="autoPregunta('¿Tienen ofertas especiales?')">🔥 Ofertas</button>
+            `;
+            div.appendChild(quickDiv);
+            chatWindow.appendChild(div);
+            chatWindow.scrollTop = chatWindow.scrollHeight;
+        }
+
+        function mostrarMensaje(texto, remitente) {
+            const div = document.createElement('div');
+            div.className = `msg ${remitente}`;
+            
+            let formattedText = texto.replace(/\*\*(.*?)\*\*/g, '<b>$1</b>');
+            div.innerHTML = formattedText.replace(/\n/g, '<br>');
+
+            // LÓGICA DE BOTÓN DE WHATSAPP INTELIGENTE
+            const disparadoresVenta = ["whatsapp", "concretar", "decisión", "atenderé personalmente", "comprar", "pago móvil", "zelle", "efectivo", "precio", "disponibilidad"];
+            const textoBajo = texto.toLowerCase();
+
+            if (remitente === 'bot' && disparadoresVenta.some(p => textoBajo.includes(p))) {
+                const btn = document.createElement('a');
+                btn.href = LINK_WHATSAPP;
+                btn.target = "_blank";
+                btn.className = 'btn-ws';
+                btn.innerHTML = `<span>📱</span> ¡Listo! Haz clic aquí para pagar`;
+                div.appendChild(btn);
+            }
+
+            chatWindow.appendChild(div);
+            chatWindow.scrollTop = chatWindow.scrollHeight;
+        }
+
+        function autoPregunta(texto) {
+            document.getElementById('user-input').value = texto;
+            enviarMensaje();
+        }
+
+        async function enviarMensaje() {
+            const input = document.getElementById('user-input');
+            const texto = input.value.trim();
+            if (!texto) return;
+
+            mostrarMensaje(texto, 'user');
+            input.value = '';
+            typing.style.display = 'block';
+
+            try {
+                const response = await fetch(URL_API, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ mensaje: texto, historial: historial })
+                });
+
+                const data = await response.json();
+                typing.style.display = 'none';
+
+                // Guardar memoria para contexto
+                historial.push({ role: "user", content: texto });
+                historial.push({ role: "assistant", content: data.respuesta });
+
+                mostrarMensaje(data.respuesta, 'bot');
+
+            } catch (error) {
+                typing.style.display = 'none';
+                mostrarMensaje("Oye, tengo una falla de conexión. Por favor, hablemos directamente por WhatsApp para atenderte.", 'bot');
+                
+                const errorBtn = document.createElement('a');
+                errorBtn.href = LINK_WHATSAPP;
+                errorBtn.className = 'btn-ws';
+                errorBtn.innerHTML = "Ir a WhatsApp";
+                chatWindow.lastChild.appendChild(errorBtn);
+            }
+        }
+    </script>
+</body>
+</html>
