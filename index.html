@@ -5,12 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Javier AI - Asistente de Ventas</title>
     <style>
-        /* ESTILOS PREMIUM MOBILE-FIRST */
+        /* ESTILOS PREMIUM MOBILE-FIRST ACTUALIZADOS */
         * { box-sizing: border-box; margin: 0; padding: 0; }
         
         body { 
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            background-color: #f7f7f7;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%); /* Fondo Moderno */
             height: 100vh;
             display: flex;
             flex-direction: column;
@@ -19,80 +19,103 @@
         }
 
         header {
-            background: #ffffff;
+            background: rgba(255, 255, 255, 0.8); /* Efecto Cristal */
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
             color: #1a1a1a;
             padding: 15px;
             text-align: center;
-            border-bottom: 1px solid #efefef;
-            z-index: 10;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+            z-index: 100;
             flex-shrink: 0;
         }
 
         header h1 { font-size: 1rem; letter-spacing: 0.5px; text-transform: uppercase; font-weight: 700; }
-        header p { font-size: 0.7rem; color: #8e8e8e; margin-top: 2px; }
+        header p { font-size: 0.7rem; color: #666; margin-top: 2px; }
 
         #chat-window {
             flex: 1;
             padding: 15px;
-            padding-bottom: 50px; /* <--- ESPACIO DE SEGURIDAD PARA QUE EL BOTÓN NO SE TAPE */
+            padding-bottom: 50px; /* Tu colchón perfecto de 50px */
             overflow-y: auto;
             display: flex;
             flex-direction: column;
             gap: 12px;
-            background: #ffffff;
+            background: transparent; /* Para ver el fondo degradado */
             scroll-behavior: smooth;
         }
 
-        /* DISEÑO DE BURBUJAS MEJORADO */
+        /* DISEÑO DE BURBUJAS MODERNIZADO */
         .msg {
             max-width: 85%;
             padding: 12px 16px;
             font-size: 15px;
             line-height: 1.4;
             position: relative;
-            animation: fadeIn 0.3s ease forwards;
-            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+            animation: fadeIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
         }
 
         @keyframes fadeIn { 
-            from { opacity: 0; transform: translateY(10px); } 
-            to { opacity: 1; transform: translateY(0); } 
+            from { opacity: 0; transform: translateY(15px) scale(0.95); } 
+            to { opacity: 1; transform: translateY(0) scale(1); } 
         }
 
         .bot { 
             align-self: flex-start; 
-            background: #f0f0f0; 
+            background: #ffffff; 
             color: #1a1a1a; 
             border-radius: 18px 18px 18px 4px; 
+            border: 1px solid rgba(255, 255, 255, 0.5);
         }
 
         .user { 
             align-self: flex-end; 
-            background: #1a1a1a; 
+            background: linear-gradient(135deg, #2c3e50, #000000); 
             color: white; 
             border-radius: 18px 18px 4px 18px; 
         }
 
-        /* RESPUESTAS RÁPIDAS */
-        .quick-replies {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-            margin-top: 10px;
+        /* INDICADOR DE ESCRITURA (PUNTITOS) */
+        .typing-indicator {
+            display: none;
+            align-self: flex-start;
+            background: #ffffff;
+            padding: 12px 18px;
+            border-radius: 20px;
+            margin: 5px 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
         }
 
+        .typing-indicator span {
+            height: 8px; width: 8px; float: left; margin: 0 1px;
+            background-color: #9E9E9E; border-radius: 50%; display: block;
+            animation: bounce 1.3s infinite ease-in-out;
+        }
+
+        .typing-indicator span:nth-child(2) { animation-delay: 0.2s; }
+        .typing-indicator span:nth-child(3) { animation-delay: 0.4s; }
+
+        @keyframes bounce {
+            0%, 80%, 100% { transform: scale(0); }
+            40% { transform: scale(1.0); }
+        }
+
+        /* RESPUESTAS RÁPIDAS */
+        .quick-replies { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
         .btn-quick {
             background: #ffffff;
-            border: 1px solid #dbdbdb;
+            border: 1px solid #efefef;
             color: #262626;
             padding: 7px 12px;
             border-radius: 15px;
             font-size: 13px;
             font-weight: 500;
             cursor: pointer;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.02);
         }
 
-        /* BOTÓN WHATSAPP PREMIUM CON MARGEN INFERIOR */
+        /* BOTÓN WHATSAPP */
         .btn-ws {
             background: #25D366;
             color: white !important;
@@ -106,40 +129,40 @@
             justify-content: center;
             gap: 8px;
             margin-top: 10px;
-            margin-bottom: 15px; /* <--- EVITA QUE QUEDE AL RAS DEL MENSAJE */
-            box-shadow: 0 4px 10px rgba(37, 211, 102, 0.2);
+            margin-bottom: 5px;
+            box-shadow: 0 4px 12px rgba(37, 211, 102, 0.2);
         }
 
-        /* CAJA DE ENTRADA STICKY ESTILO INSTAGRAM */
+        /* CAJA DE ENTRADA FLOTANTE */
         .input-container {
             padding: 10px 15px 25px 15px; 
-            background: #ffffff;
-            border-top: 1px solid #efefef;
+            background: transparent;
             position: sticky;
             bottom: 0;
             display: flex;
             align-items: center;
             gap: 10px;
-            z-index: 100; /* <--- ASEGURA QUE SIEMPRE ESTÉ POR ENCIMA */
+            z-index: 100;
         }
 
         .input-wrapper {
             flex: 1;
             display: flex;
             align-items: center;
-            background: #fafafa;
-            border: 1px solid #dbdbdb;
-            border-radius: 25px;
-            padding: 5px 15px;
+            background: #ffffff;
+            border: none;
+            border-radius: 30px;
+            padding: 5px 20px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1); /* Barra flotante */
         }
 
         input {
             flex: 1;
             border: none;
             background: transparent;
-            padding: 10px 0;
+            padding: 12px 0;
             outline: none;
-            font-size: 16px; 
+            font-size: 16px;
             color: #262626;
         }
 
@@ -152,8 +175,6 @@
             cursor: pointer;
             padding: 5px;
         }
-
-        .typing { font-size: 12px; color: #8e8e8e; margin: 5px 15px; display: none; font-style: italic; }
     </style>
 </head>
 <body>
@@ -163,10 +184,11 @@
         <p>Expertos en Tecnología y Hogar</p>
     </header>
 
-    <div id="chat-window">
-    </div>
+    <div id="chat-window"></div>
 
-    <div id="typing" class="typing">Javier está escribiendo...</div>
+    <div id="typing-indicator" class="typing-indicator">
+        <span></span><span></span><span></span>
+    </div>
 
     <div class="input-container">
         <div class="input-wrapper">
@@ -180,7 +202,7 @@
         const LINK_WHATSAPP = "https://wa.me/584120000000?text=Hola Javier, quiero concretar una compra.";
         
         const chatWindow = document.getElementById('chat-window');
-        const typing = document.getElementById('typing');
+        const typingIndicator = document.getElementById('typing-indicator');
         let historial = [];
 
         window.onload = () => {
@@ -231,7 +253,6 @@
         }
 
         function scrollDown() {
-            // Se añade un pequeño retraso para asegurar que el contenido se renderice
             setTimeout(() => {
                 chatWindow.scrollTo({
                     top: chatWindow.scrollHeight,
@@ -252,7 +273,9 @@
 
             mostrarMensaje(texto, 'user');
             input.value = '';
-            typing.style.display = 'block';
+            
+            // Mostrar puntitos en lugar de texto
+            typingIndicator.style.display = 'block';
             scrollDown();
 
             try {
@@ -263,7 +286,7 @@
                 });
 
                 const data = await response.json();
-                typing.style.display = 'none';
+                typingIndicator.style.display = 'none';
 
                 historial.push({ role: "user", content: texto });
                 historial.push({ role: "assistant", content: data.respuesta });
@@ -271,7 +294,7 @@
                 mostrarMensaje(data.respuesta, 'bot');
 
             } catch (error) {
-                typing.style.display = 'none';
+                typingIndicator.style.display = 'none';
                 mostrarMensaje("Lo siento, tuve un problema de conexión. ¿Puedes intentar de nuevo o escribirme al WhatsApp?", 'bot');
             }
         }
