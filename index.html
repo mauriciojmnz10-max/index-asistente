@@ -6,11 +6,7 @@
     <title>Javier - Asistente de Ventas</title>
     <style>
         /* ESTILOS PREMIUM MOBILE-FIRST */
-        * { 
-            box-sizing: border-box; 
-            margin: 0; 
-            padding: 0; 
-        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
         
         body { 
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
@@ -35,19 +31,8 @@
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
         }
 
-        header h1 { 
-            font-size: 1.1rem; 
-            letter-spacing: 0.5px; 
-            text-transform: uppercase; 
-            font-weight: 700;
-            color: #4a5568;
-        }
-        
-        header p { 
-            font-size: 0.75rem; 
-            color: #718096; 
-            margin-top: 4px;
-        }
+        header h1 { font-size: 1.1rem; letter-spacing: 0.5px; text-transform: uppercase; font-weight: 700; color: #4a5568; }
+        header p { font-size: 0.75rem; color: #718096; margin-top: 4px; }
 
         #chat-window {
             flex: 1;
@@ -73,14 +58,8 @@
         }
 
         @keyframes fadeIn { 
-            from { 
-                opacity: 0; 
-                transform: translateY(15px) scale(0.95); 
-            } 
-            to { 
-                opacity: 1; 
-                transform: translateY(0) scale(1); 
-            } 
+            from { opacity: 0; transform: translateY(15px) scale(0.95); } 
+            to { opacity: 1; transform: translateY(0) scale(1); } 
         }
 
         .bot { 
@@ -109,151 +88,45 @@
         }
 
         .typing-indicator span {
-            height: 8px; 
-            width: 8px; 
-            float: left; 
-            margin: 0 2px;
-            background-color: #a0aec0;
-            border-radius: 50%; 
-            display: block;
+            height: 8px; width: 8px; float: left; margin: 0 2px;
+            background-color: #a0aec0; border-radius: 50%; display: block;
             animation: bounce 1.3s infinite ease-in-out;
         }
 
         .typing-indicator span:nth-child(2) { animation-delay: 0.2s; }
         .typing-indicator span:nth-child(3) { animation-delay: 0.4s; }
 
-        @keyframes bounce {
-            0%, 80%, 100% { transform: scale(0); }
-            40% { transform: scale(1.0); }
-        }
+        @keyframes bounce { 0%, 80%, 100% { transform: scale(0); } 40% { transform: scale(1.0); } }
 
-        .quick-replies { 
-            display: flex; 
-            flex-wrap: wrap; 
-            gap: 8px; 
-            margin-top: 10px; 
-        }
-        
+        .quick-replies { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
         .btn-quick {
-            background: #f7fafc;
-            border: 1px solid #e2e8f0;
-            color: #4a5568;
-            padding: 8px 14px;
-            border-radius: 20px;
-            font-size: 13px;
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-        }
-
-        .btn-quick:hover {
-            background: #edf2f7;
-            transform: scale(1.02);
+            background: #f7fafc; border: 1px solid #e2e8f0; color: #4a5568;
+            padding: 8px 14px; border-radius: 20px; font-size: 13px; font-weight: 500;
+            cursor: pointer; transition: all 0.3s ease; box-shadow: 0 2px 5px rgba(0,0,0,0.05);
         }
 
         .btn-ws {
-            background: #25D366;
-            color: white !important;
-            padding: 12px 20px;
-            border-radius: 12px;
-            text-decoration: none;
-            font-weight: bold;
-            font-size: 14px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            margin-top: 12px;
-            margin-bottom: 8px;
-            box-shadow: 0 4px 15px rgba(37, 211, 102, 0.3);
-            transition: all 0.3s ease;
-            border: none;
-            cursor: pointer;
-        }
-
-        .btn-ws:hover {
-            background: #20b859;
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(37, 211, 102, 0.4);
+            background: #25D366; color: white !important; padding: 12px 20px;
+            border-radius: 12px; text-decoration: none; font-weight: bold; font-size: 14px;
+            display: flex; align-items: center; justify-content: center; gap: 8px;
+            margin-top: 12px; box-shadow: 0 4px 15px rgba(37, 211, 102, 0.3);
         }
 
         .input-container {
-            padding: 10px 15px 20px 15px;
-            background: transparent;
-            position: sticky;
-            bottom: 0;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            z-index: 100;
+            padding: 10px 15px 20px 15px; background: transparent;
+            position: sticky; bottom: 0; display: flex; align-items: center; gap: 10px; z-index: 100;
         }
 
         .input-wrapper {
-            flex: 1;
-            display: flex;
-            align-items: center;
-            background: #ffffff;
-            border: none;
-            border-radius: 30px;
-            padding: 5px 20px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            flex: 1; display: flex; align-items: center; background: #ffffff;
+            border-radius: 30px; padding: 5px 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.15);
         }
 
-        input {
-            flex: 1;
-            border: none;
-            background: transparent;
-            padding: 14px 0;
-            outline: none;
-            font-size: 16px;
-            color: #2d3748;
-        }
+        input { flex: 1; border: none; background: transparent; padding: 14px 0; outline: none; font-size: 16px; }
 
-        input::placeholder {
-            color: #a0aec0;
-        }
+        .send-btn { background: transparent; color: #667eea; border: none; font-weight: 700; cursor: pointer; padding: 8px 15px; }
 
-        .send-btn {
-            background: transparent;
-            color: #667eea;
-            border: none;
-            font-weight: 700;
-            font-size: 15px;
-            cursor: pointer;
-            padding: 8px 15px;
-            transition: all 0.3s ease;
-        }
-
-        .send-btn:hover {
-            transform: scale(1.05);
-            color: #764ba2;
-        }
-
-        /* Mensaje de error */
-        .error-container {
-            background: #fed7d7;
-            color: #c53030;
-            padding: 10px;
-            border-radius: 8px;
-            margin: 10px 0;
-            text-align: center;
-            font-size: 14px;
-        }
-
-        /* Scrollbar personalizada */
-        ::-webkit-scrollbar {
-            width: 6px;
-        }
-
-        ::-webkit-scrollbar-track {
-            background: rgba(255,255,255,0.1);
-        }
-
-        ::-webkit-scrollbar-thumb {
-            background: rgba(255,255,255,0.3);
-            border-radius: 3px;
-        }
+        .error-container { background: #fed7d7; color: #c53030; padding: 10px; border-radius: 8px; margin: 10px 0; text-align: center; font-size: 14px; }
     </style>
 </head>
 <body>
@@ -277,69 +150,54 @@
     </div>
 
     <script>
-        // =========================================================
-        // CONFIGURACIÓN - ¡MODIFICAR SEGÚN TU CLIENTE!
-        // =========================================================
         const CONFIG = {
-            // URL de tu backend en Render (¡CAMBIAR!)
             URL_API: 'https://asistente-javier.onrender.com/chat',
-            
-            // Número de WhatsApp (¡CAMBIAR!)
-            WHATSAPP: '584120000000',
-            
-            // Nombre de la tienda (¡CAMBIAR!)
+            WHATSAPP: '584120000000', // Pon el número real aquí
             TIENDA: 'ELECTROVENTAS CUMANÁ',
-            
-            // Mostrar botones de respuesta rápida
             MOSTRAR_BOTONES_RAPIDOS: true,
-            
-            // Mensaje de bienvenida personalizado
-            MENSAJE_BIENVENIDA: "¡Hola! 👋 Soy **Javier**, tu asesor virtual. Consulto la tasa BCV en tiempo real y te ayudo con compras por Cashea o Krece.\n\n¿En qué puedo ayudarte hoy?",
-            
-            // Tiempo máximo de espera (ms)
+            MENSAJE_BIENVENIDA: "¡Hola! 👋 Soy **Javier**, tu asesor virtual. Consulto la tasa BCV en tiempo real y te ayudo con tus compras.\n\n¿En qué puedo ayudarte hoy?",
             TIMEOUT: 15000
         };
 
-        // Elementos del DOM
         const chatWindow = document.getElementById('chat-window');
         const typingIndicator = document.getElementById('typing-indicator');
         const userInput = document.getElementById('user-input');
-        
-        // Historial de conversación
         let historial = [];
 
-        // Actualizar nombre de tienda en el header
-        document.getElementById('shop-name').textContent = CONFIG.TIENDA;
-
-        // =========================================================
-        // FUNCIONES PRINCIPALES
-        // =========================================================
         window.onload = () => {
             setTimeout(() => {
-                mostrarMensaje(CONFIG.MENSAJE_BIENVENIDA, 'bot');
+                // Pasamos 'true' para que el primer mensaje tenga los botones rápidos
+                mostrarMensaje(CONFIG.MENSAJE_BIENVENIDA, 'bot', true);
             }, 500);
         };
 
-        function mostrarMensaje(texto, remitente, mostrarBotonesRapidos = false) {
+        function mostrarMensaje(texto, remitente, conBotones = false) {
             const div = document.createElement('div');
             div.className = `msg ${remitente}`;
-            
-            // Formatear texto (negritas con **)
             let formattedText = texto.replace(/\*\*(.*?)\*\*/g, '<b>$1</b>');
             div.innerHTML = formattedText.replace(/\n/g, '<br>');
 
-            // Agregar botones de respuesta rápida si es el mensaje inicial del bot
-            if (remitente === 'bot' && mostrarBotonesRapidos && CONFIG.MOSTRAR_BOTONES_RAPIDOS) {
+            if (remitente === 'bot' && conBotones && CONFIG.MOSTRAR_BOTONES_RAPIDOS) {
                 const quickDiv = document.createElement('div');
                 quickDiv.className = 'quick-replies';
                 quickDiv.innerHTML = `
                     <button class="btn-quick" onclick="autoPregunta('¿A qué tasa está el dólar hoy?')">💰 Tasa BCV</button>
                     <button class="btn-quick" onclick="autoPregunta('¿Qué productos tienen disponibles?')">📦 Catálogo</button>
-                    <button class="btn-quick" onclick="autoPregunta('¿Tienen delivery en Cumaná?')">🛵 Delivery</button>
+                    <button class="btn-quick" onclick="autoPregunta('¿Tienen delivery?')">🛵 Delivery</button>
                     <button class="btn-quick" onclick="autoPregunta('¿Dónde están ubicados?')">📍 Ubicación</button>
-                    <button class="btn-quick" onclick="autoPregunta('¿Cómo funciona Cashea?')">💳 Cashea</button>
                 `;
                 div.appendChild(quickDiv);
+            }
+
+            // Lógica para detectar si el bot sugiere finalizar la compra
+            const disparadoresVenta = ["quiero comprar", "concretar", "pago movil", "zelle", "comprar", "ir a la tienda"];
+            if (remitente === 'bot' && disparadoresVenta.some(p => texto.toLowerCase().includes(p))) {
+                const btnWS = document.createElement('a');
+                btnWS.href = `https://wa.me/${CONFIG.WHATSAPP}?text=Hola Javier, quiero concretar una compra.`;
+                btnWS.target = "_blank";
+                btnWS.className = 'btn-ws';
+                btnWS.innerHTML = '📱 <b>Finalizar Compra con Asesor</b>';
+                div.appendChild(btnWS);
             }
 
             chatWindow.appendChild(div);
@@ -347,12 +205,7 @@
         }
 
         function scrollDown() {
-            setTimeout(() => {
-                chatWindow.scrollTo({
-                    top: chatWindow.scrollHeight,
-                    behavior: 'smooth'
-                });
-            }, 100);
+            setTimeout(() => { chatWindow.scrollTo({ top: chatWindow.scrollHeight, behavior: 'smooth' }); }, 100);
         }
 
         function autoPregunta(texto) {
@@ -360,114 +213,40 @@
             enviarMensaje();
         }
 
-        function mostrarError(mensaje) {
-            const errorDiv = document.createElement('div');
-            errorDiv.className = 'error-container';
-            errorDiv.textContent = mensaje;
-            chatWindow.appendChild(errorDiv);
-            scrollDown();
-            
-            // Eliminar después de 5 segundos
-            setTimeout(() => {
-                errorDiv.remove();
-            }, 5000);
-        }
-
-        function mostrarBotonWhatsApp() {
-            const btnContainer = document.createElement('div');
-            btnContainer.style.textAlign = 'center';
-            btnContainer.style.margin = '10px 0';
-            
-            const btn = document.createElement('a');
-            btn.href = `https://wa.me/${CONFIG.WHATSAPP}?text=Hola Javier, quiero concretar una compra.`;
-            btn.target = "_blank";
-            btn.className = 'btn-ws';
-            btn.innerHTML = '📱 <b>Finalizar Compra con Asesor</b>';
-            
-            btnContainer.appendChild(btn);
-            chatWindow.appendChild(btnContainer);
-            scrollDown();
-        }
-
         async function enviarMensaje() {
             const texto = userInput.value.trim();
             if (!texto) return;
 
-            // Mostrar mensaje del usuario
             mostrarMensaje(texto, 'user');
             userInput.value = '';
-            
-            // Mostrar indicador de escritura
             typingIndicator.style.display = 'block';
             scrollDown();
 
-            // Control de timeout
-            const controller = new AbortController();
-            const timeoutId = setTimeout(() => controller.abort(), CONFIG.TIMEOUT);
-
             try {
-                // Enviar mensaje al backend
                 const response = await fetch(CONFIG.URL_API, {
                     method: 'POST',
-                    headers: { 
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({ 
-                        mensaje: texto, 
-                        historial: historial 
-                    }),
-                    signal: controller.signal
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ mensaje: texto, historial: historial })
                 });
 
-                clearTimeout(timeoutId);
-                typingIndicator.style.display = 'none';
-
-                if (!response.ok) {
-                    throw new Error(`Error HTTP: ${response.status}`);
-                }
-
                 const data = await response.json();
-
-                // Actualizar historial
-                historial.push({ role: "user", content: texto });
-                historial.push({ role: "assistant", content: data.respuesta });
-
-                // Limitar historial a 20 mensajes para no saturar
-                if (historial.length > 20) {
-                    historial = historial.slice(-20);
-                }
-
-                // Mostrar respuesta
-                mostrarMensaje(data.respuesta, 'bot');
-
-                // Mostrar botón de WhatsApp si es necesario
-                if (data.mostrar_whatsapp) {
-                    mostrarBotonWhatsApp();
-                }
-
-            } catch (error) {
-                clearTimeout(timeoutId);
                 typingIndicator.style.display = 'none';
-                
-                console.error('Error:', error);
-                
-                if (error.name === 'AbortError') {
-                    mostrarError('⚠️ La conexión está tardando demasiado. ¿Puedes intentar de nuevo?');
-                } else {
-                    mostrarError('❌ Lo siento, tengo problemas de conexión. ¿Prefieres contactarnos por WhatsApp?');
+
+                if (data.respuesta) {
+                    historial.push({ role: "user", content: texto });
+                    historial.push({ role: "assistant", content: data.respuesta });
+                    mostrarMensaje(data.respuesta, 'bot');
                 }
-                
-                // Mostrar botón de WhatsApp como fallback
-                mostrarBotonWhatsApp();
+            } catch (error) {
+                typingIndicator.style.display = 'none';
+                const errDiv = document.createElement('div');
+                errDiv.className = 'error-container';
+                errDiv.textContent = '❌ Error de conexión con Javier.';
+                chatWindow.appendChild(errDiv);
             }
         }
 
-        // Enviar mensaje con Enter
-        userInput.addEventListener('keypress', function (e) {
-            if (e.key === 'Enter') {
-                enviarMensaje();
-            }
-        });
+        userInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') enviarMensaje(); });
     </script>
 </body>
 </html>
