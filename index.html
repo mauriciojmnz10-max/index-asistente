@@ -5,91 +5,91 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Javier - Asistente de Ventas</title>
     <style>
-        /* ESTILOS PREMIUM MOBILE-FIRST */
+        /* ESTILOS PREMIUM ELEGANTES */
         * { box-sizing: border-box; margin: 0; padding: 0; }
         
         body { 
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); /* Fondo Elegante Oscuro */
             height: 100vh;
             display: flex;
             flex-direction: column;
             overflow: hidden;
-            color: #262626;
+            color: #f8fafc;
         }
 
         header {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            color: #1a1a1a;
-            padding: 15px;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            padding: 18px;
             text-align: center;
-            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
             z-index: 100;
-            flex-shrink: 0;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
         }
 
-        header h1 { font-size: 1.1rem; letter-spacing: 0.5px; text-transform: uppercase; font-weight: 700; color: #4a5568; }
-        header p { font-size: 0.75rem; color: #718096; margin-top: 4px; }
+        header h1 { 
+            font-size: 1.2rem; 
+            letter-spacing: 1.5px; 
+            text-transform: uppercase; 
+            font-weight: 800; 
+            color: #f1f5f9;
+        }
+        
+        header p { font-size: 0.8rem; color: #94a3b8; margin-top: 4px; }
 
         #chat-window {
             flex: 1;
-            padding: 15px;
-            padding-bottom: 20px;
+            padding: 20px;
             overflow-y: auto;
             display: flex;
             flex-direction: column;
-            gap: 12px;
+            gap: 15px;
             background: transparent;
-            scroll-behavior: smooth;
         }
 
         .msg {
             max-width: 85%;
-            padding: 12px 16px;
+            padding: 14px 18px;
             font-size: 15px;
-            line-height: 1.4;
-            position: relative;
-            animation: fadeIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            line-height: 1.5;
+            animation: fadeIn 0.3s ease-out forwards;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
             word-wrap: break-word;
         }
 
         @keyframes fadeIn { 
-            from { opacity: 0; transform: translateY(15px) scale(0.95); } 
-            to { opacity: 1; transform: translateY(0) scale(1); } 
+            from { opacity: 0; transform: translateY(10px); } 
+            to { opacity: 1; transform: translateY(0); } 
         }
 
         .bot { 
             align-self: flex-start; 
             background: #ffffff; 
-            color: #2d3748; 
-            border-radius: 18px 18px 18px 4px; 
-            border: 1px solid rgba(255, 255, 255, 0.8);
+            color: #1e293b; 
+            border-radius: 20px 20px 20px 5px; 
         }
 
         .user { 
             align-self: flex-end; 
-            background: linear-gradient(135deg, #667eea, #764ba2);
+            background: linear-gradient(135deg, #2563eb, #1d4ed8); /* Azul Profesional */
             color: white; 
-            border-radius: 18px 18px 4px 18px; 
+            border-radius: 20px 20px 5px 20px; 
         }
 
         .typing-indicator {
             display: none;
             align-self: flex-start;
-            background: #ffffff;
+            background: rgba(255,255,255,0.1);
             padding: 12px 18px;
             border-radius: 20px;
-            margin: 5px 15px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin: 5px 20px;
         }
 
         .typing-indicator span {
             height: 8px; width: 8px; float: left; margin: 0 2px;
-            background-color: #a0aec0; border-radius: 50%; display: block;
+            background-color: #cbd5e1; border-radius: 50%; display: block;
             animation: bounce 1.3s infinite ease-in-out;
         }
 
@@ -98,42 +98,76 @@
 
         @keyframes bounce { 0%, 80%, 100% { transform: scale(0); } 40% { transform: scale(1.0); } }
 
-        .quick-replies { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+        .quick-replies { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 12px; }
+        
         .btn-quick {
-            background: #f7fafc; border: 1px solid #e2e8f0; color: #4a5568;
-            padding: 8px 14px; border-radius: 20px; font-size: 13px; font-weight: 500;
-            cursor: pointer; transition: all 0.3s ease; box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            background: rgba(255,255,255,0.1); 
+            border: 1px solid rgba(255,255,255,0.2); 
+            color: #f1f5f9;
+            padding: 10px 16px; 
+            border-radius: 25px; 
+            font-size: 13px;
+            cursor: pointer; 
+            transition: all 0.3s;
         }
 
+        .btn-quick:hover { background: rgba(255,255,255,0.2); transform: translateY(-2px); }
+
         .btn-ws {
-            background: #25D366; color: white !important; padding: 12px 20px;
-            border-radius: 12px; text-decoration: none; font-weight: bold; font-size: 14px;
-            display: flex; align-items: center; justify-content: center; gap: 8px;
-            margin-top: 12px; box-shadow: 0 4px 15px rgba(37, 211, 102, 0.3);
+            background: #10b981; 
+            color: white !important; 
+            padding: 14px;
+            border-radius: 15px; 
+            text-decoration: none; 
+            font-weight: bold; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            gap: 10px;
+            margin-top: 15px;
         }
 
         .input-container {
-            padding: 10px 15px 20px 15px; background: transparent;
-            position: sticky; bottom: 0; display: flex; align-items: center; gap: 10px; z-index: 100;
+            padding: 20px;
+            background: rgba(15, 23, 42, 0.8);
+            backdrop-filter: blur(10px);
         }
 
         .input-wrapper {
-            flex: 1; display: flex; align-items: center; background: #ffffff;
-            border-radius: 30px; padding: 5px 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            display: flex; 
+            background: #ffffff;
+            border-radius: 30px; 
+            padding: 5px 20px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.4);
         }
 
-        input { flex: 1; border: none; background: transparent; padding: 14px 0; outline: none; font-size: 16px; }
+        input { 
+            flex: 1; 
+            border: none; 
+            background: transparent; 
+            padding: 14px 0; 
+            outline: none; 
+            font-size: 16px; 
+            color: #1e293b;
+        }
 
-        .send-btn { background: transparent; color: #667eea; border: none; font-weight: 700; cursor: pointer; padding: 8px 15px; }
+        .send-btn { 
+            background: transparent; 
+            color: #2563eb; 
+            border: none; 
+            font-weight: 800; 
+            cursor: pointer; 
+            padding: 0 10px; 
+        }
 
-        .error-container { background: #fed7d7; color: #c53030; padding: 10px; border-radius: 8px; margin: 10px 0; text-align: center; font-size: 14px; }
+        .error-container { background: #fef2f2; color: #b91c1c; padding: 12px; border-radius: 10px; margin: 10px 0; text-align: center; }
     </style>
 </head>
 <body>
 
     <header>
         <h1 id="shop-name">ELECTROVENTAS CUMANÁ</h1>
-        <p>Expertos en Tecnología y Hogar</p>
+        <p>Soluciones Tecnológicas de Vanguardia</p>
     </header>
 
     <div id="chat-window"></div>
@@ -144,7 +178,7 @@
 
     <div class="input-container">
         <div class="input-wrapper">
-            <input type="text" id="user-input" placeholder="Pregunta por precios, Cashea..." autocomplete="off">
+            <input type="text" id="user-input" placeholder="Escribe tu mensaje aquí..." autocomplete="off">
             <button class="send-btn" onclick="enviarMensaje()">Enviar</button>
         </div>
     </div>
@@ -152,11 +186,11 @@
     <script>
         const CONFIG = {
             URL_API: 'https://asistente-javier.onrender.com/chat',
-            WHATSAPP: '584120000000', // Pon el número real aquí
+            WHATSAPP: '584120000000', 
             TIENDA: 'ELECTROVENTAS CUMANÁ',
             MOSTRAR_BOTONES_RAPIDOS: true,
-            MENSAJE_BIENVENIDA: "¡Hola! 👋 Soy **Javier**, tu asesor virtual. Consulto la tasa BCV en tiempo real y te ayudo con tus compras.\n\n¿En qué puedo ayudarte hoy?",
-            TIMEOUT: 15000
+            MENSAJE_BIENVENIDA: "¡Hola! 👋 Soy **Javier**, tu asesor virtual premium.\n\nConsulto la tasa BCV al instante y te ayudo a gestionar tus compras por Cashea o Krece.\n\n¿Qué información necesitas hoy?",
+            TIMEOUT: 20000
         };
 
         const chatWindow = document.getElementById('chat-window');
@@ -165,10 +199,7 @@
         let historial = [];
 
         window.onload = () => {
-            setTimeout(() => {
-                // Pasamos 'true' para que el primer mensaje tenga los botones rápidos
-                mostrarMensaje(CONFIG.MENSAJE_BIENVENIDA, 'bot', true);
-            }, 500);
+            setTimeout(() => { mostrarMensaje(CONFIG.MENSAJE_BIENVENIDA, 'bot', true); }, 600);
         };
 
         function mostrarMensaje(texto, remitente, conBotones = false) {
@@ -182,21 +213,20 @@
                 quickDiv.className = 'quick-replies';
                 quickDiv.innerHTML = `
                     <button class="btn-quick" onclick="autoPregunta('¿A qué tasa está el dólar hoy?')">💰 Tasa BCV</button>
-                    <button class="btn-quick" onclick="autoPregunta('¿Qué productos tienen disponibles?')">📦 Catálogo</button>
-                    <button class="btn-quick" onclick="autoPregunta('¿Tienen delivery?')">🛵 Delivery</button>
+                    <button class="btn-quick" onclick="autoPregunta('¿Qué teléfonos tienen?')">📱 Catálogo</button>
                     <button class="btn-quick" onclick="autoPregunta('¿Dónde están ubicados?')">📍 Ubicación</button>
+                    <button class="btn-quick" onclick="autoPregunta('¿Cómo pago con Cashea?')">💳 Cashea</button>
                 `;
                 div.appendChild(quickDiv);
             }
 
-            // Lógica para detectar si el bot sugiere finalizar la compra
-            const disparadoresVenta = ["quiero comprar", "concretar", "pago movil", "zelle", "comprar", "ir a la tienda"];
+            const disparadoresVenta = ["comprar", "concretar", "pago", "precio", "interesa"];
             if (remitente === 'bot' && disparadoresVenta.some(p => texto.toLowerCase().includes(p))) {
                 const btnWS = document.createElement('a');
-                btnWS.href = `https://wa.me/${CONFIG.WHATSAPP}?text=Hola Javier, quiero concretar una compra.`;
+                btnWS.href = `https://wa.me/${CONFIG.WHATSAPP}?text=Hola, quiero concretar una compra.`;
                 btnWS.target = "_blank";
                 btnWS.className = 'btn-ws';
-                btnWS.innerHTML = '📱 <b>Finalizar Compra con Asesor</b>';
+                btnWS.innerHTML = '📱 <b>Contactar con un Asesor Humano</b>';
                 div.appendChild(btnWS);
             }
 
@@ -241,7 +271,7 @@
                 typingIndicator.style.display = 'none';
                 const errDiv = document.createElement('div');
                 errDiv.className = 'error-container';
-                errDiv.textContent = '❌ Error de conexión con Javier.';
+                errDiv.textContent = '❌ Javier está procesando otras solicitudes. Reintenta en unos segundos.';
                 chatWindow.appendChild(errDiv);
             }
         }
