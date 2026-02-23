@@ -220,9 +220,10 @@
             const quickDiv = document.createElement('div');
             quickDiv.className = 'quick-replies';
             quickDiv.innerHTML = `
-                <button class="btn-quick" onclick="autoPregunta('¿Qué tienen disponible?')">📦 Catálogo</button>
-                <button class="btn-quick" onclick="autoPregunta('¿Cómo pago con Cashea?')">💳 Cashea</button>
-                <button class="btn-quick" onclick="autoPregunta('¿Dónde están?')">📍 Ubicación</button>
+                <button class="btn-quick" onclick="autoPregunta('¿A qué tasa recibes hoy?')">💰 Tasa del día</button>
+                <button class="btn-quick" onclick="autoPregunta('¿Qué productos tienen disponibles?')">📦 Catálogo</button>
+                <button class="btn-quick" onclick="autoPregunta('¿Tienen delivery en Cumaná?')">🛵 Delivery</button>
+                <button class="btn-quick" onclick="autoPregunta('¿Dónde están ubicados?')">📍 Ubicación</button>
             `;
             div.appendChild(quickDiv);
             chatWindow.appendChild(div);
@@ -274,7 +275,6 @@
             mostrarMensaje(texto, 'user');
             input.value = '';
             
-            // Mostrar puntitos en lugar de texto
             typingIndicator.style.display = 'block';
             scrollDown();
 
