@@ -34,6 +34,7 @@
         #chat-window {
             flex: 1;
             padding: 15px;
+            padding-bottom: 100px; /* <--- ESPACIO DE SEGURIDAD PARA QUE EL BOTÓN NO SE TAPE */
             overflow-y: auto;
             display: flex;
             flex-direction: column;
@@ -91,7 +92,7 @@
             cursor: pointer;
         }
 
-        /* BOTÓN WHATSAPP PREMIUM */
+        /* BOTÓN WHATSAPP PREMIUM CON MARGEN INFERIOR */
         .btn-ws {
             background: #25D366;
             color: white !important;
@@ -105,12 +106,13 @@
             justify-content: center;
             gap: 8px;
             margin-top: 10px;
+            margin-bottom: 15px; /* <--- EVITA QUE QUEDE AL RAS DEL MENSAJE */
             box-shadow: 0 4px 10px rgba(37, 211, 102, 0.2);
         }
 
         /* CAJA DE ENTRADA STICKY ESTILO INSTAGRAM */
         .input-container {
-            padding: 10px 15px 25px 15px; /* Extra padding para el área del home bar en móviles */
+            padding: 10px 15px 25px 15px; 
             background: #ffffff;
             border-top: 1px solid #efefef;
             position: sticky;
@@ -118,6 +120,7 @@
             display: flex;
             align-items: center;
             gap: 10px;
+            z-index: 100; /* <--- ASEGURA QUE SIEMPRE ESTÉ POR ENCIMA */
         }
 
         .input-wrapper {
@@ -136,7 +139,7 @@
             background: transparent;
             padding: 10px 0;
             outline: none;
-            font-size: 16px; /* Evita zoom automático en iOS */
+            font-size: 16px; 
             color: #262626;
         }
 
@@ -161,7 +164,7 @@
     </header>
 
     <div id="chat-window">
-        </div>
+    </div>
 
     <div id="typing" class="typing">Javier está escribiendo...</div>
 
@@ -228,7 +231,13 @@
         }
 
         function scrollDown() {
-            chatWindow.scrollTop = chatWindow.scrollHeight;
+            // Se añade un pequeño retraso para asegurar que el contenido se renderice
+            setTimeout(() => {
+                chatWindow.scrollTo({
+                    top: chatWindow.scrollHeight,
+                    behavior: 'smooth'
+                });
+            }, 100);
         }
 
         function autoPregunta(texto) {
@@ -267,7 +276,6 @@
             }
         }
 
-        // Enviar con la tecla Enter
         document.getElementById('user-input').addEventListener('keypress', function (e) {
             if (e.key === 'Enter') {
                 enviarMensaje();
