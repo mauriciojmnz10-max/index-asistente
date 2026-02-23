@@ -5,150 +5,118 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Javier - Asistente de Ventas</title>
     <style>
-        /* ESTILOS PREMIUM: LIMPIO Y ELEGANTE */
+        /* ESTILO ELEGANTE Y CLARO */
+        :root { --primary: #0066ff; --bg-light: #f4f7f9; --text-dark: #1a1a1b; }
         * { box-sizing: border-box; margin: 0; padding: 0; }
         
         body { 
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            background-color: #f0f2f5;
-            background-image: radial-gradient(#cfd8dc 0.5px, #f0f2f5 0.5px);
-            background-size: 20px 20px;
+            font-family: -apple-system, system-ui, "Segoe UI", Roboto, sans-serif;
+            background: var(--bg-light);
             height: 100vh;
             display: flex;
             flex-direction: column;
-            overflow: hidden;
-            color: #1c1e21;
+            color: var(--text-dark);
         }
 
         header {
             background: #ffffff;
-            color: #1c1e21;
-            padding: 15px;
+            padding: 18px;
             text-align: center;
-            border-bottom: 1px solid #dddfe2;
-            z-index: 100;
-            flex-shrink: 0;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            border-bottom: 1px solid #e1e4e8;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.03);
         }
 
-        header h1 { font-size: 1.1rem; letter-spacing: 0.5px; text-transform: uppercase; font-weight: 800; color: #000000; }
-        header p { font-size: 0.75rem; color: #606770; margin-top: 4px; }
+        header h1 { font-size: 1.15rem; font-weight: 800; color: #000; letter-spacing: 0.5px; }
+        header p { font-size: 0.8rem; color: #666; margin-top: 3px; }
 
         #chat-window {
             flex: 1;
             padding: 15px;
-            padding-bottom: 20px;
             overflow-y: auto;
             display: flex;
             flex-direction: column;
-            gap: 12px;
-            background: transparent;
-            scroll-behavior: smooth;
+            gap: 15px;
         }
 
         .msg {
-            max-width: 85%;
-            padding: 12px 16px;
+            max-width: 82%;
+            padding: 14px 16px;
             font-size: 15px;
-            line-height: 1.4;
-            position: relative;
-            animation: fadeIn 0.3s ease;
-            box-shadow: 0 1px 2px rgba(0,0,0,0.1);
-            word-wrap: break-word;
+            line-height: 1.5;
+            border-radius: 18px;
+            animation: fadeIn 0.3s ease-out;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.04);
         }
 
-        @keyframes fadeIn { 
-            from { opacity: 0; transform: translateY(10px); } 
-            to { opacity: 1; transform: translateY(0); } 
-        }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
 
         .bot { 
             align-self: flex-start; 
             background: #ffffff; 
-            color: #1c1e21; 
-            border-radius: 18px 18px 18px 4px; 
-            border: 1px solid #dddfe2;
+            color: var(--text-dark); 
+            border-bottom-left-radius: 4px;
+            border: 1px solid #eee;
         }
 
         .user { 
             align-self: flex-end; 
-            background: #0084ff; /* Azul elegante estilo Messenger */
+            background: var(--primary);
             color: white; 
-            border-radius: 18px 18px 4px 18px; 
+            border-bottom-right-radius: 4px;
         }
 
-        .typing-indicator {
-            display: none;
-            align-self: flex-start;
-            background: #ffffff;
-            padding: 12px 18px;
-            border-radius: 20px;
-            margin: 5px 15px;
-            box-shadow: 0 1px 2px rgba(0,0,0,0.1);
-            border: 1px solid #dddfe2;
-        }
-
-        .typing-indicator span {
-            height: 8px; width: 8px; float: left; margin: 0 2px;
-            background-color: #90949c; border-radius: 50%; display: block;
-            animation: bounce 1.3s infinite ease-in-out;
-        }
-
-        .typing-indicator span:nth-child(2) { animation-delay: 0.2s; }
-        .typing-indicator span:nth-child(3) { animation-delay: 0.4s; }
-
-        @keyframes bounce { 0%, 80%, 100% { transform: scale(0); } 40% { transform: scale(1.0); } }
-
-        .quick-replies { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+        /* BOTONES DE RESPUESTA */
+        .quick-replies { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
         .btn-quick {
-            background: #ffffff; border: 1px solid #0084ff; color: #0084ff;
-            padding: 8px 14px; border-radius: 20px; font-size: 13px; font-weight: 600;
-            cursor: pointer; transition: all 0.2s ease;
+            background: #ffffff; border: 1.5px solid var(--primary); color: var(--primary);
+            padding: 8px 16px; border-radius: 20px; font-size: 13px; font-weight: 600;
+            cursor: pointer; transition: 0.2s;
         }
-        .btn-quick:hover { background: #e7f3ff; }
+        .btn-quick:hover { background: var(--primary); color: white; }
 
+        /* BOTÓN WHATSAPP */
         .btn-ws {
-            background: #25D366; color: white !important; padding: 12px 20px;
-            border-radius: 12px; text-decoration: none; font-weight: bold; font-size: 14px;
+            background: #25D366; color: white !important; padding: 12px;
+            border-radius: 12px; text-decoration: none; font-weight: 700;
             display: flex; align-items: center; justify-content: center; gap: 8px;
-            margin-top: 12px; transition: 0.3s;
+            margin-top: 12px; font-size: 14px;
         }
-        .btn-ws:hover { transform: scale(1.02); box-shadow: 0 4px 12px rgba(37, 211, 102, 0.2); }
 
+        /* ÁREA DE ENTRADA */
         .input-container {
-            padding: 10px 15px 20px 15px; background: #ffffff;
-            border-top: 1px solid #dddfe2;
-            display: flex; align-items: center; gap: 10px; z-index: 100;
+            padding: 15px 15px 25px 15px;
+            background: white;
+            border-top: 1px solid #eee;
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
 
         .input-wrapper {
             flex: 1; display: flex; align-items: center; background: #f0f2f5;
-            border-radius: 25px; padding: 5px 20px;
+            border-radius: 25px; padding: 5px 18px;
         }
 
-        input { flex: 1; border: none; background: transparent; padding: 12px 0; outline: none; font-size: 16px; color: #1c1e21; }
+        input { flex: 1; border: none; background: transparent; padding: 12px 0; outline: none; font-size: 16px; }
 
-        .send-btn { background: transparent; color: #0084ff; border: none; font-weight: 700; cursor: pointer; padding: 8px 15px; font-size: 16px; }
+        .send-btn { background: transparent; color: var(--primary); border: none; font-weight: 700; cursor: pointer; padding: 0 10px; font-size: 16px; }
 
-        .error-container { background: #ffebe9; color: #d73a49; padding: 10px; border-radius: 8px; margin: 10px 0; text-align: center; font-size: 14px; border: 1px solid #ffc1c0; }
+        .typing { display: none; padding: 10px 20px; font-size: 13px; color: #888; }
     </style>
 </head>
 <body>
 
     <header>
-        <h1 id="shop-name">ELECTROVENTAS CUMANÁ</h1>
-        <p>Expertos en Tecnología y Hogar</p>
+        <h1>ELECTROVENTAS CUMANÁ</h1>
+        <p>Asesoría en Tecnología • Javier AI</p>
     </header>
 
     <div id="chat-window"></div>
-
-    <div id="typing-indicator" class="typing-indicator">
-        <span></span><span></span><span></span>
-    </div>
+    <div id="typing" class="typing">Javier está consultando la tasa...</div>
 
     <div class="input-container">
         <div class="input-wrapper">
-            <input type="text" id="user-input" placeholder="Pregunta por precios, Cashea, Tasa..." autocomplete="off">
+            <input type="text" id="user-input" placeholder="Pregunta por la tasa o un equipo..." autocomplete="off">
             <button class="send-btn" onclick="enviarMensaje()">Enviar</button>
         </div>
     </div>
@@ -156,62 +124,51 @@
     <script>
         const CONFIG = {
             URL_API: 'https://asistente-javier.onrender.com/chat',
-            WHATSAPP: '584120000000', // Pon el número real aquí
-            TIENDA: 'ELECTROVENTAS CUMANÁ',
-            MOSTRAR_BOTONES_RAPIDOS: true,
-            MENSAJE_BIENVENIDA: "¡Hola! 👋 Soy **Javier**, tu asesor virtual. Consulto la tasa BCV en tiempo real y te ayudo con tus compras.\n\n¿En qué puedo ayudarte hoy?",
-            TIMEOUT: 15000
+            WHATSAPP: '584120000000', // Pon tu número real
+            MENSAJE_BIENVENIDA: "¡Hola! 👋 Soy **Javier**. Consulto la tasa BCV en tiempo real y calculo tus precios al instante.\n\n¿En qué puedo ayudarte hoy?"
         };
 
         const chatWindow = document.getElementById('chat-window');
-        const typingIndicator = document.getElementById('typing-indicator');
+        const typing = document.getElementById('typing');
         const userInput = document.getElementById('user-input');
         let historial = [];
 
         window.onload = () => {
-            setTimeout(() => {
-                mostrarMensaje(CONFIG.MENSAJE_BIENVENIDA, 'bot', true);
-            }, 500);
+            mostrarMensaje(CONFIG.MENSAJE_BIENVENIDA, 'bot', true);
         };
 
-        function mostrarMensaje(texto, remitente, conBotones = false, mostrarBotonWhatsapp = false) {
+        function mostrarMensaje(texto, remitente, conBotones = false, mostrarWS = false) {
             const div = document.createElement('div');
             div.className = `msg ${remitente}`;
             
-            // Formatear negritas y saltos de línea
+            // Renderizar negritas y saltos de línea
             let formattedText = texto.replace(/\*\*(.*?)\*\*/g, '<b>$1</b>');
             div.innerHTML = formattedText.replace(/\n/g, '<br>');
 
-            // Si el bot envía el mensaje y queremos botones rápidos
-            if (remitente === 'bot' && conBotones && CONFIG.MOSTRAR_BOTONES_RAPIDOS) {
-                const quickDiv = document.createElement('div');
-                quickDiv.className = 'quick-replies';
-                quickDiv.innerHTML = `
-                    <button class="btn-quick" onclick="autoPregunta('¿A qué tasa está el dólar hoy?')">💰 Tasa BCV</button>
-                    <button class="btn-quick" onclick="autoPregunta('¿Qué productos tienen disponibles?')">📦 Catálogo</button>
-                    <button class="btn-quick" onclick="autoPregunta('¿Tienen delivery?')">🛵 Delivery</button>
+            // Botones rápidos
+            if (remitente === 'bot' && conBotones) {
+                const qDiv = document.createElement('div');
+                qDiv.className = 'quick-replies';
+                qDiv.innerHTML = `
+                    <button class="btn-quick" onclick="autoPregunta('¿Cuál es la tasa del dólar hoy?')">💰 Tasa BCV</button>
+                    <button class="btn-quick" onclick="autoPregunta('¿Qué teléfonos tienen disponibles?')">📱 Catálogo</button>
                     <button class="btn-quick" onclick="autoPregunta('¿Dónde están ubicados?')">📍 Ubicación</button>
                 `;
-                div.appendChild(quickDiv);
+                div.appendChild(qDiv);
             }
 
-            // Lógica para el botón de WhatsApp (basado en respuesta del servidor o palabras clave)
-            const disparadoresVenta = ["comprar", "concretar", "pago", "precio", "interesa", "quiero"];
-            if (remitente === 'bot' && (mostrarBotonWhatsapp || disparadoresVenta.some(p => texto.toLowerCase().includes(p)))) {
+            // Botón WhatsApp
+            if (remitente === 'bot' && mostrarWS) {
                 const btnWS = document.createElement('a');
-                btnWS.href = `https://wa.me/${CONFIG.WHATSAPP}?text=Hola Javier, quiero concretar una compra.`;
+                btnWS.href = `https://wa.me/${CONFIG.WHATSAPP}?text=Hola, quiero concretar una compra.`;
                 btnWS.target = "_blank";
                 btnWS.className = 'btn-ws';
-                btnWS.innerHTML = '📱 <b>Finalizar Compra por WhatsApp</b>';
+                btnWS.innerHTML = '📱 <b>Concretar Compra por WhatsApp</b>';
                 div.appendChild(btnWS);
             }
 
             chatWindow.appendChild(div);
-            scrollDown();
-        }
-
-        function scrollDown() {
-            setTimeout(() => { chatWindow.scrollTo({ top: chatWindow.scrollHeight, behavior: 'smooth' }); }, 100);
+            chatWindow.scrollTo({ top: chatWindow.scrollHeight, behavior: 'smooth' });
         }
 
         function autoPregunta(texto) {
@@ -225,8 +182,7 @@
 
             mostrarMensaje(texto, 'user');
             userInput.value = '';
-            typingIndicator.style.display = 'block';
-            scrollDown();
+            typing.style.display = 'block';
 
             try {
                 const response = await fetch(CONFIG.URL_API, {
@@ -235,26 +191,19 @@
                     body: JSON.stringify({ mensaje: texto, historial: historial })
                 });
 
-                if (!response.ok) throw new Error('Error en servidor');
-
                 const data = await response.json();
-                typingIndicator.style.display = 'none';
+                typing.style.display = 'none';
 
                 if (data.respuesta) {
                     historial.push({ role: "user", content: texto });
                     historial.push({ role: "assistant", content: data.respuesta });
                     
-                    // Mostramos la respuesta con la lógica de botones si es necesario
+                    // IMPORTANTE: data.mostrar_whatsapp viene del backend
                     mostrarMensaje(data.respuesta, 'bot', false, data.mostrar_whatsapp);
                 }
             } catch (error) {
-                console.error(error);
-                typingIndicator.style.display = 'none';
-                const errDiv = document.createElement('div');
-                errDiv.className = 'error-container';
-                errDiv.textContent = '❌ Javier está tomando un respiro. Reintenta en unos segundos.';
-                chatWindow.appendChild(errDiv);
-                scrollDown();
+                typing.style.display = 'none';
+                mostrarMensaje("❌ Error de conexión con el servidor. Intenta de nuevo.", 'bot');
             }
         }
 
