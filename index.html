@@ -198,6 +198,12 @@
     </div>
 
     <script>
+        // ==========================================
+        // CONFIGURACIÓN DE BOTONES RÁPIDOS
+        // Cambia a 'false' para ocultarlos, 'true' para mostrarlos
+        const MOSTRAR_BOTONES_RAPIDOS = true; 
+        // ==========================================
+
         const URL_API = 'https://asistente-javier.onrender.com/chat'; 
         const LINK_WHATSAPP = "https://wa.me/584120000000?text=Hola Javier, quiero concretar una compra.";
         
@@ -217,15 +223,19 @@
             let formattedText = texto.replace(/\*\*(.*?)\*\*/g, '<b>$1</b>');
             div.innerHTML = formattedText.replace(/\n/g, '<br>');
 
-            const quickDiv = document.createElement('div');
-            quickDiv.className = 'quick-replies';
-            quickDiv.innerHTML = `
-                <button class="btn-quick" onclick="autoPregunta('¿A qué tasa recibes hoy?')">💰 Tasa del día</button>
-                <button class="btn-quick" onclick="autoPregunta('¿Qué productos tienen disponibles?')">📦 Catálogo</button>
-                <button class="btn-quick" onclick="autoPregunta('¿Tienen delivery en Cumaná?')">🛵 Delivery</button>
-                <button class="btn-quick" onclick="autoPregunta('¿Dónde están ubicados?')">📍 Ubicación</button>
-            `;
-            div.appendChild(quickDiv);
+            // Lógica para mostrar/ocultar botones rápidos
+            if (MOSTRAR_BOTONES_RAPIDOS) {
+                const quickDiv = document.createElement('div');
+                quickDiv.className = 'quick-replies';
+                quickDiv.innerHTML = `
+                    <button class="btn-quick" onclick="autoPregunta('¿A qué tasa recibes hoy?')">💰 Tasa del día</button>
+                    <button class="btn-quick" onclick="autoPregunta('¿Qué productos tienen disponibles?')">📦 Catálogo</button>
+                    <button class="btn-quick" onclick="autoPregunta('¿Tienen delivery en Cumaná?')">🛵 Delivery</button>
+                    <button class="btn-quick" onclick="autoPregunta('¿Dónde están ubicados?')">📍 Ubicación</button>
+                `;
+                div.appendChild(quickDiv);
+            }
+
             chatWindow.appendChild(div);
             scrollDown();
         }
