@@ -53,8 +53,8 @@
             display: flex;
             flex-direction: column;
             gap: 15px;
-            /* Ajustado para que el padding no sea exagerado pero deje ver la caja */
-            padding-bottom: 90px; 
+            /* Padding inferior ajustado a 130px según tu preferencia */
+            padding-bottom: 130px; 
             scroll-behavior: smooth;
         }
 
@@ -89,7 +89,7 @@
         /* CAJA FLOTANTE OPTIMIZADA */
         .input-wrapper {
             position: fixed;
-            bottom: 20px; /* Subida para que no se esconda en móviles */
+            bottom: 45px; /* Elevado a 45px para que flote con espacio suficiente */
             left: 5%;
             right: 5%;
             z-index: 1000;
@@ -101,7 +101,6 @@
             border-radius: 40px;
             display: flex;
             align-items: center;
-            /* Sombra más profunda para que destaque sobre el chat */
             box-shadow: 0 10px 30px rgba(92, 62, 45, 0.3); 
             border: 1.5px solid var(--masa);
         }
