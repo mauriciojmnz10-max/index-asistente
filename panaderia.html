@@ -3,157 +3,251 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Javier AI - Panadería Gourmet</title>
+    <title>JAVIER • PANADERÍA ARTESANAL</title>
     <style>
-        /* Paleta de colores Instagram/Bakery */
-        :root { 
-            --primary: #8d6e63; /* Café canela elegante */
-            --accent: #d7ccc8; /* Crema suave */
-            --bg-glass: rgba(255, 255, 255, 0.85);
-            --bot-bg: #ffffff;
-            --user-bg: #4e342e; /* Café oscuro profundo */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
         }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-        
-        body { 
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; 
-            background: #faf7f2; /* Color hueso premium */
-            background-image: radial-gradient(#e0d4c8 0.5px, #faf7f2 0.5px); /* Textura sutil */
-            background-size: 20px 20px;
-            height: 100vh; 
-            display: flex; 
-            flex-direction: column; 
-            overflow: hidden; 
+        :root {
+            --harina: #fdf8f2;
+            --masa: #f5ebe0;
+            --corteza: #d4a574;
+            --miel: #e6b17e;
+            --canela: #8b5a2b;
+            --cafe: #5c3e2d;
+            --crema: #fff3e0;
+            --manteca: #fff1d6;
+            --sombra-calida: rgba(139, 90, 43, 0.08);
         }
-        
-        header { 
-            background: var(--bg-glass); 
-            backdrop-filter: blur(15px); 
-            -webkit-backdrop-filter: blur(15px); 
-            padding: 20px; 
-            text-align: center; 
-            border-bottom: 1px solid rgba(141, 110, 99, 0.1); 
-            box-shadow: 0 2px 10px rgba(0,0,0,0.02); 
-            z-index: 10; 
+
+        body {
+            font-family: 'Playfair Display', Georgia, 'Times New Roman', serif;
+            background: var(--harina);
+            height: 100vh;
+            overflow: hidden;
+            position: relative;
+            color: var(--cafe);
         }
-        header h1 { 
-            font-size: 1.2rem; 
-            font-weight: 700; 
+
+        /* Texturas de fondo se mantienen igual */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-image: 
+                radial-gradient(circle at 20% 30%, rgba(255, 255, 255, 0.8) 0px, transparent 2px),
+                radial-gradient(circle at 80% 70%, rgba(255, 255, 255, 0.8) 0px, transparent 3px),
+                radial-gradient(circle at 40% 90%, rgba(255, 255, 255, 0.8) 0px, transparent 4px),
+                radial-gradient(circle at 90% 20%, rgba(255, 255, 255, 0.8) 0px, transparent 2px);
+            background-size: 200px 200px;
+            pointer-events: none; z-index: 0; opacity: 0.5;
+        }
+
+        body::after {
+            content: '';
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" opacity="0.03"><path d="M20,20 L30,20 L30,30 L20,30 Z M50,20 L60,20 L60,30 L50,30 Z M80,20 L90,20 L90,30 L80,30 Z M20,50 L30,50 L30,60 L20,60 Z M50,50 L60,50 L60,60 L50,60 Z M80,50 L90,50 L90,60 L80,60 Z M20,80 L30,80 L30,90 L20,90 Z M50,80 L60,80 L60,90 L50,90 Z M80,80 L90,80 L90,90 L80,90 Z" fill="%238b5a2b"/></svg>');
+            background-repeat: repeat; background-size: 60px 60px;
+            pointer-events: none; z-index: 0;
+        }
+
+        .app-container {
+            position: relative;
+            z-index: 2;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            background: rgba(253, 248, 242, 0.7);
+            backdrop-filter: blur(8px);
+        }
+
+        .bakery-header {
+            padding: 1.5rem 1.5rem 1rem;
+            position: relative;
+            text-align: center;
+            border-bottom: 2px dashed var(--corteza);
+            background: linear-gradient(to bottom, var(--crema), transparent);
+        }
+
+        .shop-name {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--canela);
             letter-spacing: 2px;
-            color: var(--user-bg);
-            text-transform: uppercase; 
-        }
-        header p { 
-            font-size: 0.7rem; 
-            color: var(--primary); 
-            letter-spacing: 1px;
-            margin-top: 4px;
-            font-weight: 500;
+            text-transform: uppercase;
         }
 
-        #chat-window { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 18px; padding-bottom: 140px; }
-        
-        /* Burbujas estilo Instagram */
-        .msg { 
-            max-width: 80%; 
-            padding: 12px 18px; 
-            font-size: 14.5px; 
-            line-height: 1.6; 
-            border-radius: 22px; 
-            animation: fadeIn 0.4s ease-out; 
-            box-shadow: 0 2px 5px rgba(0,0,0,0.03);
-        }
-        
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        
-        .bot { 
-            align-self: flex-start; 
-            background: var(--bot-bg); 
-            color: #333;
-            border-bottom-left-radius: 5px; 
-            border: 1px solid #efebe9;
-        }
-        .user { 
-            align-self: flex-end; 
-            background: var(--user-bg); 
-            color: white; 
-            border-bottom-right-radius: 5px; 
+        /* AJUSTE DE PADDING: Evita que el input flotante tape mensajes */
+        #chat-window {
+            flex: 1;
+            overflow-y: auto;
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1.2rem;
+            padding-bottom: 160px; /* Espacio para el input y el typing */
+            scroll-behavior: smooth;
         }
 
-        /* Botón WhatsApp Elegante */
-        .btn-ws { 
-            background: #25D366; 
-            color: white !important; 
-            padding: 14px; 
-            border-radius: 15px; 
-            text-decoration: none; 
-            font-weight: 600; 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            gap: 10px; 
-            margin-top: 15px; 
-            font-size: 14px;
-            transition: transform 0.2s;
+        .msg {
+            max-width: 85%;
+            padding: 1.2rem 1.5rem;
+            font-size: 0.95rem;
+            line-height: 1.6;
+            border-radius: 20px;
+            position: relative;
+            animation: messageFloat 0.4s ease-out;
+            font-family: 'Inter', sans-serif;
+            box-shadow: 0 4px 15px var(--sombra-calida);
         }
-        .btn-ws:active { transform: scale(0.98); }
 
-        .quick-replies { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 12px; }
-        .btn-quick { 
-            background: transparent; 
-            border: 1px solid var(--primary); 
-            color: var(--primary); 
-            padding: 7px 15px; 
-            border-radius: 20px; 
-            font-size: 12px; 
-            font-weight: 600; 
-            cursor: pointer; 
-            transition: all 0.3s;
-        }
-        .btn-quick:hover { background: var(--primary); color: white; }
+        .bot { align-self: flex-start; background: white; border: 1px solid var(--masa); color: var(--cafe); border-bottom-left-radius: 5px; }
+        .user { align-self: flex-end; background: linear-gradient(135deg, var(--canela), var(--cafe)); color: var(--crema); border-bottom-right-radius: 5px; }
 
-        /* Barra de entrada minimalista */
-        .input-container { 
-            position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); 
-            width: 90%; max-width: 450px; 
-            background: white; 
-            padding: 6px 6px 6px 22px; 
-            border-radius: 40px; 
-            display: flex; 
-            align-items: center; 
-            box-shadow: 0 10px 25px rgba(141, 110, 99, 0.15); 
-            z-index: 1000;
-            border: 1px solid #efebe9;
-        }
-        input { flex: 1; border: none; outline: none; font-size: 15px; background: transparent; color: #333; }
-        .send-btn { 
-            background: var(--user-bg); 
-            color: white; 
-            border: none; 
-            width: 40px; height: 40px; 
-            border-radius: 50%; 
-            cursor: pointer; 
-            display: flex; align-items: center; justify-content: center; 
+        /* Quick replies estilo boutique */
+        .quick-replies { display: flex; flex-wrap: wrap; gap: 0.6rem; margin-top: 1rem; }
+        .btn-quick {
+            background: rgba(255, 255, 255, 0.8);
+            border: 1px solid var(--corteza);
+            color: var(--canela);
+            padding: 0.6rem 1.2rem;
+            font-size: 0.8rem;
+            font-weight: 700;
+            border-radius: 30px;
+            cursor: pointer;
             transition: 0.3s;
         }
-        .send-btn:hover { background: var(--primary); }
 
-        .typing { display: none; padding: 0 25px 110px 30px; font-size: 11px; color: var(--primary); letter-spacing: 1px; font-weight: 600; }
+        .btn-quick:hover { background: var(--miel); color: white; }
+
+        .btn-ws {
+            background: linear-gradient(135deg, #25D366, #128C7E);
+            color: white !important;
+            padding: 1rem;
+            border-radius: 12px;
+            text-decoration: none;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.8rem;
+            margin-top: 1rem;
+            font-size: 0.9rem;
+            border: 2px solid white;
+        }
+
+        /* CAJA DE TEXTO FLOTANTE AJUSTADA */
+        .input-container {
+            position: fixed;
+            bottom: 25px; /* Separación del borde inferior */
+            left: 50%;
+            transform: translateX(-50%);
+            width: 92%;
+            max-width: 500px;
+            background: white;
+            border: 1.5px solid var(--masa);
+            padding: 6px 6px 6px 20px;
+            border-radius: 50px;
+            display: flex;
+            align-items: center;
+            box-shadow: 0 10px 30px rgba(139, 90, 43, 0.15);
+            z-index: 1000;
+        }
+
+        #user-input {
+            flex: 1;
+            background: transparent;
+            border: none;
+            outline: none;
+            color: var(--cafe);
+            font-size: 16px; /* Evita zoom en móviles */
+            padding: 10px 0;
+        }
+
+        .send-btn {
+            background: var(--canela);
+            border: none;
+            color: white;
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: 0.3s;
+        }
+
+        /* Typing indicator flotando sobre el input */
+        #typing {
+            position: fixed;
+            bottom: 90px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: auto;
+            min-width: 150px;
+            color: var(--canela);
+            font-size: 0.75rem;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 8px 15px;
+            border-radius: 20px;
+            opacity: 0;
+            transition: 0.3s;
+            box-shadow: 0 4px 10px var(--sombra-calida);
+            z-index: 999;
+            pointer-events: none;
+            border: 1px solid var(--masa);
+        }
+
+        #typing.active { opacity: 1; bottom: 100px; }
+
+        .typing-dots { display: flex; gap: 4px; }
+        .typing-dots span { width: 6px; height: 6px; background: var(--miel); border-radius: 50%; animation: typingBounce 1.4s infinite; }
+        .typing-dots span:nth-child(2) { animation-delay: 0.2s; }
+        .typing-dots span:nth-child(3) { animation-delay: 0.4s; }
+
+        @keyframes typingBounce { 0%, 60%, 100% { transform: translateY(0); } 30% { transform: translateY(-5px); } }
+
+        .baguette-decoration { display: flex; justify-content: center; gap: 0.3rem; margin-bottom: 0.5rem; }
+        .baguette { width: 25px; height: 6px; background: var(--miel); border-radius: 10px; opacity: 0.8; }
     </style>
 </head>
 <body>
-    <header>
-        <h1 id="shop-name">PANADERÍA ARTESANAL</h1>
-        <p id="shop-tagline">Recién horneado para ti</p>
-    </header>
+    <div class="app-container">
+        <header class="bakery-header">
+            <div class="baguette-decoration">
+                <div class="baguette" style="transform: rotate(-10deg)"></div>
+                <div class="baguette" style="transform: rotate(5deg)"></div>
+                <div class="baguette" style="transform: rotate(-5deg)"></div>
+            </div>
+            <h1 class="shop-name" id="shop-name">BOULANGERIE</h1>
+            <p class="shop-tagline" id="shop-tagline">ARTISAN BAKER</p>
+        </header>
 
-    <div id="chat-window"></div>
-    <div id="typing" class="typing">JAVIER ESTÁ REVISANDO EL HORNO...</div>
+        <div id="chat-window"></div>
+        
+        <div id="typing">
+            <span>AMASANDO</span>
+            <div class="typing-dots">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
 
-    <div class="input-container">
-        <input type="text" id="user-input" placeholder="¿Qué se te antoja hoy?..." autocomplete="off">
-        <button class="send-btn" onclick="enviarMensaje()">➤</button>
+        <div class="input-container">
+            <input type="text" id="user-input" placeholder="¿Qué pan buscamos hoy?..." autocomplete="off">
+            <button class="send-btn" onclick="enviarMensaje()">🥐</button>
+        </div>
     </div>
 
     <script>
@@ -165,11 +259,12 @@
             try {
                 const res = await fetch(`${API_BASE}/config`);
                 CONFIG = await res.json();
-                document.getElementById('shop-name').innerText = CONFIG.nombre_tienda || 'PANADERÍA';
-                document.getElementById('shop-tagline').innerText = CONFIG.tagline || 'Gourmet Experience';
-                mostrarMensaje(CONFIG.mensaje_bienvenida || "¡Hola! Huele delicioso, ¿verdad? Soy Javier. ¿En qué puedo ayudarte?", 'bot', true);
+                document.getElementById('shop-name').innerText = CONFIG.nombre_tienda || 'BOULANGERIE';
+                document.getElementById('shop-tagline').innerText = CONFIG.tagline || 'ARTISAN BAKER';
+                if(CONFIG.color_primario) document.documentElement.style.setProperty('--canela', CONFIG.color_primario);
+                mostrarMensaje(CONFIG.mensaje_bienvenida || "¡Bienvenue! Soy Javier. ¿Qué se te antoja hoy?", 'bot', true);
             } catch (e) { 
-                mostrarMensaje("❌ Error de conexión.", 'bot');
+                mostrarMensaje("Huele a pan... pero Javier está ocupado. Intenta de nuevo.", 'bot');
             }
         }
 
@@ -177,25 +272,25 @@
             const chatWindow = document.getElementById('chat-window');
             const div = document.createElement('div');
             div.className = `msg ${remitente}`;
-            div.innerHTML = texto.replace(/\*\*(.*?)\*\*/g, '<b>$1</b>').replace(/\n/g, '<br>');
+            div.innerHTML = texto.replace(/\*\?(.*?)\*\?/g, '<b>$1</b>').replace(/\n/g, '<br>');
 
             if (conBotones) {
                 const qDiv = document.createElement('div');
                 qDiv.className = 'quick-replies';
                 qDiv.innerHTML = `
-                    <button class="btn-quick" onclick="autoPregunta('🥖 Ver Menú')">🥖 Ver Menú</button>
-                    <button class="btn-quick" onclick="autoPregunta('✨ Especiales')">✨ Especiales</button>
-                    <button class="btn-quick" onclick="autoPregunta('📍 Ubicación')">📍 Ubicación</button>
+                    <button class="btn-quick" onclick="autoPregunta('🥐 CROISSANTS')">🥐 CROISSANTS</button>
+                    <button class="btn-quick" onclick="autoPregunta('🥖 BAGUETTES')">🥖 BAGUETTES</button>
+                    <button class="btn-quick" onclick="autoPregunta('📍 UBICACIÓN')">📍 UBICACIÓN</button>
                 `;
                 div.appendChild(qDiv);
             }
 
             if (mostrarWS && CONFIG.contacto_whatsapp) {
                 const btn = document.createElement('a');
-                btn.href = `https://wa.me/${CONFIG.contacto_whatsapp}?text=Hola, quiero hacer un pedido.`;
+                btn.href = `https://wa.me/${CONFIG.contacto_whatsapp}`;
                 btn.className = 'btn-ws';
                 btn.target = "_blank";
-                btn.innerHTML = '<b>🥐 Hacer Pedido por WhatsApp</b>';
+                btn.innerHTML = '🥖 PEDIR POR WHATSAPP';
                 div.appendChild(btn);
             }
 
@@ -216,7 +311,7 @@
 
             mostrarMensaje(texto, 'user');
             input.value = '';
-            typing.style.display = 'block';
+            typing.classList.add('active');
 
             try {
                 const res = await fetch(`${API_BASE}/chat`, {
@@ -225,20 +320,18 @@
                     body: JSON.stringify({ mensaje: texto, historial: historial })
                 });
                 const data = await res.json();
-                typing.style.display = 'none';
-                historial.push({role: "user", content: texto});
-                historial.push({role: "assistant", content: data.respuesta});
-                mostrarMensaje(data.respuesta, 'bot', false, data.mostrar_whatsapp);
+                typing.classList.remove('active');
+                if (data.respuesta) {
+                    historial.push({role: "user", content: texto}, {role: "assistant", content: data.respuesta});
+                    mostrarMensaje(data.respuesta, 'bot', false, data.mostrar_whatsapp);
+                }
             } catch (e) { 
-                typing.style.display = 'none';
-                mostrarMensaje("❌ Javier salió un momento. Intenta de nuevo.", 'bot'); 
+                typing.classList.remove('active');
+                mostrarMensaje("Error de conexión.", 'bot'); 
             }
         }
 
-        document.getElementById('user-input').addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') enviarMensaje();
-        });
-
+        document.getElementById('user-input').addEventListener('keypress', (e) => { if (e.key === 'Enter') enviarMensaje(); });
         window.onload = init;
     </script>
 </body>
