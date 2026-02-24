@@ -17,7 +17,6 @@
         body { 
             font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; 
             background: var(--dark-bg);
-            /* Fondo con efecto de red tecnológica sutil */
             background-image: 
                 linear-gradient(rgba(0, 242, 255, 0.05) 1px, transparent 1px),
                 linear-gradient(90deg, rgba(0, 242, 255, 0.05) 1px, transparent 1px);
@@ -36,7 +35,7 @@
             padding: 22px; 
             text-align: center; 
             border-bottom: 1px solid rgba(0, 242, 255, 0.2);
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5); 
             z-index: 10;
         }
         header h1 { 
@@ -52,7 +51,6 @@
 
         #chat-window { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 20px; padding-bottom: 140px; }
         
-        /* Burbujas Estilo Sci-Fi */
         .msg { 
             max-width: 85%; 
             padding: 15px 18px; 
@@ -81,7 +79,6 @@
             box-shadow: 0 4px 15px rgba(112, 0, 255, 0.3);
         }
 
-        /* Botón WhatsApp Cyber */
         .btn-ws { 
             background: #25D366; 
             color: white !important; 
@@ -97,7 +94,6 @@
             box-shadow: 0 0 15px rgba(37, 211, 102, 0.4);
             transition: 0.3s;
         }
-        .btn-ws:hover { transform: translateY(-2px); box-shadow: 0 0 25px rgba(37, 211, 102, 0.6); }
 
         .quick-replies { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 12px; }
         .btn-quick { 
@@ -114,7 +110,6 @@
         }
         .btn-quick:hover { background: var(--primary); color: black; box-shadow: 0 0 15px var(--primary); }
 
-        /* Input Flotante Moderno */
         .input-container { 
             position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); 
             width: 92%; max-width: 500px; 
@@ -164,6 +159,16 @@
         let CONFIG = {};
         let historial = [];
 
+        // FUNCIÓN CLAVE: Formatea números al estilo Venezuela (1.250,50)
+        function formatearRespuesta(texto) {
+            return texto.replace(/\d+\.\d+/g, function(match) {
+                let partes = match.split('.');
+                // Agrega puntos a los miles y cambia punto decimal por coma
+                partes[0] = partes[0].replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+                return partes[0] + ',' + partes[1];
+            });
+        }
+
         async function init() {
             try {
                 const res = await fetch(`${API_BASE}/config`);
@@ -171,10 +176,10 @@
                 document.getElementById('shop-name').innerText = CONFIG.nombre_tienda || 'TECH STORE';
                 document.getElementById('shop-tagline').innerText = CONFIG.tagline || 'Inteligencia Artificial aplicada';
                 
-                // Si el JSON trae un color, lo usamos como glow
                 if(CONFIG.color_primario) document.documentElement.style.setProperty('--primary', CONFIG.color_primario);
                 
-                mostrarMensaje(CONFIG.mensaje_bienvenida || "SISTEMA ONLINE. Soy Javier. ¿En qué dispositivo estás interesado?", 'bot', true);
+                let bienvenida = formatearRespuesta(CONFIG.mensaje_bienvenida || "SISTEMA ONLINE. Soy Javier. ¿En qué dispositivo estás interesado?");
+                mostrarMensaje(bienvenida, 'bot', true);
             } catch (e) { 
                 mostrarMensaje("❌ ERROR DE ENLACE. Reconectando...", 'bot');
             }
@@ -184,6 +189,7 @@
             const chatWindow = document.getElementById('chat-window');
             const div = document.createElement('div');
             div.className = `msg ${remitente}`;
+            // Renderiza negritas y saltos de línea
             div.innerHTML = texto.replace(/\*\*(.*?)\*\*/g, '<b style="color:var(--primary)">$1</b>').replace(/\n/g, '<br>');
 
             if (conBotones) {
@@ -199,7 +205,7 @@
 
             if (mostrarWS && CONFIG.contacto_whatsapp) {
                 const btn = document.createElement('a');
-                btn.href = `https://wa.me/${CONFIG.contacto_whatsapp}?text=Hola, quiero comprar un equipo.`;
+                btn.href = `https://wa.me/${CONFIG.contacto_whatsapp}?text=Hola, quiero concretar un pedido.`;
                 btn.className = 'btn-ws';
                 btn.target = "_blank";
                 btn.innerHTML = '🛒 CONCRETAR PEDIDO';
@@ -233,9 +239,16 @@
                 });
                 const data = await res.json();
                 typing.style.display = 'none';
-                historial.push({role: "user", content: texto});
-                historial.push({role: "assistant", content: data.respuesta});
-                mostrarMensaje(data.respuesta, 'bot', false, data.mostrar_whatsapp);
+
+                if (data.respuesta) {
+                    // Aplicar el formato de moneda/números antes de guardar y mostrar
+                    const respuestaLimpia = formatearRespuesta(data.respuesta);
+                    
+                    historial.push({role: "user", content: texto});
+                    historial.push({role: "assistant", content: respuestaLimpia});
+                    
+                    mostrarMensaje(respuestaLimpia, 'bot', false, data.mostrar_whatsapp);
+                }
             } catch (e) { 
                 typing.style.display = 'none';
                 mostrarMensaje("❌ SEÑAL PERDIDA. Intenta de nuevo.", 'bot'); 
