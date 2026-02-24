@@ -6,162 +6,85 @@
     <title>JAVIER AI • NEO ELITE</title>
     <style>
         :root {
-            --primary: #00ff9d; /* Verde Neón */
-            --secondary: #6c47ff; /* Púrpura Eléctrico */
+            --primary: #00ff9d;
+            --secondary: #6c47ff;
             --bg-dark: #070b12;
-            --glass: rgba(15, 20, 30, 0.85);
-            --text-glow: 0 0 10px rgba(0, 255, 157, 0.5);
+            --glass: rgba(15, 20, 30, 0.9);
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 
         body {
-            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            font-family: 'Segoe UI', Roboto, sans-serif;
             background: var(--bg-dark);
             height: 100vh;
             overflow: hidden;
             color: #e2e8f0;
+            display: flex;
+            flex-direction: column;
         }
 
-        /* Fondo Matrix Optimizado */
         #canvas-bg {
             position: fixed;
             top: 0; left: 0;
             width: 100%; height: 100%;
             z-index: -1;
-            opacity: 0.4;
+            opacity: 0.3;
         }
 
-        .app-container {
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
-            backdrop-filter: blur(8px);
-            background: radial-gradient(circle at center, transparent, var(--bg-dark) 90%);
-        }
-
-        /* Header con Estilo Fusionado */
         header {
-            padding: 20px;
+            padding: 15px;
             text-align: center;
             border-bottom: 1px solid rgba(0, 255, 157, 0.2);
             background: var(--glass);
-            position: relative;
+            backdrop-filter: blur(10px);
+            z-index: 10;
         }
 
-        header::after {
-            content: '';
-            position: absolute;
-            bottom: -1px; left: 0;
-            width: 100%; height: 1px;
-            background: linear-gradient(90deg, transparent, var(--primary), transparent);
-            animation: scan 3s linear infinite;
-        }
+        header h1 { font-size: 1.1rem; letter-spacing: 4px; color: var(--primary); text-transform: uppercase; }
+        header p { font-size: 0.6rem; color: var(--secondary); letter-spacing: 2px; }
 
-        @keyframes scan { 0% { transform: translateX(-100%); } 100% { transform: translateX(100%); } }
-
-        header h1 {
-            font-size: 1.2rem;
-            font-weight: 900;
-            letter-spacing: 5px;
-            text-transform: uppercase;
-            color: var(--primary);
-            text-shadow: var(--text-glow);
-        }
-
-        header p {
-            font-size: 0.6rem;
-            letter-spacing: 3px;
-            color: var(--secondary);
-            margin-top: 5px;
-            font-weight: bold;
-        }
-
-        /* Chat Window */
+        /* AJUSTE PARA MÓVIL: Padding inferior para que el input no tape el chat */
         #chat-window {
             flex: 1;
             overflow-y: auto;
-            padding: 20px;
+            padding: 15px;
             display: flex;
             flex-direction: column;
-            gap: 15px;
-            padding-bottom: 130px;
+            gap: 12px;
+            padding-bottom: 140px; /* Espacio extra para la caja flotante */
         }
 
         .msg {
-            max-width: 85%;
-            padding: 14px 18px;
-            font-size: 14.5px;
-            line-height: 1.5;
-            border-radius: 4px;
+            max-width: 88%;
+            padding: 12px 15px;
+            font-size: 14px;
+            border-radius: 8px;
             animation: slideUp 0.3s ease-out;
-            position: relative;
+            line-height: 1.4;
         }
 
-        @keyframes slideUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; } }
 
-        .bot {
-            align-self: flex-start;
-            background: var(--glass);
-            border: 1px solid rgba(108, 71, 255, 0.2);
-            border-left: 3px solid var(--secondary);
-        }
+        .bot { align-self: flex-start; background: var(--glass); border-left: 3px solid var(--secondary); }
+        .user { align-self: flex-end; background: rgba(0, 255, 157, 0.1); border: 1px solid var(--primary); }
 
-        .user {
-            align-self: flex-end;
-            background: rgba(0, 255, 157, 0.1);
-            border: 1px solid var(--primary);
-            color: #fff;
-            text-align: right;
-        }
-
-        /* Botones Estilo Neo */
-        .quick-replies { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
-        .btn-quick {
-            background: transparent;
-            border: 1px solid var(--primary);
-            color: var(--primary);
-            padding: 6px 12px;
-            border-radius: 2px;
-            font-size: 11px;
-            font-weight: bold;
-            cursor: pointer;
-            text-transform: uppercase;
-            transition: 0.3s;
-        }
-        .btn-quick:hover { background: var(--primary); color: #000; box-shadow: 0 0 15px var(--primary); }
-
-        .btn-ws {
-            background: var(--primary);
-            color: #000 !important;
-            padding: 12px;
-            border-radius: 4px;
-            text-decoration: none;
-            font-weight: 800;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            margin-top: 15px;
-            letter-spacing: 1px;
-            box-shadow: 0 0 20px rgba(0, 255, 157, 0.3);
-        }
-
-        /* Input Bar */
+        /* CAJA DE TEXTO FLOTANTE */
         .input-container {
             position: fixed;
-            bottom: 30px;
+            bottom: 25px; /* Separación del borde inferior del móvil */
             left: 50%;
             transform: translateX(-50%);
             width: 92%;
-            max-width: 600px;
-            background: rgba(7, 11, 18, 0.95);
-            padding: 10px 15px;
-            border-radius: 4px;
+            max-width: 500px;
+            background: #0f172a;
+            padding: 8px 15px;
+            border-radius: 12px;
             display: flex;
             align-items: center;
             border: 1px solid var(--secondary);
-            box-shadow: 0 0 30px rgba(108, 71, 255, 0.2);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.8);
+            z-index: 100;
         }
 
         input {
@@ -170,71 +93,91 @@
             outline: none;
             background: transparent;
             color: white;
-            font-family: monospace;
-            font-size: 15px;
+            font-size: 16px; /* Evita zoom automático en iOS */
+            padding: 10px 0;
         }
 
         .send-btn {
             background: transparent;
             color: var(--primary);
             border: none;
-            font-size: 20px;
-            cursor: pointer;
+            font-size: 22px;
             margin-left: 10px;
+            cursor: pointer;
+        }
+
+        .btn-ws {
+            background: var(--primary);
+            color: #000 !important;
+            padding: 12px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 10px;
+            font-size: 13px;
+        }
+
+        .quick-replies { display: flex; overflow-x: auto; gap: 8px; margin-top: 10px; padding-bottom: 5px; }
+        .btn-quick {
+            background: transparent;
+            border: 1px solid var(--primary);
+            color: var(--primary);
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            white-space: nowrap;
         }
 
         #typing {
-            display: none;
-            padding-left: 20px;
-            padding-bottom: 100px;
+            position: fixed;
+            bottom: 95px;
+            left: 20px;
             font-size: 10px;
             color: var(--primary);
-            letter-spacing: 2px;
+            display: none;
         }
     </style>
 </head>
 <body>
     <canvas id="canvas-bg"></canvas>
-    
-    <div class="app-container">
-        <header>
-            <h1 id="shop-name">JAVIER AI</h1>
-            <p id="shop-tagline">NEO-ELITE SYSTEM v2.0</p>
-        </header>
+    <header>
+        <h1 id="shop-name">JAVIER AI</h1>
+        <p id="shop-tagline">MOBILE ELITE SYSTEM</p>
+    </header>
 
-        <div id="chat-window"></div>
-        <div id="typing">ANALIZANDO DATOS...</div>
+    <div id="chat-window"></div>
+    <div id="typing">ANALIZANDO...</div>
 
-        <div class="input-container">
-            <input type="text" id="user-input" placeholder=">_ CONSULTAR..." autocomplete="off">
-            <button class="send-btn" onclick="enviarMensaje()">⏎</button>
-        </div>
+    <div class="input-container">
+        <input type="text" id="user-input" placeholder="Escribe tu consulta..." autocomplete="off">
+        <button class="send-btn" onclick="enviarMensaje()">➤</button>
     </div>
 
     <script>
-        // Efecto Matrix
+        // Matrix Effect
         const canvas = document.getElementById('canvas-bg');
         const ctx = canvas.getContext('2d');
         let width = canvas.width = window.innerWidth;
         let height = canvas.height = window.innerHeight;
         const columns = Math.floor(width / 20);
         const drops = Array(columns).fill(1);
-
         function drawMatrix() {
             ctx.fillStyle = 'rgba(7, 11, 18, 0.1)';
             ctx.fillRect(0, 0, width, height);
             ctx.fillStyle = '#00ff9d';
             ctx.font = '15px monospace';
-            for (let i = 0; i < drops.length; i++) {
+            drops.forEach((y, i) => {
                 const text = String.fromCharCode(Math.random() * 128);
-                ctx.fillText(text, i * 20, drops[i] * 20);
-                if (drops[i] * 20 > height && Math.random() > 0.975) drops[i] = 0;
+                ctx.fillText(text, i * 20, y * 20);
+                if (y * 20 > height && Math.random() > 0.975) drops[i] = 0;
                 drops[i]++;
-            }
+            });
         }
         setInterval(drawMatrix, 50);
 
-        // Lógica del Chat
         const API_BASE = 'https://asistente-javier.onrender.com';
         let CONFIG = {};
         let historial = [];
@@ -244,28 +187,23 @@
                 const res = await fetch(`${API_BASE}/config`);
                 CONFIG = await res.json();
                 document.getElementById('shop-name').innerText = CONFIG.nombre_tienda || 'JAVIER AI';
-                document.getElementById('shop-tagline').innerText = CONFIG.tagline || 'NEO-ELITE SYSTEM';
-                mostrarMensaje(CONFIG.mensaje_bienvenida || ">_ Sistema en línea.", 'bot', true);
-            } catch (e) { 
-                mostrarMensaje(">_ Error de red. Reconectando...", 'bot');
-            }
+                document.getElementById('shop-tagline').innerText = CONFIG.tagline || 'SISTEMA MÓVIL';
+                mostrarMensaje(CONFIG.mensaje_bienvenida, 'bot', true);
+            } catch (e) { mostrarMensaje("Conectando...", 'bot'); }
         }
 
         function mostrarMensaje(texto, remitente, conBotones = false, mostrarWS = false) {
             const chatWindow = document.getElementById('chat-window');
             const div = document.createElement('div');
             div.className = `msg ${remitente}`;
-            // Mantener precios originales sin formateo de comas/puntos
             div.innerHTML = texto.replace(/\*\*(.*?)\*\*/g, '<b style="color:var(--primary)">$1</b>').replace(/\n/g, '<br>');
 
             if (conBotones) {
                 const qDiv = document.createElement('div');
                 qDiv.className = 'quick-replies';
-                qDiv.innerHTML = `
-                    <button class="btn-quick" onclick="autoPregunta('OFERTAS')">OFERTAS</button>
-                    <button class="btn-quick" onclick="autoPregunta('CATÁLOGO')">CATÁLOGO</button>
-                    <button class="btn-quick" onclick="autoPregunta('CRÉDITO')">CRÉDITO</button>
-                `;
+                qDiv.innerHTML = `<button class="btn-quick" onclick="autoPregunta('OFERTAS')">OFERTAS</button>
+                                  <button class="btn-quick" onclick="autoPregunta('CATÁLOGO')">CATÁLOGO</button>
+                                  <button class="btn-quick" onclick="autoPregunta('CRÉDITO')">CRÉDITO</button>`;
                 div.appendChild(qDiv);
             }
 
@@ -274,16 +212,11 @@
                 btn.href = `https://wa.me/${CONFIG.contacto_whatsapp}`;
                 btn.className = 'btn-ws';
                 btn.target = "_blank";
-                btn.innerHTML = '⚡ ADQUIRIR EQUIPO';
+                btn.innerText = '🛒 CONCRETAR PEDIDO';
                 div.appendChild(btn);
             }
             chatWindow.appendChild(div);
             chatWindow.scrollTo({ top: chatWindow.scrollHeight, behavior: 'smooth' });
-        }
-
-        function autoPregunta(t) {
-            document.getElementById('user-input').value = t;
-            enviarMensaje();
         }
 
         async function enviarMensaje() {
@@ -304,18 +237,15 @@
                 });
                 const data = await res.json();
                 typing.style.display = 'none';
-
                 if (data.respuesta) {
                     historial.push({role: "user", content: texto});
                     historial.push({role: "assistant", content: data.respuesta});
                     mostrarMensaje(data.respuesta, 'bot', false, data.mostrar_whatsapp);
                 }
-            } catch (e) { 
-                typing.style.display = 'none';
-                mostrarMensaje(">_ ERROR EN LINK DE DATOS.", 'bot'); 
-            }
+            } catch (e) { typing.style.display = 'none'; }
         }
 
+        function autoPregunta(t) { document.getElementById('user-input').value = t; enviarMensaje(); }
         document.getElementById('user-input').addEventListener('keypress', (e) => { if (e.key === 'Enter') enviarMensaje(); });
         window.onload = init;
     </script>
