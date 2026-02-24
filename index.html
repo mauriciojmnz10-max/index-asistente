@@ -4,11 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Javier - Asistente de Ventas</title>
+    
     <style>
-        /* ESTILO ELEGANTE: GLASSMORPHISM Y FLOTANTE */
+        /* ============================================================
+           SECCIÓN A: ESTILOS VISUALES Y COLORES
+           Aquí cambias el color principal y efectos de cristal.
+           ============================================================ */
         :root { 
-            --primary: #0066ff; 
-            --bg-glass: rgba(255, 255, 255, 0.7); /* 4. Efecto cristal */
+            --primary: #0066ff; /* Color de botones y mensajes de usuario */
+            --bg-glass: rgba(255, 255, 255, 0.7); /* Transparencia del cristal */
             --text-dark: #1a1a1b; 
         }
         
@@ -16,7 +20,7 @@
         
         body { 
             font-family: -apple-system, system-ui, "Segoe UI", Roboto, sans-serif;
-            background: linear-gradient(135deg, #f4f7f9 0%, #e1e4e8 100%); /* Fondo premium */
+            background: linear-gradient(135deg, #f4f7f9 0%, #e1e4e8 100%); 
             height: 100vh;
             display: flex;
             flex-direction: column;
@@ -24,7 +28,7 @@
             overflow: hidden;
         }
 
-        /* 4. ENCABEZADO CRISTAL */
+        /* DISEÑO DEL HEADER */
         header {
             background: var(--bg-glass);
             backdrop-filter: blur(12px);
@@ -39,6 +43,7 @@
         header h1 { font-size: 1.15rem; font-weight: 800; color: #000; letter-spacing: 0.5px; }
         header p { font-size: 0.8rem; color: #444; margin-top: 3px; }
 
+        /* AREA DE CHAT */
         #chat-window {
             flex: 1;
             padding: 15px;
@@ -46,10 +51,10 @@
             display: flex;
             flex-direction: column;
             gap: 15px;
-            padding-bottom: 150px; /* 5. Espacio para que el input no tape los msj en tlf */
+            padding-bottom: 150px; 
         }
 
-        /* 4. BURBUJAS TRANSPARENTES ELEGANTES */
+        /* BURBUJAS DE MENSAJE */
         .msg {
             max-width: 82%;
             padding: 14px 16px;
@@ -80,6 +85,7 @@
             box-shadow: 0 4px 12px rgba(0, 102, 255, 0.2);
         }
 
+        /* DISEÑO DE BOTONES DE RESPUESTA */
         .quick-replies { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
         .btn-quick {
             background: #ffffff; border: 1.5px solid var(--primary); color: var(--primary);
@@ -87,6 +93,7 @@
             cursor: pointer; transition: 0.2s;
         }
 
+        /* DISEÑO BOTÓN WHATSAPP */
         .btn-ws {
             background: #25D366; color: white !important; padding: 12px;
             border-radius: 12px; text-decoration: none; font-weight: 700;
@@ -94,7 +101,7 @@
             margin-top: 12px; font-size: 14px;
         }
 
-        /* 3 & 5. CAJA DE TEXTO FLOTANTE, MODERNA Y PERFECTA PARA TLF */
+        /* CAJA DE TEXTO FLOTANTE */
         .input-container {
             position: fixed;
             bottom: 25px;
@@ -108,14 +115,13 @@
             display: flex;
             align-items: center;
             gap: 10px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.15); /* Sombra elegante */
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15); 
             border: 1px solid #eee;
             z-index: 1000;
         }
 
         input { flex: 1; border: none; background: transparent; padding: 10px 0; outline: none; font-size: 16px; }
 
-        /* Botón de enviar circular y moderno */
         .send-btn { 
             background: var(--primary); 
             color: white; 
@@ -152,10 +158,12 @@
     </div>
 
     <script>
+        /* ============================================================
+           SECCIÓN C: CONFIGURACIÓN DE DATOS (Backend y WhatsApp)
+           ============================================================ */
         const CONFIG = {
             URL_API: 'https://asistente-javier.onrender.com/chat',
             WHATSAPP: '584120000000',
-            // 1. ACTIVAR/DESACTIVAR BOTONES MANUALMENTE
             MOSTRAR_BOTONES_RAPIDOS: true, 
             MENSAJE_BIENVENIDA: "¡Hola! 👋 Soy **Javier**. Consulto la tasa BCV en tiempo real y calculo tus precios al instante.\n\n¿En qué puedo ayudarte hoy?"
         };
@@ -169,6 +177,9 @@
             mostrarMensaje(CONFIG.MENSAJE_BIENVENIDA, 'bot', true);
         };
 
+        /* ============================================================
+           SECCIÓN D: LÓGICA DE MENSAJES Y BOTONES
+           ============================================================ */
         function mostrarMensaje(texto, remitente, conBotones = false, mostrarWS = false) {
             const div = document.createElement('div');
             div.className = `msg ${remitente}`;
@@ -176,7 +187,7 @@
             let formattedText = texto.replace(/\*\*(.*?)\*\*/g, '<b>$1</b>');
             div.innerHTML = formattedText.replace(/\n/g, '<br>');
 
-            // 1. Lógica estricta de botones rápidos
+            // Aquí editas los textos de los botones rápidos
             if (remitente === 'bot' && conBotones && CONFIG.MOSTRAR_BOTONES_RAPIDOS) {
                 const qDiv = document.createElement('div');
                 qDiv.className = 'quick-replies';
@@ -189,7 +200,7 @@
                 div.appendChild(qDiv);
             }
 
-            // 2. WhatsApp inteligente (solo si el servidor lo ordena)
+            // Aquí editas el mensaje predefinido de WhatsApp
             if (remitente === 'bot' && mostrarWS) {
                 const btnWS = document.createElement('a');
                 btnWS.href = `https://wa.me/${CONFIG.WHATSAPP}?text=Hola, quiero concretar una compra.`;
@@ -208,6 +219,9 @@
             enviarMensaje();
         }
 
+        /* ============================================================
+           SECCIÓN E: COMUNICACIÓN CON EL BACKEND
+           ============================================================ */
         async function enviarMensaje() {
             const texto = userInput.value.trim();
             if (!texto) return;
@@ -229,8 +243,6 @@
                 if (data.respuesta) {
                     historial.push({ role: "user", content: texto });
                     historial.push({ role: "assistant", content: data.respuesta });
-                    
-                    // 2. Respeta el parámetro del backend para WhatsApp
                     mostrarMensaje(data.respuesta, 'bot', false, data.mostrar_whatsapp);
                 }
             } catch (error) {
