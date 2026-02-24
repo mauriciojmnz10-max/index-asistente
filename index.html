@@ -59,7 +59,7 @@
             display: flex;
             flex-direction: column;
             gap: 15px;
-            /* AJUSTE SOLICITADO: 150PX PARA QUE LOS MENSAJES QUEDEN BIEN ARRIBA */
+            /* SECCIÓN CORREGIDA: 150PX DE PADDING INFERIOR */
             padding-bottom: 150px; 
             scrollbar-width: none;
         }
@@ -84,7 +84,7 @@
             display: block;
         }
 
-        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; } }
 
         .bot { 
             align-self: flex-start; 
@@ -100,17 +100,16 @@
             box-shadow: var(--neon-glow);
         }
 
-        /* CAJA FLOTANTE CORREGIDA */
+        /* CAJA FLOTANTE CORREGIDA A 25PX DEL SUELO */
         .input-container {
             position: fixed;
-            /* AJUSTE SOLICITADO: 25PX DEL SUELO */
             bottom: 25px; 
             left: 50%;
             transform: translateX(-50%);
             width: 90%;
             max-width: 450px;
             background: rgba(15, 23, 42, 0.95);
-            padding: 10px 20px;
+            padding: 8px 18px;
             border-radius: 50px;
             display: flex;
             align-items: center;
@@ -134,8 +133,8 @@
             background: var(--secondary);
             color: white;
             border: none;
-            width: 38px;
-            height: 38px;
+            width: 36px;
+            height: 36px;
             border-radius: 50%;
             display: flex;
             align-items: center;
@@ -173,26 +172,26 @@
 
         #typing {
             position: fixed;
-            /* AJUSTADO PARA QUE FLOTE SOBRE LA CAJA A 25PX */
-            bottom: 85px; 
+            bottom: 90px; /* Separado de la caja para que no se pegue */
             left: 35px;
-            font-size: 9px;
+            font-size: 10px;
             color: var(--primary);
             display: none;
             font-weight: bold;
             text-shadow: 0 0 8px var(--primary);
+            z-index: 99;
         }
     </style>
 </head>
 <body>
     <canvas id="canvas-bg"></canvas>
     <header>
-        <h1 id="shop-name">ELECTRO VENTAS CUMANÁ<</h1>
-        <p id="shop-tagline">JAVIER ASISTENTE</p>
+        <h1 id="shop-name">ELECTRO VENTAS CUMANÁ</h1>
+        <p id="shop-tagline">JAVIER ASISTENTE VIRTUAL</p>
     </header>
 
     <div id="chat-window"></div>
-    <div id="typing">ANALIZANDO CONSULTA...</div>
+    <div id="typing">JAVIER ESTÁ ANALIZANDO...</div>
 
     <div class="input-container">
         <input type="text" id="user-input" placeholder="Escribir a Javier..." autocomplete="off">
@@ -225,7 +224,7 @@
         let CONFIG = {
             nombre_tienda: "ELECTRO VENTAS CUMANÁ",
             tagline: "LO MEJOR EN TECNOLOGIA",
-            mensaje_bienvenida: "¡Hola! Soy **Javier**, tu asistente de ventas premium de **Electro Ventas**. ¿Qué equipo buscas hoy? 🚀",
+            mensaje_bienvenida: "¡Hola! Soy **Javier**, tu asistente de ventas de **Electro Ventas Cumaná**. ¿Qué equipo tecnológico buscas hoy? 🚀",
             contacto_whatsapp: "584120000000"
         };
         let historial = [];
@@ -237,7 +236,7 @@
                 CONFIG = {...CONFIG, ...serverConfig};
                 document.getElementById('shop-name').innerText = CONFIG.nombre_tienda;
                 document.getElementById('shop-tagline').innerText = CONFIG.tagline;
-            } catch (e) { console.log("Modo offline"); }
+            } catch (e) { console.log("Usando configuración local"); }
             
             mostrarMensaje(CONFIG.mensaje_bienvenida, 'bot', true);
         }
@@ -305,7 +304,7 @@
                 }
             } catch (e) { 
                 typing.style.display = 'none'; 
-                mostrarMensaje("ERROR DE SISTEMA", 'bot');
+                mostrarMensaje("ERROR DE CONEXIÓN", 'bot');
             }
         }
 
