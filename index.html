@@ -44,7 +44,6 @@
         header h1 { font-size: 1.1rem; letter-spacing: 4px; color: var(--primary); text-transform: uppercase; }
         header p { font-size: 0.6rem; color: var(--secondary); letter-spacing: 2px; }
 
-        /* AJUSTE PARA MÓVIL: Padding inferior para que el input no tape el chat */
         #chat-window {
             flex: 1;
             overflow-y: auto;
@@ -52,7 +51,7 @@
             display: flex;
             flex-direction: column;
             gap: 12px;
-            padding-bottom: 140px; /* Espacio extra para la caja flotante */
+            padding-bottom: 130px; /* Manteniendo tu padding solicitado */
         }
 
         .msg {
@@ -62,6 +61,17 @@
             border-radius: 8px;
             animation: slideUp 0.3s ease-out;
             line-height: 1.4;
+            position: relative;
+        }
+
+        /* ESTILO PARA LAS IMÁGENES DE PRODUCTOS */
+        .product-img {
+            width: 100%;
+            height: auto;
+            border-radius: 6px;
+            margin-bottom: 8px;
+            border: 1px solid var(--secondary);
+            display: block;
         }
 
         @keyframes slideUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; } }
@@ -69,10 +79,9 @@
         .bot { align-self: flex-start; background: var(--glass); border-left: 3px solid var(--secondary); }
         .user { align-self: flex-end; background: rgba(0, 255, 157, 0.1); border: 1px solid var(--primary); }
 
-        /* CAJA DE TEXTO FLOTANTE */
         .input-container {
             position: fixed;
-            bottom: 25px; /* Separación del borde inferior del móvil */
+            bottom: 45px; /* Tu preferencia de 45px */
             left: 50%;
             transform: translateX(-50%);
             width: 92%;
@@ -93,7 +102,7 @@
             outline: none;
             background: transparent;
             color: white;
-            font-size: 16px; /* Evita zoom automático en iOS */
+            font-size: 16px;
             padding: 10px 0;
         }
 
@@ -109,15 +118,15 @@
         .btn-ws {
             background: var(--primary);
             color: #000 !important;
-            padding: 12px;
-            border-radius: 8px;
+            padding: 10px;
+            border-radius: 6px;
             text-decoration: none;
             font-weight: bold;
             display: flex;
             align-items: center;
             justify-content: center;
             margin-top: 10px;
-            font-size: 13px;
+            font-size: 11px;
         }
 
         .quick-replies { display: flex; overflow-x: auto; gap: 8px; margin-top: 10px; padding-bottom: 5px; }
@@ -133,11 +142,12 @@
 
         #typing {
             position: fixed;
-            bottom: 95px;
+            bottom: 105px; /* Ajustado para que flote sobre la caja */
             left: 20px;
             font-size: 10px;
             color: var(--primary);
             display: none;
+            text-shadow: 0 0 5px var(--primary);
         }
     </style>
 </head>
@@ -189,14 +199,26 @@
                 document.getElementById('shop-name').innerText = CONFIG.nombre_tienda || 'JAVIER AI';
                 document.getElementById('shop-tagline').innerText = CONFIG.tagline || 'SISTEMA MÓVIL';
                 mostrarMensaje(CONFIG.mensaje_bienvenida, 'bot', true);
-            } catch (e) { mostrarMensaje("Conectando...", 'bot'); }
+            } catch (e) { mostrarMensaje("SISTEMA ONLINE - BIENVENIDO", 'bot'); }
         }
 
-        function mostrarMensaje(texto, remitente, conBotones = false, mostrarWS = false) {
+        // FUNCIÓN ACTUALIZADA PARA MOSTRAR IMÁGENES
+        function mostrarMensaje(texto, remitente, conBotones = false, mostrarWS = false, urlImagen = null) {
             const chatWindow = document.getElementById('chat-window');
             const div = document.createElement('div');
             div.className = `msg ${remitente}`;
-            div.innerHTML = texto.replace(/\*\*(.*?)\*\*/g, '<b style="color:var(--primary)">$1</b>').replace(/\n/g, '<br>');
+            
+            // Si la IA envía una imagen, la creamos
+            if (urlImagen) {
+                const img = document.createElement('img');
+                img.src = urlImagen;
+                img.className = 'product-img';
+                div.appendChild(img);
+            }
+
+            const content = document.createElement('div');
+            content.innerHTML = texto.replace(/\*\*(.*?)\*\*/g, '<b style="color:var(--primary)">$1</b>').replace(/\n/g, '<br>');
+            div.appendChild(content);
 
             if (conBotones) {
                 const qDiv = document.createElement('div');
@@ -215,6 +237,7 @@
                 btn.innerText = '🛒 CONCRETAR PEDIDO';
                 div.appendChild(btn);
             }
+
             chatWindow.appendChild(div);
             chatWindow.scrollTo({ top: chatWindow.scrollHeight, behavior: 'smooth' });
         }
@@ -237,12 +260,17 @@
                 });
                 const data = await res.json();
                 typing.style.display = 'none';
+                
                 if (data.respuesta) {
                     historial.push({role: "user", content: texto});
                     historial.push({role: "assistant", content: data.respuesta});
-                    mostrarMensaje(data.respuesta, 'bot', false, data.mostrar_whatsapp);
+                    // Aquí es donde recibimos la imagen desde tu backend
+                    mostrarMensaje(data.respuesta, 'bot', false, data.mostrar_whatsapp, data.imagen);
                 }
-            } catch (e) { typing.style.display = 'none'; }
+            } catch (e) { 
+                typing.style.display = 'none'; 
+                mostrarMensaje("ERROR DE CONEXIÓN DE RED", 'bot');
+            }
         }
 
         function autoPregunta(t) { document.getElementById('user-input').value = t; enviarMensaje(); }
