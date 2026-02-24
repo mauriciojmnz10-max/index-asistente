@@ -59,7 +59,6 @@
             display: flex;
             flex-direction: column;
             gap: 15px;
-            /* SECCIÓN CORREGIDA: 150PX DE PADDING INFERIOR */
             padding-bottom: 150px; 
             scrollbar-width: none;
         }
@@ -82,7 +81,10 @@
             margin-bottom: 12px;
             border: 1px solid var(--secondary);
             display: block;
+            cursor: zoom-in;
+            transition: transform 0.2s ease;
         }
+        .product-img:active { transform: scale(0.95); }
 
         @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; } }
 
@@ -100,7 +102,6 @@
             box-shadow: var(--neon-glow);
         }
 
-        /* CAJA FLOTANTE CORREGIDA A 25PX DEL SUELO */
         .input-container {
             position: fixed;
             bottom: 25px; 
@@ -172,7 +173,7 @@
 
         #typing {
             position: fixed;
-            bottom: 90px; /* Separado de la caja para que no se pegue */
+            bottom: 90px;
             left: 35px;
             font-size: 10px;
             color: var(--primary);
@@ -181,10 +182,41 @@
             text-shadow: 0 0 8px var(--primary);
             z-index: 99;
         }
+
+        /* ESTILOS VENTANA MODAL */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0; top: 0;
+            width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            backdrop-filter: blur(8px);
+            align-items: center;
+            justify-content: center;
+            cursor: zoom-out;
+        }
+        .modal-content {
+            max-width: 90%;
+            max-height: 85%;
+            border-radius: 12px;
+            border: 2px solid var(--primary);
+            box-shadow: 0 0 30px rgba(0, 255, 157, 0.4);
+            animation: zoomModal 0.3s ease;
+        }
+        @keyframes zoomModal { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+        .close-modal {
+            position: absolute;
+            top: 25px; right: 25px;
+            color: var(--primary);
+            font-size: 35px;
+            font-weight: bold;
+        }
     </style>
 </head>
 <body>
     <canvas id="canvas-bg"></canvas>
+    
     <header>
         <h1 id="shop-name">ELECTRO VENTAS CUMANÁ</h1>
         <p id="shop-tagline">JAVIER ASISTENTE VIRTUAL</p>
@@ -193,19 +225,24 @@
     <div id="chat-window"></div>
     <div id="typing">JAVIER ESTÁ ANALIZANDO...</div>
 
+    <div id="imageModal" class="modal" onclick="this.style.display='none'">
+        <span class="close-modal">&times;</span>
+        <img class="modal-content" id="imgFull">
+    </div>
+
     <div class="input-container">
         <input type="text" id="user-input" placeholder="Escribir a Javier..." autocomplete="off">
         <button class="send-btn" onclick="enviarMensaje()">➤</button>
     </div>
 
     <script>
-        // Efecto Matrix
         const canvas = document.getElementById('canvas-bg');
         const ctx = canvas.getContext('2d');
         let width = canvas.width = window.innerWidth;
         let height = canvas.height = window.innerHeight;
         const columns = Math.floor(width / 20);
         const drops = Array(columns).fill(1);
+
         function drawMatrix() {
             ctx.fillStyle = 'rgba(7, 11, 18, 0.15)';
             ctx.fillRect(0, 0, width, height);
@@ -237,7 +274,6 @@
                 document.getElementById('shop-name').innerText = CONFIG.nombre_tienda;
                 document.getElementById('shop-tagline').innerText = CONFIG.tagline;
             } catch (e) { console.log("Usando configuración local"); }
-            
             mostrarMensaje(CONFIG.mensaje_bienvenida, 'bot', true);
         }
 
@@ -246,10 +282,17 @@
             const div = document.createElement('div');
             div.className = `msg ${remitente}`;
             
+            // Lógica de Imagen con Modal
             if (urlImagen) {
                 const img = document.createElement('img');
                 img.src = urlImagen;
                 img.className = 'product-img';
+                img.onclick = function() {
+                    const modal = document.getElementById("imageModal");
+                    const modalImg = document.getElementById("imgFull");
+                    modal.style.display = "flex";
+                    modalImg.src = this.src;
+                };
                 div.appendChild(img);
             }
 
