@@ -3,172 +3,240 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Javier AI - Moto Repuestos</title>
+    <title>JAVIER RACING • GARAGE</title>
     <style>
-        /* Paleta de colores Garage Racing */
-        :root { 
-            --primary: #e62117; /* Rojo Racing */
-            --bg-dark: #121417; /* Negro Asfalto */
-            --bg-glass: rgba(18, 20, 23, 0.85);
-            --bot-bg: #1e2227; /* Gris Metalizado */
-            --user-bg: #e62117; 
-            --text-main: #f5f5f5;
+        :root {
+            --racing-red: #ff1a1a;
+            --red-glow: rgba(255, 26, 26, 0.5);
+            --carbon-black: #0a0c0f;
+            --carbon-dark: #0d1013;
+            --metal-gray: #1e2329;
+            --chrome: #b8c7dd;
         }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-        
-        body { 
-            font-family: 'Segoe UI', Roboto, Helvetica, sans-serif; 
-            background: var(--bg-dark);
-            /* Patrón de fibra de carbono sutil */
-            background-image: 
-                linear-gradient(45deg, #16191d 25%, transparent 25%), 
-                linear-gradient(-45deg, #16191d 25%, transparent 25%), 
-                linear-gradient(45deg, transparent 75%, #16191d 75%), 
-                linear-gradient(-45deg, transparent 75%, #16191d 75%);
-            background-size: 20px 20px;
-            height: 100vh; 
-            display: flex; 
-            flex-direction: column; 
-            overflow: hidden; 
-            color: var(--text-main);
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
         }
-        
-        header { 
-            background: var(--bg-glass); 
-            backdrop-filter: blur(15px); 
-            -webkit-backdrop-filter: blur(15px); 
-            padding: 20px; 
-            text-align: center; 
-            border-bottom: 2px solid var(--primary); 
-            box-shadow: 0 4px 15px rgba(0,0,0,0.4); 
-            z-index: 10; 
-        }
-        header h1 { 
-            font-size: 1.2rem; 
-            font-weight: 900; 
-            letter-spacing: 1px;
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--carbon-black);
+            height: 100vh;
+            overflow: hidden;
             color: #fff;
-            text-transform: uppercase; 
-        }
-        header p { 
-            font-size: 0.7rem; 
-            color: var(--primary); 
-            letter-spacing: 2px;
-            margin-top: 4px;
-            font-weight: 700;
-            text-transform: uppercase;
         }
 
-        #chat-window { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 18px; padding-bottom: 140px; }
-        
-        .msg { 
-            max-width: 85%; 
-            padding: 14px 18px; 
-            font-size: 14.5px; 
-            line-height: 1.6; 
-            border-radius: 18px; 
-            animation: slideUp 0.3s ease-out; 
-        }
-        
-        @keyframes slideUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        
-        .bot { 
-            align-self: flex-start; 
-            background: var(--bot-bg); 
-            color: #eee;
-            border-bottom-left-radius: 2px; 
-            border: 1px solid #2d343c;
-            box-shadow: 4px 4px 10px rgba(0,0,0,0.2);
-        }
-        .user { 
-            align-self: flex-end; 
-            background: var(--user-bg); 
-            color: white; 
-            border-bottom-right-radius: 2px; 
-            box-shadow: 0 4px 15px rgba(230, 33, 23, 0.3);
-            font-weight: 500;
+        /* Fondo dinámico */
+        #track-canvas {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            z-index: 0;
+            opacity: 0.15;
+            pointer-events: none;
         }
 
-        /* Botón WhatsApp Moto */
-        .btn-ws { 
-            background: #25D366; 
-            color: white !important; 
-            padding: 14px; 
-            border-radius: 12px; 
-            text-decoration: none; 
-            font-weight: 800; 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            gap: 10px; 
-            margin-top: 15px; 
-            font-size: 14px;
-            text-transform: uppercase;
-            box-shadow: 0 4px 10px rgba(37, 211, 102, 0.3);
+        .app-container {
+            position: relative;
+            z-index: 2;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            background: linear-gradient(135deg, rgba(10,12,15,0.85) 0%, rgba(13,16,19,0.95) 100%);
         }
 
-        .quick-replies { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
-        .btn-quick { 
-            background: rgba(255,255,255,0.05); 
-            border: 1px solid var(--primary); 
-            color: white; 
-            padding: 8px 14px; 
-            border-radius: 8px; 
-            font-size: 11px; 
-            font-weight: 700; 
-            cursor: pointer; 
-            text-transform: uppercase;
-            transition: 0.3s;
+        /* Tablero Superior */
+        .racing-header {
+            padding: 1rem;
+            border-bottom: 3px solid var(--racing-red);
+            background: rgba(10, 12, 15, 0.9);
+            backdrop-filter: blur(10px);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
-        .btn-quick:hover { background: var(--primary); }
 
-        /* Input Robusto */
-        .input-container { 
-            position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); 
-            width: 92%; max-width: 480px; 
-            background: #1e2227; 
-            padding: 8px 8px 8px 20px; 
-            border-radius: 15px; 
-            display: flex; 
-            align-items: center; 
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5); 
-            z-index: 1000;
-            border: 1px solid #3d444d;
-        }
-        input { flex: 1; border: none; outline: none; font-size: 16px; background: transparent; color: white; }
-        input::placeholder { color: #888; }
-
-        .send-btn { 
-            background: var(--primary); 
-            color: white; 
-            border: none; 
-            width: 45px; height: 45px; 
-            border-radius: 10px; 
-            cursor: pointer; 
-            display: flex; align-items: center; justify-content: center; 
+        .speedometer {
+            font-family: monospace;
             font-size: 1.2rem;
+            color: var(--racing-red);
+            text-shadow: 0 0 10px var(--red-glow);
         }
 
-        .typing { display: none; padding: 0 25px 110px 30px; font-size: 11px; color: var(--primary); font-weight: 800; text-transform: uppercase; letter-spacing: 1px; }
+        .glitch-text {
+            font-size: 1rem;
+            font-weight: 900;
+            letter-spacing: 2px;
+            text-align: right;
+        }
+
+        /* VENTANA DE CHAT: Con el padding solicitado para móviles */
+        #chat-window {
+            flex: 1;
+            overflow-y: auto;
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            /* El padding-bottom evita que la caja flotante tape los mensajes */
+            padding-bottom: 150px; 
+            scroll-behavior: smooth;
+        }
+
+        /* Burbujas de mensaje */
+        .msg {
+            max-width: 85%;
+            padding: 1rem;
+            font-size: 0.9rem;
+            line-height: 1.4;
+            border-radius: 12px;
+            position: relative;
+            animation: slideIn 0.3s ease-out;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .bot {
+            align-self: flex-start;
+            background: var(--metal-gray);
+            border-left: 4px solid var(--racing-red);
+            border-bottom-left-radius: 2px;
+        }
+
+        .user {
+            align-self: flex-end;
+            background: var(--racing-red);
+            box-shadow: 0 0 15px var(--red-glow);
+            border-bottom-right-radius: 2px;
+        }
+
+        /* CAJA DE TEXTO FLOTANTE */
+        .input-container {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 90%;
+            max-width: 500px;
+            background: #161b22;
+            border: 2px solid var(--racing-red);
+            padding: 5px 15px;
+            border-radius: 50px;
+            display: flex;
+            align-items: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            z-index: 100;
+        }
+
+        #user-input {
+            flex: 1;
+            background: transparent;
+            border: none;
+            outline: none;
+            color: #fff;
+            padding: 12px;
+            font-size: 16px; /* Evita zoom en iOS */
+        }
+
+        .send-btn {
+            background: var(--racing-red);
+            border: none;
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            font-weight: bold;
+        }
+
+        /* Elementos Extra */
+        .quick-replies { display: flex; overflow-x: auto; gap: 8px; margin-top: 8px; }
+        .btn-quick {
+            background: rgba(255,255,255,0.1);
+            border: 1px solid var(--racing-red);
+            color: #fff;
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-size: 11px;
+            white-space: nowrap;
+        }
+
+        .btn-ws {
+            background: #25D366;
+            color: #000 !important;
+            padding: 10px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 800;
+            display: block;
+            text-align: center;
+            margin-top: 10px;
+            font-size: 0.8rem;
+        }
+
+        #typing {
+            position: fixed;
+            bottom: 90px;
+            left: 25px;
+            color: var(--racing-red);
+            font-size: 10px;
+            font-weight: bold;
+            display: none;
+            z-index: 90;
+        }
     </style>
 </head>
 <body>
-    <header>
-        <h1 id="shop-name">MOTO REPUESTOS CENTRO</h1>
-        <p id="shop-tagline">Potencia y Repuestos Originales</p>
-    </header>
+    <canvas id="track-canvas"></canvas>
+    
+    <div class="app-container">
+        <header class="racing-header">
+            <div class="speedometer" id="speed-display">9.200 RPM</div>
+            <div>
+                <h1 class="glitch-text" id="shop-name">GARAGE JAVIER</h1>
+                <p style="font-size: 0.6rem; color: #777; letter-spacing: 2px; text-align: right;">RACING DIVISION</p>
+            </div>
+        </header>
 
-    <div id="chat-window"></div>
-    <div id="typing" class="typing">JAVIER ESTÁ BUSCANDO EN EL ALMACÉN...</div>
+        <div id="chat-window"></div>
+        
+        <div id="typing">PIT STOP: BUSCANDO...</div>
 
-    <div class="input-container">
-        <input type="text" id="user-input" placeholder="¿Qué repuesto necesitas?..." autocomplete="off">
-        <button class="send-btn" onclick="enviarMensaje()">➤</button>
+        <div class="input-container">
+            <input type="text" id="user-input" placeholder="¿Qué pieza necesitas?" autocomplete="off">
+            <button class="send-btn" onclick="enviarMensaje()">🏁</button>
+        </div>
     </div>
 
     <script>
-        const API_BASE = 'https://moto-repuestos.onrender.com'; // Cambia esto por tu URL de Render
+        const canvas = document.getElementById('track-canvas');
+        const ctx = canvas.getContext('2d');
+        function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
+        resize();
+        window.onresize = resize;
+
+        let offset = 0;
+        function draw() {
+            ctx.fillStyle = 'rgba(10, 12, 15, 0.2)';
+            ctx.fillRect(0,0,canvas.width, canvas.height);
+            ctx.strokeStyle = '#ff1a1a';
+            ctx.setLineDash([15, 30]);
+            ctx.beginPath();
+            ctx.moveTo(0, canvas.height/2 + offset);
+            ctx.lineTo(canvas.width, canvas.height/2 + offset);
+            ctx.stroke();
+            offset = (offset + 2) % 45;
+            requestAnimationFrame(draw);
+        }
+        draw();
+
+        // Lógica de Chat
+        const API_BASE = 'https://moto-repuestos.onrender.com';
         let CONFIG = {};
         let historial = [];
 
@@ -176,49 +244,39 @@
             try {
                 const res = await fetch(`${API_BASE}/config`);
                 CONFIG = await res.json();
-                document.getElementById('shop-name').innerText = CONFIG.nombre_tienda || 'MOTO REPUESTOS';
-                document.getElementById('shop-tagline').innerText = CONFIG.tagline || 'Full Gas Service';
-                if(CONFIG.color_primario) document.documentElement.style.setProperty('--primary', CONFIG.color_primario);
-                
-                mostrarMensaje(CONFIG.mensaje_bienvenida || "¡Saludos! Soy Javier. ¿Buscas cauchos, aceite o algún repuesto para tu motor?", 'bot', true);
-            } catch (e) { 
-                mostrarMensaje("❌ Error de conexión al taller.", 'bot');
-            }
+                document.getElementById('shop-name').innerText = CONFIG.nombre_tienda || 'GARAGE JAVIER';
+                mostrarMensaje(CONFIG.mensaje_bienvenida || "🏁 ¡A pista! ¿En qué puedo ayudarte?", 'bot', true);
+            } catch (e) { mostrarMensaje("Conectando con taller...", 'bot'); }
         }
 
         function mostrarMensaje(texto, remitente, conBotones = false, mostrarWS = false) {
             const chatWindow = document.getElementById('chat-window');
             const div = document.createElement('div');
             div.className = `msg ${remitente}`;
-            div.innerHTML = texto.replace(/\*\*(.*?)\*\*/g, '<b style="color:var(--primary)">$1</b>').replace(/\n/g, '<br>');
+            div.innerHTML = texto.replace(/\*\*(.*?)\*\*/g, '<b style="color:yellow">$1</b>').replace(/\n/g, '<br>');
 
             if (conBotones) {
                 const qDiv = document.createElement('div');
                 qDiv.className = 'quick-replies';
                 qDiv.innerHTML = `
-                    <button class="btn-quick" onclick="autoPregunta('🛢️ Ver Aceites')">🛢️ Aceites</button>
-                    <button class="btn-quick" onclick="autoPregunta('⛓️ Kit Arrastre')">⛓️ Kit Arrastre</button>
-                    <button class="btn-quick" onclick="autoPregunta('💳 Cashea')">💳 Cashea</button>
+                    <button class="btn-quick" onclick="autoPregunta('ACEITE')">ACEITE</button>
+                    <button class="btn-quick" onclick="autoPregunta('FRENOS')">FRENOS</button>
+                    <button class="btn-quick" onclick="autoPregunta('KIT ARRASTRE')">CADENA</button>
                 `;
                 div.appendChild(qDiv);
             }
 
             if (mostrarWS && CONFIG.contacto_whatsapp) {
                 const btn = document.createElement('a');
-                btn.href = `https://wa.me/${CONFIG.contacto_whatsapp}?text=Hola, busco un repuesto.`;
+                btn.href = `https://wa.me/${CONFIG.contacto_whatsapp}`;
                 btn.className = 'btn-ws';
                 btn.target = "_blank";
-                btn.innerHTML = '<b>🛒 PEDIR POR WHATSAPP</b>';
+                btn.innerText = '🏁 FINALIZAR COMPRA EN WHATSAPP';
                 div.appendChild(btn);
             }
 
             chatWindow.appendChild(div);
             chatWindow.scrollTo({ top: chatWindow.scrollHeight, behavior: 'smooth' });
-        }
-
-        function autoPregunta(t) {
-            document.getElementById('user-input').value = t;
-            enviarMensaje();
         }
 
         async function enviarMensaje() {
@@ -239,19 +297,16 @@
                 });
                 const data = await res.json();
                 typing.style.display = 'none';
-                historial.push({role: "user", content: texto});
-                historial.push({role: "assistant", content: data.respuesta});
-                mostrarMensaje(data.respuesta, 'bot', false, data.mostrar_whatsapp);
-            } catch (e) { 
-                typing.style.display = 'none';
-                mostrarMensaje("❌ Javier está fuera del taller. Intenta de nuevo.", 'bot'); 
-            }
+                if (data.respuesta) {
+                    historial.push({role: "user", content: texto});
+                    historial.push({role: "assistant", content: data.respuesta});
+                    mostrarMensaje(data.respuesta, 'bot', false, data.mostrar_whatsapp);
+                }
+            } catch (e) { typing.style.display = 'none'; }
         }
 
-        document.getElementById('user-input').addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') enviarMensaje();
-        });
-
+        function autoPregunta(t) { document.getElementById('user-input').value = t; enviarMensaje(); }
+        document.getElementById('user-input').addEventListener('keypress', (e) => { if (e.key === 'Enter') enviarMensaje(); });
         window.onload = init;
     </script>
 </body>
