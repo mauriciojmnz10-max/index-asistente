@@ -51,7 +51,8 @@
             display: flex;
             flex-direction: column;
             gap: 12px;
-            padding-bottom: 130px; /* Manteniendo tu padding solicitado */
+            /* Padding inferior para que los mensajes no se escondan tras la caja flotante */
+            padding-bottom: 130px; 
         }
 
         .msg {
@@ -64,14 +65,16 @@
             position: relative;
         }
 
-        /* ESTILO PARA LAS IMÁGENES DE PRODUCTOS */
+        /* ESTILO MEJORADO PARA IMÁGENES */
         .product-img {
             width: 100%;
+            max-width: 250px; /* Tamaño controlado */
             height: auto;
-            border-radius: 6px;
-            margin-bottom: 8px;
-            border: 1px solid var(--secondary);
+            border-radius: 8px;
+            margin-bottom: 10px;
+            border: 1px solid var(--primary);
             display: block;
+            box-shadow: 0 0 10px rgba(0, 255, 157, 0.2);
         }
 
         @keyframes slideUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; } }
@@ -79,9 +82,10 @@
         .bot { align-self: flex-start; background: var(--glass); border-left: 3px solid var(--secondary); }
         .user { align-self: flex-end; background: rgba(0, 255, 157, 0.1); border: 1px solid var(--primary); }
 
+        /* CAJA DE ENTRADA FLOTANTE */
         .input-container {
             position: fixed;
-            bottom: 45px; /* Tu preferencia de 45px */
+            bottom: 45px; /* Tu instrucción de 45px de separación del suelo */
             left: 50%;
             transform: translateX(-50%);
             width: 92%;
@@ -142,12 +146,13 @@
 
         #typing {
             position: fixed;
-            bottom: 105px; /* Ajustado para que flote sobre la caja */
+            bottom: 105px; /* Flotando sobre la caja de input */
             left: 20px;
             font-size: 10px;
             color: var(--primary);
             display: none;
             text-shadow: 0 0 5px var(--primary);
+            z-index: 90;
         }
     </style>
 </head>
@@ -167,7 +172,7 @@
     </div>
 
     <script>
-        // Matrix Effect
+        // Matrix Background
         const canvas = document.getElementById('canvas-bg');
         const ctx = canvas.getContext('2d');
         let width = canvas.width = window.innerWidth;
@@ -202,13 +207,12 @@
             } catch (e) { mostrarMensaje("SISTEMA ONLINE - BIENVENIDO", 'bot'); }
         }
 
-        // FUNCIÓN ACTUALIZADA PARA MOSTRAR IMÁGENES
         function mostrarMensaje(texto, remitente, conBotones = false, mostrarWS = false, urlImagen = null) {
             const chatWindow = document.getElementById('chat-window');
             const div = document.createElement('div');
             div.className = `msg ${remitente}`;
             
-            // Si la IA envía una imagen, la creamos
+            // Inserción de imagen de producto si existe
             if (urlImagen) {
                 const img = document.createElement('img');
                 img.src = urlImagen;
@@ -217,6 +221,7 @@
             }
 
             const content = document.createElement('div');
+            // Renderizado de negritas y saltos de línea
             content.innerHTML = texto.replace(/\*\*(.*?)\*\*/g, '<b style="color:var(--primary)">$1</b>').replace(/\n/g, '<br>');
             div.appendChild(content);
 
@@ -264,7 +269,7 @@
                 if (data.respuesta) {
                     historial.push({role: "user", content: texto});
                     historial.push({role: "assistant", content: data.respuesta});
-                    // Aquí es donde recibimos la imagen desde tu backend
+                    // Pasamos data.imagen al quinto parámetro de la función
                     mostrarMensaje(data.respuesta, 'bot', false, data.mostrar_whatsapp, data.imagen);
                 }
             } catch (e) { 
