@@ -5,29 +5,39 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Javier - Asistente de Ventas</title>
     <style>
-        /* ESTILO ELEGANTE Y CLARO */
-        :root { --primary: #0066ff; --bg-light: #f4f7f9; --text-dark: #1a1a1b; }
-        * { box-sizing: border-box; margin: 0; padding: 0; }
+        /* ESTILO ELEGANTE: GLASSMORPHISM Y FLOTANTE */
+        :root { 
+            --primary: #0066ff; 
+            --bg-glass: rgba(255, 255, 255, 0.7); /* 4. Efecto cristal */
+            --text-dark: #1a1a1b; 
+        }
+        
+        * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
         
         body { 
             font-family: -apple-system, system-ui, "Segoe UI", Roboto, sans-serif;
-            background: var(--bg-light);
+            background: linear-gradient(135deg, #f4f7f9 0%, #e1e4e8 100%); /* Fondo premium */
             height: 100vh;
             display: flex;
             flex-direction: column;
             color: var(--text-dark);
+            overflow: hidden;
         }
 
+        /* 4. ENCABEZADO CRISTAL */
         header {
-            background: #ffffff;
+            background: var(--bg-glass);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
             padding: 18px;
             text-align: center;
-            border-bottom: 1px solid #e1e4e8;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.03);
+            border-bottom: 1px solid rgba(255,255,255,0.3);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            z-index: 10;
         }
 
         header h1 { font-size: 1.15rem; font-weight: 800; color: #000; letter-spacing: 0.5px; }
-        header p { font-size: 0.8rem; color: #666; margin-top: 3px; }
+        header p { font-size: 0.8rem; color: #444; margin-top: 3px; }
 
         #chat-window {
             flex: 1;
@@ -36,8 +46,10 @@
             display: flex;
             flex-direction: column;
             gap: 15px;
+            padding-bottom: 100px; /* 5. Espacio para que el input no tape los msj en tlf */
         }
 
+        /* 4. BURBUJAS TRANSPARENTES ELEGANTES */
         .msg {
             max-width: 82%;
             padding: 14px 16px;
@@ -45,36 +57,36 @@
             line-height: 1.5;
             border-radius: 18px;
             animation: fadeIn 0.3s ease-out;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.04);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
         }
 
         @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
 
         .bot { 
             align-self: flex-start; 
-            background: #ffffff; 
+            background: rgba(255, 255, 255, 0.85); 
             color: var(--text-dark); 
+            border: 1px solid rgba(255,255,255,0.5);
             border-bottom-left-radius: 4px;
-            border: 1px solid #eee;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.03);
         }
 
         .user { 
             align-self: flex-end; 
-            background: var(--primary);
+            background: rgba(0, 102, 255, 0.85);
             color: white; 
             border-bottom-right-radius: 4px;
+            box-shadow: 0 4px 12px rgba(0, 102, 255, 0.2);
         }
 
-        /* BOTONES DE RESPUESTA */
         .quick-replies { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
         .btn-quick {
             background: #ffffff; border: 1.5px solid var(--primary); color: var(--primary);
             padding: 8px 16px; border-radius: 20px; font-size: 13px; font-weight: 600;
             cursor: pointer; transition: 0.2s;
         }
-        .btn-quick:hover { background: var(--primary); color: white; }
 
-        /* BOTÓN WHATSAPP */
         .btn-ws {
             background: #25D366; color: white !important; padding: 12px;
             border-radius: 12px; text-decoration: none; font-weight: 700;
@@ -82,26 +94,44 @@
             margin-top: 12px; font-size: 14px;
         }
 
-        /* ÁREA DE ENTRADA */
+        /* 3 & 5. CAJA DE TEXTO FLOTANTE, MODERNA Y PERFECTA PARA TLF */
         .input-container {
-            padding: 15px 15px 25px 15px;
-            background: white;
-            border-top: 1px solid #eee;
+            position: fixed;
+            bottom: 25px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 92%;
+            max-width: 500px;
+            background: #ffffff;
+            padding: 8px 10px 8px 20px;
+            border-radius: 35px;
             display: flex;
             align-items: center;
             gap: 10px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15); /* Sombra elegante */
+            border: 1px solid #eee;
+            z-index: 1000;
         }
 
-        .input-wrapper {
-            flex: 1; display: flex; align-items: center; background: #f0f2f5;
-            border-radius: 25px; padding: 5px 18px;
+        input { flex: 1; border: none; background: transparent; padding: 10px 0; outline: none; font-size: 16px; }
+
+        /* Botón de enviar circular y moderno */
+        .send-btn { 
+            background: var(--primary); 
+            color: white; 
+            border: none; 
+            width: 40px; 
+            height: 40px; 
+            border-radius: 50%; 
+            cursor: pointer; 
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: 0.3s;
         }
+        .send-btn:active { transform: scale(0.9); }
 
-        input { flex: 1; border: none; background: transparent; padding: 12px 0; outline: none; font-size: 16px; }
-
-        .send-btn { background: transparent; color: var(--primary); border: none; font-weight: 700; cursor: pointer; padding: 0 10px; font-size: 16px; }
-
-        .typing { display: none; padding: 10px 20px; font-size: 13px; color: #888; }
+        .typing { display: none; padding: 0 20px 80px 25px; font-size: 12px; color: #666; font-style: italic; }
     </style>
 </head>
 <body>
@@ -112,19 +142,21 @@
     </header>
 
     <div id="chat-window"></div>
-    <div id="typing" class="typing">Javier está consultando la tasa...</div>
+    <div id="typing" class="typing">Javier está calculando...</div>
 
     <div class="input-container">
-        <div class="input-wrapper">
-            <input type="text" id="user-input" placeholder="Pregunta por la tasa o un equipo..." autocomplete="off">
-            <button class="send-btn" onclick="enviarMensaje()">Enviar</button>
-        </div>
+        <input type="text" id="user-input" placeholder="Pregunta por la tasa o un equipo..." autocomplete="off">
+        <button class="send-btn" onclick="enviarMensaje()">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+        </button>
     </div>
 
     <script>
         const CONFIG = {
             URL_API: 'https://asistente-javier.onrender.com/chat',
-            WHATSAPP: '584120000000', // Pon tu número real
+            WHATSAPP: '584120000000',
+            // 1. ACTIVAR/DESACTIVAR BOTONES MANUALMENTE
+            MOSTRAR_BOTONES_RAPIDOS: true, 
             MENSAJE_BIENVENIDA: "¡Hola! 👋 Soy **Javier**. Consulto la tasa BCV en tiempo real y calculo tus precios al instante.\n\n¿En qué puedo ayudarte hoy?"
         };
 
@@ -141,12 +173,11 @@
             const div = document.createElement('div');
             div.className = `msg ${remitente}`;
             
-            // Renderizar negritas y saltos de línea
             let formattedText = texto.replace(/\*\*(.*?)\*\*/g, '<b>$1</b>');
             div.innerHTML = formattedText.replace(/\n/g, '<br>');
 
-            // Botones rápidos
-            if (remitente === 'bot' && conBotones) {
+            // 1. Lógica estricta de botones rápidos
+            if (remitente === 'bot' && conBotones && CONFIG.MOSTRAR_BOTONES_RAPIDOS) {
                 const qDiv = document.createElement('div');
                 qDiv.className = 'quick-replies';
                 qDiv.innerHTML = `
@@ -154,12 +185,11 @@
                     <button class="btn-quick" onclick="autoPregunta('¿Qué teléfonos tienen disponibles?')">📱 Catálogo</button>
                     <button class="btn-quick" onclick="autoPregunta('¿Cómo funciona Cashea?')">💳 Cashea</button>
                     <button class="btn-quick" onclick="autoPregunta('¿Tienen delivery?')">🛵 Delivery</button>
-                    <button class="btn-quick" onclick="autoPregunta('¿Dónde están ubicados?')">📍 Ubicación</button>
                 `;
                 div.appendChild(qDiv);
             }
 
-            // Botón WhatsApp
+            // 2. WhatsApp inteligente (solo si el servidor lo ordena)
             if (remitente === 'bot' && mostrarWS) {
                 const btnWS = document.createElement('a');
                 btnWS.href = `https://wa.me/${CONFIG.WHATSAPP}?text=Hola, quiero concretar una compra.`;
@@ -200,12 +230,12 @@
                     historial.push({ role: "user", content: texto });
                     historial.push({ role: "assistant", content: data.respuesta });
                     
-                    // IMPORTANTE: data.mostrar_whatsapp viene del backend
+                    // 2. Respeta el parámetro del backend para WhatsApp
                     mostrarMensaje(data.respuesta, 'bot', false, data.mostrar_whatsapp);
                 }
             } catch (error) {
                 typing.style.display = 'none';
-                mostrarMensaje("❌ Error de conexión con el servidor. Intenta de nuevo.", 'bot');
+                mostrarMensaje("❌ Error de conexión.", 'bot');
             }
         }
 
