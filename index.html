@@ -3,114 +3,57 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Javier - Asistente de Ventas</title>
-    
+    <title>Javier AI - Ventas</title>
     <style>
-        :root { 
-            --primary: #0066ff; /* Se actualizará automáticamente */
-            --bg-glass: rgba(255, 255, 255, 0.7);
-            --text-dark: #1a1a1b; 
-        }
-        
+        :root { --primary: #0066ff; --bg-glass: rgba(255, 255, 255, 0.7); }
         * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+        body { font-family: -apple-system, sans-serif; background: linear-gradient(135deg, #f4f7f9 0%, #e1e4e8 100%); height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
         
-        body { 
-            font-family: -apple-system, system-ui, "Segoe UI", Roboto, sans-serif;
-            background: linear-gradient(135deg, #f4f7f9 0%, #e1e4e8 100%); 
-            height: 100vh; display: flex; flex-direction: column; color: var(--text-dark); overflow: hidden;
-        }
+        header { background: var(--bg-glass); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); padding: 18px; text-align: center; border-bottom: 1px solid rgba(255,255,255,0.3); box-shadow: 0 4px 15px rgba(0,0,0,0.05); z-index: 10; }
+        header h1 { font-size: 1.1rem; font-weight: 800; text-transform: uppercase; }
+        header p { font-size: 0.75rem; color: #555; }
 
-        header {
-            background: var(--bg-glass); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
-            padding: 18px; text-align: center; border-bottom: 1px solid rgba(255,255,255,0.3);
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05); z-index: 10;
-        }
+        #chat-window { flex: 1; padding: 15px; overflow-y: auto; display: flex; flex-direction: column; gap: 15px; padding-bottom: 140px; }
+        
+        .msg { max-width: 85%; padding: 14px 16px; font-size: 15px; line-height: 1.5; border-radius: 20px; animation: fadeIn 0.3s ease-out; backdrop-filter: blur(8px); }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        
+        .bot { align-self: flex-start; background: rgba(255, 255, 255, 0.9); border-bottom-left-radius: 4px; box-shadow: 0 4px 10px rgba(0,0,0,0.03); }
+        .user { align-self: flex-end; background: var(--primary); color: white; border-bottom-right-radius: 4px; box-shadow: 0 4px 12px rgba(0, 102, 255, 0.2); }
 
-        header h1 { font-size: 1.15rem; font-weight: 800; color: #000; letter-spacing: 0.5px; }
-        header p { font-size: 0.8rem; color: #444; margin-top: 3px; }
-
-        #chat-window {
-            flex: 1; padding: 15px; overflow-y: auto; display: flex; flex-direction: column;
-            gap: 15px; padding-bottom: 150px; 
-        }
-
-        .msg {
-            max-width: 82%; padding: 14px 16px; font-size: 15px; line-height: 1.5;
-            border-radius: 18px; animation: fadeIn 0.3s ease-out; backdrop-filter: blur(8px);
-        }
-
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
-
-        .bot { 
-            align-self: flex-start; background: rgba(255, 255, 255, 0.85); 
-            border: 1px solid rgba(255,255,255,0.5); border-bottom-left-radius: 4px;
-        }
-
-        .user { 
-            align-self: flex-end; background: var(--primary); color: white; border-bottom-right-radius: 4px;
-        }
-
+        .btn-ws { background: #25D366; color: white !important; padding: 12px; border-radius: 12px; text-decoration: none; font-weight: 700; display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 10px; font-size: 14px; }
         .quick-replies { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
-        .btn-quick {
-            background: #ffffff; border: 1.5px solid var(--primary); color: var(--primary);
-            padding: 8px 16px; border-radius: 20px; font-size: 13px; font-weight: 600; cursor: pointer;
-        }
+        .btn-quick { background: white; border: 1.5px solid var(--primary); color: var(--primary); padding: 8px 14px; border-radius: 20px; font-size: 12px; font-weight: 600; cursor: pointer; }
 
-        .btn-ws {
-            background: #25D366; color: white !important; padding: 12px;
-            border-radius: 12px; text-decoration: none; font-weight: 700;
-            display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 12px;
-        }
-
-        .input-container {
-            position: fixed; bottom: 25px; left: 50%; transform: translateX(-50%);
-            width: 92%; max-width: 500px; background: #ffffff; padding: 8px 10px 8px 20px;
-            border-radius: 35px; display: flex; align-items: center; gap: 10px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.15); border: 1px solid #eee; z-index: 1000;
-        }
-
-        input { flex: 1; border: none; outline: none; font-size: 16px; }
-
-        .send-btn { 
-            background: var(--primary); color: white; border: none; width: 40px; height: 40px; 
-            border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center;
-        }
-
-        .typing { display: none; padding: 0 20px 80px 25px; font-size: 12px; color: #666; font-style: italic; }
+        .input-container { position: fixed; bottom: 25px; left: 50%; transform: translateX(-50%); width: 92%; max-width: 500px; background: white; padding: 8px 10px 8px 20px; border-radius: 35px; display: flex; align-items: center; box-shadow: 0 10px 30px rgba(0,0,0,0.15); z-index: 1000; }
+        input { flex: 1; border: none; outline: none; font-size: 16px; background: transparent; }
+        .send-btn { background: var(--primary); color: white; border: none; width: 42px; height: 42px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+        .typing { display: none; padding: 0 20px 100px 25px; font-size: 12px; color: #666; font-style: italic; }
     </style>
 </head>
 <body>
-
-    <header>
-        <h1 id="shop-name">Cargando...</h1>
-        <p id="shop-tagline">Asistente Virtual • Javier AI</p>
-    </header>
-
+    <header><h1 id="shop-name">Cargando...</h1><p id="shop-tagline">...</p></header>
     <div id="chat-window"></div>
     <div id="typing" class="typing">Javier está calculando...</div>
-
     <div class="input-container">
-        <input type="text" id="user-input" placeholder="Pregunta por la tasa o un equipo..." autocomplete="off">
+        <input type="text" id="user-input" placeholder="Preguntar algo...">
         <button class="send-btn" onclick="enviarMensaje()">➤</button>
     </div>
 
     <script>
-        const API_URL = 'https://asistente-javier.onrender.com'; // TU URL REAL
+        const API_BASE = 'https://asistente-javier.onrender.com';
         let CONFIG = {};
         let historial = [];
 
-        async function cargarConfig() {
+        async function init() {
             try {
-                const res = await fetch(`${API_URL}/config`);
+                const res = await fetch(`${API_BASE}/config`);
                 CONFIG = await res.json();
-                
                 document.getElementById('shop-name').innerText = CONFIG.nombre_tienda;
+                document.getElementById('shop-tagline').innerText = CONFIG.tagline || 'Asesoría en Tecnología';
                 if(CONFIG.color_primario) document.documentElement.style.setProperty('--primary', CONFIG.color_primario);
-                
-                mostrarMensaje(`¡Hola! 👋 Soy **Javier**. Consulto la tasa BCV y calculo tus precios al instante de **${CONFIG.nombre_tienda}**.\n\n¿En qué puedo ayudarte?`, 'bot', true);
-            } catch (e) {
-                mostrarMensaje("❌ Error de conexión con el servidor.", 'bot');
-            }
+                mostrarMensaje(CONFIG.mensaje_bienvenida, 'bot', true);
+            } catch (e) { console.error("Error cargando app"); }
         }
 
         function mostrarMensaje(texto, remitente, conBotones = false, mostrarWS = false) {
@@ -118,65 +61,52 @@
             div.className = `msg ${remitente}`;
             div.innerHTML = texto.replace(/\*\*(.*?)\*\*/g, '<b>$1</b>').replace(/\n/g, '<br>');
 
-            if (remitente === 'bot' && conBotones) {
+            if (conBotones) {
                 const qDiv = document.createElement('div');
                 qDiv.className = 'quick-replies';
-                qDiv.innerHTML = `
-                    <button class="btn-quick" onclick="autoPregunta('¿Cuál es la tasa hoy?')">💰 Tasa BCV</button>
-                    <button class="btn-quick" onclick="autoPregunta('¿Qué teléfonos tienen?')">📱 Catálogo</button>
-                    <button class="btn-quick" onclick="autoPregunta('¿Delivery?')">🛵 Delivery</button>
-                `;
+                qDiv.innerHTML = `<button class="btn-quick" onclick="autoPregunta('💰 Tasa BCV')">💰 Tasa BCV</button>
+                                  <button class="btn-quick" onclick="autoPregunta('📱 Catálogo')">📱 Catálogo</button>
+                                  <button class="btn-quick" onclick="autoPregunta('🛵 Delivery')">🛵 Delivery</button>`;
                 div.appendChild(qDiv);
             }
 
-            if (remitente === 'bot' && mostrarWS) {
-                const btnWS = document.createElement('a');
-                btnWS.href = `https://wa.me/${CONFIG.contacto_whatsapp}?text=Hola, quiero concretar una compra.`;
-                btnWS.className = 'btn-ws';
-                btnWS.innerHTML = '📱 <b>Concretar por WhatsApp</b>';
-                div.appendChild(btnWS);
+            if (mostrarWS) {
+                const btn = document.createElement('a');
+                btn.href = `https://wa.me/${CONFIG.contacto_whatsapp}?text=Hola, quiero concretar una compra.`;
+                btn.className = 'btn-ws';
+                btn.innerHTML = '<b>📱 Concretar por WhatsApp</b>';
+                div.appendChild(btn);
             }
 
             document.getElementById('chat-window').appendChild(div);
-            document.getElementById('chat-window').scrollTo({ top: document.getElementById('chat-window').scrollHeight, behavior: 'smooth' });
+            document.getElementById('chat-window').scrollTo({ top: 10000, behavior: 'smooth' });
         }
 
-        function autoPregunta(texto) {
-            document.getElementById('user-input').value = texto;
-            enviarMensaje();
-        }
+        function autoPregunta(t) { document.getElementById('user-input').value = t; enviarMensaje(); }
 
         async function enviarMensaje() {
             const input = document.getElementById('user-input');
             const texto = input.value.trim();
-            if (!texto) return;
-
+            if(!texto) return;
             mostrarMensaje(texto, 'user');
             input.value = '';
             document.getElementById('typing').style.display = 'block';
-
             try {
-                const response = await fetch(`${API_URL}/chat`, {
+                const res = await fetch(`${API_BASE}/chat`, {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ mensaje: texto, historial: historial })
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({mensaje: texto, historial: historial})
                 });
-
-                const data = await response.json();
+                const data = await res.json();
                 document.getElementById('typing').style.display = 'none';
-
-                if (data.respuesta) {
-                    historial.push({ role: "user", content: texto }, { role: "assistant", content: data.respuesta });
-                    mostrarMensaje(data.respuesta, 'bot', false, data.mostrar_whatsapp);
-                }
-            } catch (error) {
+                historial.push({role: "user", content: texto}, {role: "assistant", content: data.respuesta});
+                mostrarMensaje(data.respuesta, 'bot', false, data.mostrar_whatsapp);
+            } catch (e) { 
                 document.getElementById('typing').style.display = 'none';
-                mostrarMensaje("❌ Error de conexión.", 'bot');
+                mostrarMensaje("❌ Error de conexión.", 'bot'); 
             }
         }
-
-        document.getElementById('user-input').addEventListener('keypress', (e) => { if (e.key === 'Enter') enviarMensaje(); });
-        window.onload = cargarConfig;
+        window.onload = init;
     </script>
 </body>
 </html>
