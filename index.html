@@ -32,80 +32,120 @@
     </style>
 </head>
 <body>
-    <header><h1 id="shop-name">Cargando...</h1><p id="shop-tagline">...</p></header>
+    <header><h1 id="shop-name">ELECTROVENTAS</h1><p id="shop-tagline">Asistente Virtual</p></header>
     <div id="chat-window"></div>
     <div id="typing" class="typing">Javier está calculando...</div>
     <div class="input-container">
-        <input type="text" id="user-input" placeholder="Preguntar algo...">
+        <input type="text" id="user-input" placeholder="Preguntar algo..." autocomplete="off">
         <button class="send-btn" onclick="enviarMensaje()">➤</button>
     </div>
 
     <script>
+        // --- IMPORTANTE: Verifica que esta URL sea la de tu servicio en Render ---
         const API_BASE = 'https://asistente-javier.onrender.com';
+        
         let CONFIG = {};
         let historial = [];
 
         async function init() {
             try {
                 const res = await fetch(`${API_BASE}/config`);
+                if (!res.ok) throw new Error("Error al obtener configuración");
+                
                 CONFIG = await res.json();
-                document.getElementById('shop-name').innerText = CONFIG.nombre_tienda;
-                document.getElementById('shop-tagline').innerText = CONFIG.tagline || 'Asesoría en Tecnología';
+                
+                // Actualizar UI con datos del JSON
+                document.getElementById('shop-name').innerText = CONFIG.nombre_tienda || 'TIENDA';
+                document.getElementById('shop-tagline').innerText = CONFIG.tagline || 'Asistente de Ventas';
                 if(CONFIG.color_primario) document.documentElement.style.setProperty('--primary', CONFIG.color_primario);
-                mostrarMensaje(CONFIG.mensaje_bienvenida, 'bot', true);
-            } catch (e) { console.error("Error cargando app"); }
+                
+                mostrarMensaje(CONFIG.mensaje_bienvenida || "¡Hola! ¿Cómo puedo ayudarte?", 'bot', true);
+            } catch (e) { 
+                console.error("Error cargando app:", e);
+                mostrarMensaje("❌ Error al conectar con el servidor. Verifica la URL de la API.", 'bot');
+            }
         }
 
         function mostrarMensaje(texto, remitente, conBotones = false, mostrarWS = false) {
+            const chatWindow = document.getElementById('chat-window');
             const div = document.createElement('div');
             div.className = `msg ${remitente}`;
+            
+            // Renderizar negritas y saltos de línea
             div.innerHTML = texto.replace(/\*\*(.*?)\*\*/g, '<b>$1</b>').replace(/\n/g, '<br>');
 
             if (conBotones) {
                 const qDiv = document.createElement('div');
                 qDiv.className = 'quick-replies';
-                qDiv.innerHTML = `<button class="btn-quick" onclick="autoPregunta('💰 Tasa BCV')">💰 Tasa BCV</button>
-                                  <button class="btn-quick" onclick="autoPregunta('📱 Catálogo')">📱 Catálogo</button>
-                                  <button class="btn-quick" onclick="autoPregunta('🛵 Delivery')">🛵 Delivery</button>`;
+                qDiv.innerHTML = `
+                    <button class="btn-quick" onclick="autoPregunta('💰 Tasa BCV')">💰 Tasa BCV</button>
+                    <button class="btn-quick" onclick="autoPregunta('📱 Catálogo')">📱 Catálogo</button>
+                    <button class="btn-quick" onclick="autoPregunta('🛵 Delivery')">🛵 Delivery</button>
+                `;
                 div.appendChild(qDiv);
             }
 
-            if (mostrarWS) {
+            if (mostrarWS && CONFIG.contacto_whatsapp) {
                 const btn = document.createElement('a');
                 btn.href = `https://wa.me/${CONFIG.contacto_whatsapp}?text=Hola, quiero concretar una compra.`;
                 btn.className = 'btn-ws';
+                btn.target = "_blank";
                 btn.innerHTML = '<b>📱 Concretar por WhatsApp</b>';
                 div.appendChild(btn);
             }
 
-            document.getElementById('chat-window').appendChild(div);
-            document.getElementById('chat-window').scrollTo({ top: 10000, behavior: 'smooth' });
+            chatWindow.appendChild(div);
+            chatWindow.scrollTo({ top: chatWindow.scrollHeight, behavior: 'smooth' });
         }
 
-        function autoPregunta(t) { document.getElementById('user-input').value = t; enviarMensaje(); }
+        function autoPregunta(t) {
+            document.getElementById('user-input').value = t;
+            enviarMensaje();
+        }
 
         async function enviarMensaje() {
             const input = document.getElementById('user-input');
+            const typing = document.getElementById('typing');
             const texto = input.value.trim();
+            
             if(!texto) return;
+
             mostrarMensaje(texto, 'user');
             input.value = '';
-            document.getElementById('typing').style.display = 'block';
+            typing.style.display = 'block';
+
             try {
                 const res = await fetch(`${API_BASE}/chat`, {
                     method: 'POST',
                     headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({mensaje: texto, historial: historial})
+                    body: JSON.stringify({ mensaje: texto, historial: historial })
                 });
+
+                if (!res.ok) throw new Error("Respuesta del servidor no válida");
+                
                 const data = await res.json();
-                document.getElementById('typing').style.display = 'none';
-                historial.push({role: "user", content: texto}, {role: "assistant", content: data.respuesta});
-                mostrarMensaje(data.respuesta, 'bot', false, data.mostrar_whatsapp);
+                typing.style.display = 'none';
+
+                if (data.respuesta) {
+                    historial.push({role: "user", content: texto});
+                    historial.push({role: "assistant", content: data.respuesta});
+                    // Limitar historial para no saturar la memoria
+                    if(historial.length > 10) historial.shift();
+                    
+                    mostrarMensaje(data.respuesta, 'bot', false, data.mostrar_whatsapp);
+                }
             } catch (e) { 
-                document.getElementById('typing').style.display = 'none';
-                mostrarMensaje("❌ Error de conexión.", 'bot'); 
+                typing.style.display = 'none';
+                mostrarMensaje("❌ Error de conexión con Javier.", 'bot'); 
+                console.error(e);
             }
         }
+
+        // Permitir enviar con la tecla Enter
+        document.getElementById('user-input').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') enviarMensaje();
+        });
+
         window.onload = init;
     </script>
 </body>
