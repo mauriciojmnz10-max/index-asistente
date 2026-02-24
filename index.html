@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>JAVIER AI • NEO ELITE</title>
+    <title>JAVIER AI • ELECTRO VENTAS</title>
     <style>
         :root {
             --primary: #00ff9d;
@@ -40,7 +40,6 @@
             background: var(--glass);
             backdrop-filter: blur(15px);
             z-index: 10;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.5);
         }
 
         header h1 { 
@@ -51,7 +50,7 @@
             text-shadow: 0 0 10px var(--primary);
         }
         
-        header p { font-size: 0.65rem; color: var(--secondary); letter-spacing: 3px; font-weight: bold; }
+        header p { font-size: 0.7rem; color: var(--secondary); letter-spacing: 3px; font-weight: bold; text-transform: uppercase; }
 
         #chat-window {
             flex: 1;
@@ -60,7 +59,8 @@
             display: flex;
             flex-direction: column;
             gap: 15px;
-            padding-bottom: 150px; /* Espacio para que nada se tape */
+            /* AJUSTE SOLICITADO: 150PX PARA QUE LOS MENSAJES QUEDEN BIEN ARRIBA */
+            padding-bottom: 150px; 
             scrollbar-width: none;
         }
         #chat-window::-webkit-scrollbar { display: none; }
@@ -70,23 +70,19 @@
             padding: 14px 18px;
             font-size: 14px;
             border-radius: 12px;
-            animation: slideUp 0.4s cubic-bezier(0.18, 0.89, 0.32, 1.28);
+            animation: slideUp 0.4s ease-out;
             line-height: 1.5;
             position: relative;
             backdrop-filter: blur(5px);
         }
 
-        /* FOTOS ESTILO ELITE */
         .product-img {
             width: 100%;
             border-radius: 10px;
             margin-bottom: 12px;
-            border: 1px solid rgba(108, 71, 255, 0.5);
+            border: 1px solid var(--secondary);
             display: block;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.4);
-            transition: transform 0.3s;
         }
-        .product-img:hover { transform: scale(1.02); }
 
         @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
@@ -104,9 +100,10 @@
             box-shadow: var(--neon-glow);
         }
 
-        /* CAJA FLOTANTE ESTILIZADA */
+        /* CAJA FLOTANTE CORREGIDA */
         .input-container {
             position: fixed;
+            /* AJUSTE SOLICITADO: 25PX DEL SUELO */
             bottom: 25px; 
             left: 50%;
             transform: translateX(-50%);
@@ -114,11 +111,11 @@
             max-width: 450px;
             background: rgba(15, 23, 42, 0.95);
             padding: 10px 20px;
-            border-radius: 50px; /* Más redondeada y moderna */
+            border-radius: 50px;
             display: flex;
             align-items: center;
             border: 1px solid var(--secondary);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.9), 0 0 15px rgba(108, 71, 255, 0.2);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.9);
             z-index: 100;
             backdrop-filter: blur(10px);
         }
@@ -129,7 +126,7 @@
             outline: none;
             background: transparent;
             color: white;
-            font-size: 15px;
+            font-size: 16px;
             padding: 10px 5px;
         }
 
@@ -137,17 +134,16 @@
             background: var(--secondary);
             color: white;
             border: none;
-            width: 35px;
-            height: 35px;
+            width: 38px;
+            height: 38px;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             margin-left: 10px;
             cursor: pointer;
-            transition: 0.3s;
+            font-size: 18px;
         }
-        .send-btn:hover { background: var(--primary); color: #000; }
 
         .btn-ws {
             background: linear-gradient(90deg, #00ff9d, #00d1ff);
@@ -160,9 +156,8 @@
             align-items: center;
             justify-content: center;
             margin-top: 12px;
-            font-size: 12px;
+            font-size: 11px;
             text-transform: uppercase;
-            letter-spacing: 1px;
         }
 
         .quick-replies { display: flex; overflow-x: auto; gap: 8px; margin-top: 12px; padding-bottom: 5px; }
@@ -174,18 +169,17 @@
             border-radius: 15px;
             font-size: 10px;
             white-space: nowrap;
-            cursor: pointer;
         }
 
         #typing {
             position: fixed;
-            bottom: 110px;
+            /* AJUSTADO PARA QUE FLOTE SOBRE LA CAJA A 25PX */
+            bottom: 85px; 
             left: 35px;
             font-size: 9px;
             color: var(--primary);
             display: none;
             font-weight: bold;
-            letter-spacing: 2px;
             text-shadow: 0 0 8px var(--primary);
         }
     </style>
@@ -193,20 +187,20 @@
 <body>
     <canvas id="canvas-bg"></canvas>
     <header>
-        <h1 id="shop-name">CARGANDO...</h1>
-        <p id="shop-tagline">SISTEMA INTELIGENTE</p>
+        <h1 id="shop-name">JAVIER AI</h1>
+        <p id="shop-tagline">ELECTRO VENTAS CUMANÁ</p>
     </header>
 
     <div id="chat-window"></div>
-    <div id="typing">SISTEMA PROCESANDO_</div>
+    <div id="typing">ANALIZANDO CONSULTA...</div>
 
     <div class="input-container">
-        <input type="text" id="user-input" placeholder="Escribir mensaje..." autocomplete="off">
+        <input type="text" id="user-input" placeholder="Escribir a Javier..." autocomplete="off">
         <button class="send-btn" onclick="enviarMensaje()">➤</button>
     </div>
 
     <script>
-        // Matrix Effect
+        // Efecto Matrix
         const canvas = document.getElementById('canvas-bg');
         const ctx = canvas.getContext('2d');
         let width = canvas.width = window.innerWidth;
@@ -228,17 +222,24 @@
         setInterval(drawMatrix, 50);
 
         const API_BASE = 'https://asistente-javier.onrender.com';
-        let CONFIG = {};
+        let CONFIG = {
+            nombre_tienda: "JAVIER AI",
+            tagline: "ELECTRO VENTAS CUMANÁ",
+            mensaje_bienvenida: "¡Hola! Soy **Javier**, tu asistente de ventas premium de **Electro Ventas**. ¿Qué equipo buscas hoy? 🚀",
+            contacto_whatsapp: "584120000000"
+        };
         let historial = [];
 
         async function init() {
             try {
                 const res = await fetch(`${API_BASE}/config`);
-                CONFIG = await res.json();
+                const serverConfig = await res.json();
+                CONFIG = {...CONFIG, ...serverConfig};
                 document.getElementById('shop-name').innerText = CONFIG.nombre_tienda;
                 document.getElementById('shop-tagline').innerText = CONFIG.tagline;
-                mostrarMensaje(CONFIG.mensaje_bienvenida, 'bot', true);
-            } catch (e) { mostrarMensaje("JAVIER ONLINE", 'bot'); }
+            } catch (e) { console.log("Modo offline"); }
+            
+            mostrarMensaje(CONFIG.mensaje_bienvenida, 'bot', true);
         }
 
         function mostrarMensaje(texto, remitente, conBotones = false, mostrarWS = false, urlImagen = null) {
@@ -260,8 +261,8 @@
             if (conBotones) {
                 const qDiv = document.createElement('div');
                 qDiv.className = 'quick-replies';
-                qDiv.innerHTML = `<button class="btn-quick" onclick="autoPregunta('OFERTAS')">OFERTAS</button>
-                                  <button class="btn-quick" onclick="autoPregunta('CATÁLOGO')">CATÁLOGO</button>
+                qDiv.innerHTML = `<button class="btn-quick" onclick="autoPregunta('CATÁLOGO')">CATÁLOGO</button>
+                                  <button class="btn-quick" onclick="autoPregunta('CRÉDITO')">CRÉDITO</button>
                                   <button class="btn-quick" onclick="autoPregunta('UBICACIÓN')">UBICACIÓN</button>`;
                 div.appendChild(qDiv);
             }
@@ -304,7 +305,7 @@
                 }
             } catch (e) { 
                 typing.style.display = 'none'; 
-                mostrarMensaje("ERROR DE ENLACE", 'bot');
+                mostrarMensaje("ERROR DE SISTEMA", 'bot');
             }
         }
 
