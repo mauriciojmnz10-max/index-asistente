@@ -45,7 +45,7 @@
 
         .shop-name { font-size: 1.5rem; letter-spacing: 3px; color: var(--canela); text-transform: uppercase; }
 
-        /* ÁREA DE CHAT CON PADDING INFERIOR AJUSTADO */
+        /* ÁREA DE CHAT RECALIBRADA */
         #chat-window {
             flex: 1;
             overflow-y: auto;
@@ -53,11 +53,12 @@
             display: flex;
             flex-direction: column;
             gap: 15px;
-            padding-bottom: 180px; /* Espacio extra para que los mensajes floten sobre la caja */
+            /* Ajustado para que el padding no sea exagerado pero deje ver la caja */
+            padding-bottom: 90px; 
             scroll-behavior: smooth;
         }
 
-        /* BURBUJAS DE TEXTO ESTILO ARTESANAL */
+        /* BURBUJAS DE TEXTO */
         .msg {
             max-width: 85%;
             padding: 14px 18px;
@@ -85,10 +86,10 @@
             border-radius: 22px 22px 4px 22px;
         }
 
-        /* CAJA FLOTANTE (FLOATING INPUT) */
+        /* CAJA FLOTANTE OPTIMIZADA */
         .input-wrapper {
             position: fixed;
-            bottom: 35px;
+            bottom: 20px; /* Subida para que no se esconda en móviles */
             left: 5%;
             right: 5%;
             z-index: 1000;
@@ -96,11 +97,12 @@
 
         .input-container {
             background: white;
-            padding: 8px 8px 8px 22px;
+            padding: 10px 10px 10px 22px;
             border-radius: 40px;
             display: flex;
             align-items: center;
-            box-shadow: 0 15px 35px rgba(92, 62, 45, 0.25);
+            /* Sombra más profunda para que destaque sobre el chat */
+            box-shadow: 0 10px 30px rgba(92, 62, 45, 0.3); 
             border: 1.5px solid var(--masa);
         }
 
@@ -127,7 +129,7 @@
             transition: 0.2s;
         }
 
-        /* Indicador de carga flotando sobre la caja */
+        /* Indicador de carga */
         #typing {
             position: absolute;
             top: -45px;
