@@ -3,162 +3,208 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Javier AI - Ferretería Industrial</title>
+    <title>JAVIER • FERREFIJA INDUSTRIAL</title>
     <style>
-        /* Paleta de colores Industrial / Construcción */
-        :root { 
-            --primary: #FF8C00; /* Naranja Seguridad */
-            --secondary: #2c3e50; /* Gris Hierro */
-            --bg-body: #eceff1;
-            --bot-bg: #ffffff;
-            --user-bg: #263238; /* Carbón */
-            --accent-blue: #0277bd;
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+        :root {
+            --seguridad: #ff6b00; 
+            --hierro: #2c3e50;
+            --acero: #34495e;
+            --cemento: #7f8c8d;
+            --obra-negra: #1a1e24;
+            --obra-gris: #ecf0f1;
         }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-        
-        body { 
-            font-family: 'Roboto', 'Segoe UI', sans-serif; 
-            background-color: var(--bg-body);
-            /* Patrón de puntos tipo plano de ingeniería */
-            background-image: radial-gradient(rgba(0,0,0,0.1) 1px, transparent 1px);
-            background-size: 25px 25px;
-            height: 100vh; 
-            display: flex; 
-            flex-direction: column; 
-            overflow: hidden; 
-        }
-        
-        header { 
-            background: var(--user-bg); 
-            padding: 20px; 
-            text-align: center; 
-            border-bottom: 4px solid var(--primary); 
-            box-shadow: 0 4px 10px rgba(0,0,0,0.2); 
-            z-index: 10; 
-        }
-        header h1 { 
-            font-size: 1.2rem; 
-            font-weight: 900; 
-            letter-spacing: 1px;
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--obra-negra);
+            height: 100vh;
+            overflow: hidden;
             color: #fff;
-            text-transform: uppercase; 
-        }
-        header p { 
-            font-size: 0.75rem; 
-            color: var(--primary); 
-            margin-top: 4px;
-            font-weight: bold;
-            letter-spacing: 1px;
         }
 
-        #chat-window { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 15px; padding-bottom: 140px; }
-        
-        .msg { 
-            max-width: 85%; 
-            padding: 14px 16px; 
-            font-size: 15px; 
-            line-height: 1.5; 
-            border-radius: 8px; /* Bordes más rectos para look industrial */
-            animation: fadeIn 0.3s ease-out; 
+        /* Fondo de malla industrial */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-image: radial-gradient(var(--acero) 1px, transparent 1px);
+            background-size: 30px 30px;
+            opacity: 0.1;
+            z-index: 0;
+        }
+
+        .app-container {
             position: relative;
-        }
-        
-        @keyframes fadeIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
-        
-        .bot { 
-            align-self: flex-start; 
-            background: var(--bot-bg); 
-            color: #333;
-            border-left: 5px solid var(--primary);
-            box-shadow: 3px 3px 10px rgba(0,0,0,0.05);
-        }
-        .user { 
-            align-self: flex-end; 
-            background: var(--user-bg); 
-            color: white; 
-            border-right: 5px solid var(--primary);
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            z-index: 2;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
         }
 
-        /* Botón WhatsApp Robusto */
-        .btn-ws { 
-            background: #25D366; 
-            color: white !important; 
-            padding: 15px; 
-            border-radius: 8px; 
-            text-decoration: none; 
-            font-weight: 800; 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            gap: 10px; 
-            margin-top: 15px; 
-            text-transform: uppercase;
-            font-size: 13px;
-            border: 2px solid rgba(0,0,0,0.1);
+        .industrial-header {
+            padding: 1.2rem 1.5rem;
+            border-bottom: 3px solid var(--seguridad);
+            background: rgba(44, 62, 80, 0.95);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.4);
         }
 
-        .quick-replies { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
-        .btn-quick { 
-            background: white; 
-            border: 2px solid var(--secondary); 
-            color: var(--secondary); 
-            padding: 8px 14px; 
-            border-radius: 4px; 
-            font-size: 11px; 
-            font-weight: 700; 
-            cursor: pointer; 
-            text-transform: uppercase;
+        .shop-name { font-size: 1.2rem; font-weight: 900; letter-spacing: 1px; color: #fff; }
+        .shop-tagline { font-size: 0.65rem; color: var(--seguridad); font-weight: 700; text-transform: uppercase; }
+
+        /* VENTANA DE CHAT CON PADDING DE SEGURIDAD */
+        #chat-window {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            /* 50px de espacio pedido + altura de la caja flotante */
+            padding-bottom: 160px; 
+            scroll-behavior: smooth;
+        }
+
+        /* BURBUJAS DE TEXTO REDONDEADAS */
+        .msg {
+            max-width: 85%;
+            padding: 14px 18px;
+            font-size: 0.95rem;
+            line-height: 1.5;
+            border-radius: 20px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        .bot {
+            align-self: flex-start;
+            background: var(--obra-gris);
+            color: var(--obra-negra);
+            border-bottom-left-radius: 4px;
+        }
+
+        .user {
+            align-self: flex-end;
+            background: var(--seguridad);
+            color: white;
+            border-bottom-right-radius: 4px;
+        }
+
+        /* CAJA FLOTANTE (ESTILO ISLA) */
+        .input-wrapper {
+            position: fixed;
+            bottom: 30px; /* Separada del borde inferior */
+            left: 15px;
+            right: 15px;
+            z-index: 1000;
+        }
+
+        .input-container {
+            background: #2c3e50;
+            padding: 8px 8px 8px 20px;
+            border-radius: 50px;
+            display: flex;
+            align-items: center;
+            border: 2px solid var(--seguridad);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+        }
+
+        #user-input {
+            flex: 1;
+            background: transparent;
+            border: none;
+            outline: none;
+            color: white;
+            font-size: 16px;
+        }
+
+        .send-btn {
+            background: var(--seguridad);
+            border: none;
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
             transition: 0.2s;
         }
-        .btn-quick:hover { background: var(--secondary); color: white; }
 
-        /* Contenedor de Input "Herramienta" */
-        .input-container { 
-            position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); 
-            width: 92%; max-width: 500px; 
-            background: white; 
-            padding: 8px 8px 8px 20px; 
-            border-radius: 8px; 
-            display: flex; 
-            align-items: center; 
-            box-shadow: 0 8px 20px rgba(0,0,0,0.2); 
-            z-index: 1000;
-            border: 1px solid #ccc;
+        .send-btn:active { transform: scale(0.9); }
+
+        /* Indicador de carga flotando */
+        #typing {
+            position: absolute;
+            top: -45px;
+            left: 20px;
+            background: var(--obra-negra);
+            color: var(--seguridad);
+            padding: 6px 15px;
+            border-radius: 15px;
+            font-size: 10px;
+            font-weight: 800;
+            border: 1px solid var(--seguridad);
+            display: none;
         }
-        input { flex: 1; border: none; outline: none; font-size: 16px; background: transparent; }
-        
-        .send-btn { 
-            background: var(--primary); 
-            color: white; 
-            border: none; 
-            width: 45px; height: 45px; 
-            border-radius: 4px; 
-            cursor: pointer; 
-            display: flex; align-items: center; justify-content: center;
+
+        /* Botones Rápidos */
+        .quick-replies { display: flex; overflow-x: auto; gap: 8px; margin-top: 10px; padding-bottom: 5px; }
+        .btn-quick {
+            background: transparent;
+            border: 1px solid var(--seguridad);
+            color: var(--seguridad);
+            padding: 6px 12px;
+            border-radius: 15px;
+            font-size: 11px;
             font-weight: bold;
+            white-space: nowrap;
         }
 
-        .typing { display: none; padding: 0 25px 110px 25px; font-size: 12px; color: var(--secondary); font-weight: bold; font-style: italic; }
+        .btn-ws {
+            background: #25D366;
+            color: white !important;
+            padding: 12px;
+            border-radius: 10px;
+            text-decoration: none;
+            font-weight: bold;
+            display: block;
+            text-align: center;
+            margin-top: 10px;
+            font-size: 13px;
+        }
     </style>
 </head>
 <body>
-    <header>
-        <h1 id="shop-name">FERREFIJA CUMANÁ</h1>
-        <p id="shop-tagline">MATERIALES Y CONSTRUCCIÓN</p>
-    </header>
+    <div class="app-container">
+        <header class="industrial-header">
+            <div>
+                <h1 class="shop-name" id="shop-name">FERREFIJA</h1>
+                <p class="shop-tagline" id="shop-tagline">INDUSTRIAL • CONSTRUCCIÓN</p>
+            </div>
+            <span>⚙️</span>
+        </header>
 
-    <div id="chat-window"></div>
-    <div id="typing" class="typing">Javier está consultando stock...</div>
-
-    <div class="input-container">
-        <input type="text" id="user-input" placeholder="¿Qué materiales buscas?..." autocomplete="off">
-        <button class="send-btn" onclick="enviarMensaje()">➤</button>
+        <div id="chat-window"></div>
+        
+        <div class="input-wrapper">
+            <div id="typing">REVISANDO STOCK...</div>
+            <div class="input-container">
+                <input type="text" id="user-input" placeholder="¿Qué material buscas?..." autocomplete="off">
+                <button class="send-btn" onclick="enviarMensaje()">⚒️</button>
+            </div>
+        </div>
     </div>
 
     <script>
-        const API_BASE = 'https://ferreteria-yqd6.onrender.com'; // Verifica tu URL
+        const API_BASE = 'https://ferreteria-yqd6.onrender.com';
         let CONFIG = {};
         let historial = [];
 
@@ -166,14 +212,10 @@
             try {
                 const res = await fetch(`${API_BASE}/config`);
                 CONFIG = await res.json();
-                document.getElementById('shop-name').innerText = CONFIG.nombre_tienda || 'FERRETERÍA';
-                document.getElementById('shop-tagline').innerText = CONFIG.tagline || 'Todo para la obra';
-                
-                if(CONFIG.color_primario) document.documentElement.style.setProperty('--primary', CONFIG.color_primario);
-                
-                mostrarMensaje(CONFIG.mensaje_bienvenida || "¡Buen día! Soy Javier de Ferrefija. ¿Buscas presupuesto para obra gris o herramientas?", 'bot', true);
+                document.getElementById('shop-name').innerText = CONFIG.nombre_tienda || 'FERREFIJA';
+                mostrarMensaje(CONFIG.mensaje_bienvenida || "¡Buenas jefe! ¿Qué herramienta o material le hace falta para la obra?", 'bot', true);
             } catch (e) { 
-                mostrarMensaje("❌ Error al conectar con el almacén.", 'bot');
+                mostrarMensaje("Error de conexión al depósito.", 'bot');
             }
         }
 
@@ -187,19 +229,19 @@
                 const qDiv = document.createElement('div');
                 qDiv.className = 'quick-replies';
                 qDiv.innerHTML = `
-                    <button class="btn-quick" onclick="autoPregunta('🧱 Cemento y Bloques')">🧱 Materiales</button>
-                    <button class="btn-quick" onclick="autoPregunta('🛠️ Herramientas')">🛠️ Herramientas</button>
-                    <button class="btn-quick" onclick="autoPregunta('🚛 Flete/Delivery')">🚛 Despacho</button>
+                    <button class="btn-quick" onclick="autoPregunta('🧱 CEMENTO')">🧱 CEMENTO</button>
+                    <button class="btn-quick" onclick="autoPregunta('🏗️ CABILLAS')">🏗️ CABILLAS</button>
+                    <button class="btn-quick" onclick="autoPregunta('🔨 HERRAMIENTAS')">🔨 HERRAMIENTAS</button>
                 `;
                 div.appendChild(qDiv);
             }
 
             if (mostrarWS && CONFIG.contacto_whatsapp) {
                 const btn = document.createElement('a');
-                btn.href = `https://wa.me/${CONFIG.contacto_whatsapp}?text=Hola, quiero solicitar un presupuesto.`;
+                btn.href = `https://wa.me/${CONFIG.contacto_whatsapp}`;
                 btn.className = 'btn-ws';
                 btn.target = "_blank";
-                btn.innerHTML = '<b>📦 SOLICITAR COTIZACIÓN</b>';
+                btn.innerText = 'SOLICITAR PRESUPUESTO 📋';
                 div.appendChild(btn);
             }
 
@@ -230,21 +272,18 @@
                 });
                 const data = await res.json();
                 typing.style.display = 'none';
-                historial.push({role: "user", content: texto});
-                historial.push({role: "assistant", content: data.respuesta});
-                mostrarMensaje(data.respuesta, 'bot', false, data.mostrar_whatsapp);
+                if (data.respuesta) {
+                    historial.push({role: "user", content: texto}, {role: "assistant", content: data.respuesta});
+                    mostrarMensaje(data.respuesta, 'bot', false, data.mostrar_whatsapp);
+                }
             } catch (e) { 
                 typing.style.display = 'none';
-                mostrarMensaje("❌ Conexión interrumpida.", 'bot'); 
+                mostrarMensaje("Fallo en la obra. Reintente.", 'bot'); 
             }
         }
 
-        document.getElementById('user-input').addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') enviarMensaje();
-        });
-
+        document.getElementById('user-input').addEventListener('keypress', (e) => { if (e.key === 'Enter') enviarMensaje(); });
         window.onload = init;
     </script>
 </body>
 </html>
-
