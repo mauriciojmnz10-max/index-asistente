@@ -1,0 +1,152 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Javier AI - Ventas</title>
+    <style>
+        :root { --primary: #0066ff; --bg-glass: rgba(255, 255, 255, 0.7); }
+        * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+        body { font-family: -apple-system, sans-serif; background: linear-gradient(135deg, #f4f7f9 0%, #e1e4e8 100%); height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
+        
+        header { background: var(--bg-glass); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); padding: 18px; text-align: center; border-bottom: 1px solid rgba(255,255,255,0.3); box-shadow: 0 4px 15px rgba(0,0,0,0.05); z-index: 10; }
+        header h1 { font-size: 1.1rem; font-weight: 800; text-transform: uppercase; }
+        header p { font-size: 0.75rem; color: #555; }
+
+        #chat-window { flex: 1; padding: 15px; overflow-y: auto; display: flex; flex-direction: column; gap: 15px; padding-bottom: 140px; }
+        
+        .msg { max-width: 85%; padding: 14px 16px; font-size: 15px; line-height: 1.5; border-radius: 20px; animation: fadeIn 0.3s ease-out; backdrop-filter: blur(8px); }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        
+        .bot { align-self: flex-start; background: rgba(255, 255, 255, 0.9); border-bottom-left-radius: 4px; box-shadow: 0 4px 10px rgba(0,0,0,0.03); }
+        .user { align-self: flex-end; background: var(--primary); color: white; border-bottom-right-radius: 4px; box-shadow: 0 4px 12px rgba(0, 102, 255, 0.2); }
+
+        .btn-ws { background: #25D366; color: white !important; padding: 12px; border-radius: 12px; text-decoration: none; font-weight: 700; display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 10px; font-size: 14px; }
+        .quick-replies { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+        .btn-quick { background: white; border: 1.5px solid var(--primary); color: var(--primary); padding: 8px 14px; border-radius: 20px; font-size: 12px; font-weight: 600; cursor: pointer; }
+
+        .input-container { position: fixed; bottom: 25px; left: 50%; transform: translateX(-50%); width: 92%; max-width: 500px; background: white; padding: 8px 10px 8px 20px; border-radius: 35px; display: flex; align-items: center; box-shadow: 0 10px 30px rgba(0,0,0,0.15); z-index: 1000; }
+        input { flex: 1; border: none; outline: none; font-size: 16px; background: transparent; }
+        .send-btn { background: var(--primary); color: white; border: none; width: 42px; height: 42px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+        .typing { display: none; padding: 0 20px 100px 25px; font-size: 12px; color: #666; font-style: italic; }
+    </style>
+</head>
+<body>
+    <header><h1 id="shop-name">ELECTROVENTAS</h1><p id="shop-tagline">Asistente Virtual</p></header>
+    <div id="chat-window"></div>
+    <div id="typing" class="typing">Javier está calculando...</div>
+    <div class="input-container">
+        <input type="text" id="user-input" placeholder="Preguntar algo..." autocomplete="off">
+        <button class="send-btn" onclick="enviarMensaje()">➤</button>
+    </div>
+
+    <script>
+        // --- IMPORTANTE: Verifica que esta URL sea la de tu servicio en Render ---
+        const API_BASE = 'https://asistente-javier.onrender.com';
+        
+        let CONFIG = {};
+        let historial = [];
+
+        async function init() {
+            try {
+                const res = await fetch(`${API_BASE}/config`);
+                if (!res.ok) throw new Error("Error al obtener configuración");
+                
+                CONFIG = await res.json();
+                
+                // Actualizar UI con datos del JSON
+                document.getElementById('shop-name').innerText = CONFIG.nombre_tienda || 'TIENDA';
+                document.getElementById('shop-tagline').innerText = CONFIG.tagline || 'Asistente de Ventas';
+                if(CONFIG.color_primario) document.documentElement.style.setProperty('--primary', CONFIG.color_primario);
+                
+                mostrarMensaje(CONFIG.mensaje_bienvenida || "¡Hola! ¿Cómo puedo ayudarte?", 'bot', true);
+            } catch (e) { 
+                console.error("Error cargando app:", e);
+                mostrarMensaje("❌ Error al conectar con el servidor. Verifica la URL de la API.", 'bot');
+            }
+        }
+
+        function mostrarMensaje(texto, remitente, conBotones = false, mostrarWS = false) {
+            const chatWindow = document.getElementById('chat-window');
+            const div = document.createElement('div');
+            div.className = `msg ${remitente}`;
+            
+            // Renderizar negritas y saltos de línea
+            div.innerHTML = texto.replace(/\*\*(.*?)\*\*/g, '<b>$1</b>').replace(/\n/g, '<br>');
+
+            if (conBotones) {
+                const qDiv = document.createElement('div');
+                qDiv.className = 'quick-replies';
+                qDiv.innerHTML = `
+                    <button class="btn-quick" onclick="autoPregunta('💰 Tasa BCV')">💰 Tasa BCV</button>
+                    <button class="btn-quick" onclick="autoPregunta('📱 Catálogo')">📱 Catálogo</button>
+                    <button class="btn-quick" onclick="autoPregunta('🛵 Delivery')">🛵 Delivery</button>
+                `;
+                div.appendChild(qDiv);
+            }
+
+            if (mostrarWS && CONFIG.contacto_whatsapp) {
+                const btn = document.createElement('a');
+                btn.href = `https://wa.me/${CONFIG.contacto_whatsapp}?text=Hola, quiero concretar una compra.`;
+                btn.className = 'btn-ws';
+                btn.target = "_blank";
+                btn.innerHTML = '<b>📱 Concretar por WhatsApp</b>';
+                div.appendChild(btn);
+            }
+
+            chatWindow.appendChild(div);
+            chatWindow.scrollTo({ top: chatWindow.scrollHeight, behavior: 'smooth' });
+        }
+
+        function autoPregunta(t) {
+            document.getElementById('user-input').value = t;
+            enviarMensaje();
+        }
+
+        async function enviarMensaje() {
+            const input = document.getElementById('user-input');
+            const typing = document.getElementById('typing');
+            const texto = input.value.trim();
+            
+            if(!texto) return;
+
+            mostrarMensaje(texto, 'user');
+            input.value = '';
+            typing.style.display = 'block';
+
+            try {
+                const res = await fetch(`${API_BASE}/chat`, {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({ mensaje: texto, historial: historial })
+                });
+
+                if (!res.ok) throw new Error("Respuesta del servidor no válida");
+                
+                const data = await res.json();
+                typing.style.display = 'none';
+
+                if (data.respuesta) {
+                    historial.push({role: "user", content: texto});
+                    historial.push({role: "assistant", content: data.respuesta});
+                    // Limitar historial para no saturar la memoria
+                    if(historial.length > 10) historial.shift();
+                    
+                    mostrarMensaje(data.respuesta, 'bot', false, data.mostrar_whatsapp);
+                }
+            } catch (e) { 
+                typing.style.display = 'none';
+                mostrarMensaje("❌ Error de conexión con Javier.", 'bot'); 
+                console.error(e);
+            }
+        }
+
+        // Permitir enviar con la tecla Enter
+        document.getElementById('user-input').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') enviarMensaje();
+        });
+
+        window.onload = init;
+    </script>
+</body>
+</html>
