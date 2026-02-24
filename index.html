@@ -159,55 +159,40 @@
         let CONFIG = {};
         let historial = [];
 
-        // NUEVA FUNCIÓN CORREGIDA
-function formatearRespuesta(texto) {
-    return texto.replace(/\d+\.\d+/g, function(match) {
-        // Separamos el número en parte entera y decimal
-        let partes = match.split('.');
-        let entera = partes[0];
-        let decimal = partes[1];
-
-        // Ponemos el punto (.) para los miles en la parte entera
-        entera = entera.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
-
-        // Unimos con la coma (,) para el decimal
-        return entera + ',' + decimal;
-    });
-}
-
-// Asegúrate de que en enviarMensaje se use así:
-async function enviarMensaje() {
-    // ... (código anterior de input y mostrar mensaje del usuario)
-
-    try {
-        const res = await fetch(`${API_BASE}/chat`, {
-            method: 'POST',
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({ mensaje: texto, historial: historial })
-        });
-        const data = await res.json();
-        typing.style.display = 'none';
-
-        if (data.respuesta) {
-            // Aplicamos la nueva lógica de formateo
-            const respuestaLimpia = formatearRespuesta(data.respuesta);
-            
-            historial.push({role: "user", content: texto});
-            historial.push({role: "assistant", content: respuestaLimpia});
-            
-            mostrarMensaje(respuestaLimpia, 'bot', false, data.mostrar_whatsapp);
+        // FUNCIÓN DE FORMATEO VENEZUELA (Miles con punto, decimales con coma)
+        function formatearRespuesta(texto) {
+            return texto.replace(/\d+\.\d+/g, function(match) {
+                let partes = match.split('.');
+                let entera = partes[0];
+                let decimal = partes[1];
+                // Formatear miles en la parte entera
+                entera = entera.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+                // Retornar con coma decimal
+                return entera + ',' + decimal;
+            });
         }
-    } catch (e) { 
-        typing.style.display = 'none';
-        mostrarMensaje("❌ SEÑAL PERDIDA. Intenta de nuevo.", 'bot'); 
-    }
-}
+
+        async function init() {
+            try {
+                const res = await fetch(`${API_BASE}/config`);
+                CONFIG = await res.json();
+                document.getElementById('shop-name').innerText = CONFIG.nombre_tienda || 'TECH STORE';
+                document.getElementById('shop-tagline').innerText = CONFIG.tagline || 'Inteligencia Artificial aplicada';
+                
+                if(CONFIG.color_primario) document.documentElement.style.setProperty('--primary', CONFIG.color_primario);
+                
+                let bienvenida = formatearRespuesta(CONFIG.mensaje_bienvenida || "SISTEMA ONLINE. Soy Javier. ¿En qué dispositivo estás interesado?");
+                mostrarMensaje(bienvenida, 'bot', true);
+            } catch (e) { 
+                mostrarMensaje("❌ ERROR DE ENLACE. Reconectando...", 'bot');
+            }
+        }
 
         function mostrarMensaje(texto, remitente, conBotones = false, mostrarWS = false) {
             const chatWindow = document.getElementById('chat-window');
             const div = document.createElement('div');
             div.className = `msg ${remitente}`;
-            // Renderiza negritas y saltos de línea
+            // Formatear negritas y saltos de línea
             div.innerHTML = texto.replace(/\*\*(.*?)\*\*/g, '<b style="color:var(--primary)">$1</b>').replace(/\n/g, '<br>');
 
             if (conBotones) {
@@ -259,7 +244,7 @@ async function enviarMensaje() {
                 typing.style.display = 'none';
 
                 if (data.respuesta) {
-                    // Aplicar el formato de moneda/números antes de guardar y mostrar
+                    // Aplicar el formato corregido antes de mostrar
                     const respuestaLimpia = formatearRespuesta(data.respuesta);
                     
                     historial.push({role: "user", content: texto});
