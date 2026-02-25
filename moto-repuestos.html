@@ -14,12 +14,7 @@
             --chrome: #b8c7dd;
         }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            -webkit-tap-highlight-color: transparent;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 
         body {
             font-family: 'Inter', sans-serif;
@@ -29,7 +24,6 @@
             color: #fff;
         }
 
-        /* Fondo dinámico */
         #track-canvas {
             position: fixed;
             top: 0; left: 0;
@@ -48,7 +42,6 @@
             background: linear-gradient(135deg, rgba(10,12,15,0.85) 0%, rgba(13,16,19,0.95) 100%);
         }
 
-        /* Tablero Superior */
         .racing-header {
             padding: 1rem;
             border-bottom: 3px solid var(--racing-red);
@@ -57,6 +50,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
+            z-index: 10;
         }
 
         .speedometer {
@@ -73,7 +67,6 @@
             text-align: right;
         }
 
-        /* VENTANA DE CHAT: Con el padding solicitado para móviles */
         #chat-window {
             flex: 1;
             overflow-y: auto;
@@ -81,12 +74,13 @@
             display: flex;
             flex-direction: column;
             gap: 1rem;
-            /* El padding-bottom evita que la caja flotante tape los mensajes */
-            padding-bottom: 150px; 
+            /* Padding de seguridad para que la caja flotante no tape mensajes */
+            padding-bottom: 160px; 
             scroll-behavior: smooth;
+            scrollbar-width: none;
         }
+        #chat-window::-webkit-scrollbar { display: none; }
 
-        /* Burbujas de mensaje */
         .msg {
             max-width: 85%;
             padding: 1rem;
@@ -95,6 +89,17 @@
             border-radius: 12px;
             position: relative;
             animation: slideIn 0.3s ease-out;
+        }
+
+        /* ESTILO PARA IMÁGENES DE REPUESTOS */
+        .product-img {
+            width: 100%;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            border: 2px solid var(--racing-red);
+            cursor: zoom-in;
+            display: block;
+            transition: transform 0.2s;
         }
 
         @keyframes slideIn {
@@ -116,10 +121,10 @@
             border-bottom-right-radius: 2px;
         }
 
-        /* CAJA DE TEXTO FLOTANTE */
+        /* CAJA DE TEXTO FLOTANTE (ESTILO DASHBOARD) */
         .input-container {
             position: fixed;
-            bottom: 20px;
+            bottom: 25px;
             left: 50%;
             transform: translateX(-50%);
             width: 90%;
@@ -130,8 +135,9 @@
             border-radius: 50px;
             display: flex;
             align-items: center;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.8);
             z-index: 100;
+            backdrop-filter: blur(10px);
         }
 
         #user-input {
@@ -141,7 +147,7 @@
             outline: none;
             color: #fff;
             padding: 12px;
-            font-size: 16px; /* Evita zoom en iOS */
+            font-size: 16px;
         }
 
         .send-btn {
@@ -152,12 +158,34 @@
             height: 40px;
             border-radius: 50%;
             font-weight: bold;
+            cursor: pointer;
         }
 
-        /* Elementos Extra */
+        /* VENTANA MODAL (LIGHTBOX) */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0; top: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.95);
+            backdrop-filter: blur(10px);
+            align-items: center;
+            justify-content: center;
+            cursor: zoom-out;
+        }
+        .modal-content {
+            max-width: 90%;
+            max-height: 80%;
+            border: 2px solid var(--racing-red);
+            border-radius: 10px;
+            box-shadow: 0 0 30px var(--red-glow);
+            animation: zoom 0.3s;
+        }
+        @keyframes zoom { from {transform: scale(0.8); opacity: 0;} to {transform: scale(1); opacity: 1;} }
+
         .quick-replies { display: flex; overflow-x: auto; gap: 8px; margin-top: 8px; }
         .btn-quick {
-            background: rgba(255,255,255,0.1);
+            background: rgba(255,255,255,0.05);
             border: 1px solid var(--racing-red);
             color: #fff;
             padding: 5px 12px;
@@ -181,19 +209,24 @@
 
         #typing {
             position: fixed;
-            bottom: 90px;
+            bottom: 95px;
             left: 25px;
             color: var(--racing-red);
             font-size: 10px;
             font-weight: bold;
             display: none;
             z-index: 90;
+            text-transform: uppercase;
         }
     </style>
 </head>
 <body>
     <canvas id="track-canvas"></canvas>
     
+    <div id="imageModal" class="modal" onclick="this.style.display='none'">
+        <img class="modal-content" id="imgFull">
+    </div>
+
     <div class="app-container">
         <header class="racing-header">
             <div class="speedometer" id="speed-display">9.200 RPM</div>
@@ -204,8 +237,7 @@
         </header>
 
         <div id="chat-window"></div>
-        
-        <div id="typing">PIT STOP: BUSCANDO...</div>
+        <div id="typing">PIT STOP: BUSCANDO PIEZA...</div>
 
         <div class="input-container">
             <input type="text" id="user-input" placeholder="¿Qué pieza necesitas?" autocomplete="off">
@@ -214,12 +246,12 @@
     </div>
 
     <script>
+        // Animación de pista
         const canvas = document.getElementById('track-canvas');
         const ctx = canvas.getContext('2d');
         function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
         resize();
         window.onresize = resize;
-
         let offset = 0;
         function draw() {
             ctx.fillStyle = 'rgba(10, 12, 15, 0.2)';
@@ -249,11 +281,27 @@
             } catch (e) { mostrarMensaje("Conectando con taller...", 'bot'); }
         }
 
-        function mostrarMensaje(texto, remitente, conBotones = false, mostrarWS = false) {
+        function mostrarMensaje(texto, remitente, conBotones = false, mostrarWS = false, urlImagen = null) {
             const chatWindow = document.getElementById('chat-window');
             const div = document.createElement('div');
             div.className = `msg ${remitente}`;
-            div.innerHTML = texto.replace(/\*\*(.*?)\*\*/g, '<b style="color:yellow">$1</b>').replace(/\n/g, '<br>');
+
+            if (urlImagen) {
+                const img = document.createElement('img');
+                img.src = urlImagen;
+                img.className = 'product-img';
+                img.onclick = function() {
+                    const modal = document.getElementById("imageModal");
+                    const modalImg = document.getElementById("imgFull");
+                    modal.style.display = "flex";
+                    modalImg.src = this.src;
+                };
+                div.appendChild(img);
+            }
+
+            const content = document.createElement('div');
+            content.innerHTML = texto.replace(/\*\*(.*?)\*\*/g, '<b style="color:yellow">$1</b>').replace(/\n/g, '<br>');
+            div.appendChild(content);
 
             if (conBotones) {
                 const qDiv = document.createElement('div');
@@ -298,11 +346,13 @@
                 const data = await res.json();
                 typing.style.display = 'none';
                 if (data.respuesta) {
-                    historial.push({role: "user", content: texto});
-                    historial.push({role: "assistant", content: data.respuesta});
-                    mostrarMensaje(data.respuesta, 'bot', false, data.mostrar_whatsapp);
+                    historial.push({role: "user", content: texto}, {role: "assistant", content: data.respuesta});
+                    mostrarMensaje(data.respuesta, 'bot', false, data.mostrar_whatsapp, data.imagen);
                 }
-            } catch (e) { typing.style.display = 'none'; }
+            } catch (e) { 
+                typing.style.display = 'none'; 
+                mostrarMensaje("ERROR EN PITS. REINTENTE.", 'bot');
+            }
         }
 
         function autoPregunta(t) { document.getElementById('user-input').value = t; enviarMensaje(); }
