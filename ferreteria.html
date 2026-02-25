@@ -51,6 +51,7 @@
             justify-content: space-between;
             align-items: center;
             box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+            z-index: 10;
         }
 
         .shop-name { font-size: 1.2rem; font-weight: 900; letter-spacing: 1px; color: #fff; }
@@ -64,12 +65,12 @@
             display: flex;
             flex-direction: column;
             gap: 12px;
-            /* 50px de espacio pedido + altura de la caja flotante */
             padding-bottom: 160px; 
             scroll-behavior: smooth;
+            scrollbar-width: none;
         }
+        #chat-window::-webkit-scrollbar { display: none; }
 
-        /* BURBUJAS DE TEXTO REDONDEADAS */
         .msg {
             max-width: 85%;
             padding: 14px 18px;
@@ -78,7 +79,20 @@
             border-radius: 20px;
             box-shadow: 0 4px 10px rgba(0,0,0,0.2);
             animation: fadeIn 0.3s ease;
+            position: relative;
         }
+
+        /* ESTILO PARA IMÁGENES DENTRO DEL CHAT */
+        .product-img {
+            width: 100%;
+            border-radius: 12px;
+            margin-bottom: 10px;
+            border: 2px solid var(--seguridad);
+            cursor: zoom-in;
+            display: block;
+            transition: transform 0.2s;
+        }
+        .product-img:active { transform: scale(0.98); }
 
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
@@ -96,10 +110,10 @@
             border-bottom-right-radius: 4px;
         }
 
-        /* CAJA FLOTANTE (ESTILO ISLA) */
+        /* CAJA FLOTANTE */
         .input-wrapper {
             position: fixed;
-            bottom: 30px; /* Separada del borde inferior */
+            bottom: 30px; 
             left: 15px;
             right: 15px;
             z-index: 1000;
@@ -113,6 +127,7 @@
             align-items: center;
             border: 2px solid var(--seguridad);
             box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+            backdrop-filter: blur(10px);
         }
 
         #user-input {
@@ -138,9 +153,6 @@
             transition: 0.2s;
         }
 
-        .send-btn:active { transform: scale(0.9); }
-
-        /* Indicador de carga flotando */
         #typing {
             position: absolute;
             top: -45px;
@@ -155,7 +167,28 @@
             display: none;
         }
 
-        /* Botones Rápidos */
+        /* VENTANA MODAL */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0; top: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.9);
+            backdrop-filter: blur(8px);
+            align-items: center;
+            justify-content: center;
+            cursor: zoom-out;
+        }
+        .modal-content {
+            max-width: 90%;
+            max-height: 80%;
+            border: 3px solid var(--seguridad);
+            border-radius: 15px;
+            animation: zoom 0.3s;
+        }
+        @keyframes zoom { from {transform: scale(0.7); opacity: 0;} to {transform: scale(1); opacity: 1;} }
+
+        /* Botones Rápidos y WS */
         .quick-replies { display: flex; overflow-x: auto; gap: 8px; margin-top: 10px; padding-bottom: 5px; }
         .btn-quick {
             background: transparent;
@@ -167,7 +200,6 @@
             font-weight: bold;
             white-space: nowrap;
         }
-
         .btn-ws {
             background: #25D366;
             color: white !important;
@@ -183,6 +215,10 @@
     </style>
 </head>
 <body>
+    <div id="imageModal" class="modal" onclick="this.style.display='none'">
+        <img class="modal-content" id="imgFull">
+    </div>
+
     <div class="app-container">
         <header class="industrial-header">
             <div>
@@ -213,17 +249,34 @@
                 const res = await fetch(`${API_BASE}/config`);
                 CONFIG = await res.json();
                 document.getElementById('shop-name').innerText = CONFIG.nombre_tienda || 'FERREFIJA';
-                mostrarMensaje(CONFIG.mensaje_bienvenida || "¡Buenas jefe! ¿Qué herramienta o material le hace falta para la obra?", 'bot', true);
+                mostrarMensaje(CONFIG.mensaje_bienvenida || "¡Buenas jefe! ¿Qué material le hace falta?", 'bot', true);
             } catch (e) { 
                 mostrarMensaje("Error de conexión al depósito.", 'bot');
             }
         }
 
-        function mostrarMensaje(texto, remitente, conBotones = false, mostrarWS = false) {
+        function mostrarMensaje(texto, remitente, conBotones = false, mostrarWS = false, urlImagen = null) {
             const chatWindow = document.getElementById('chat-window');
             const div = document.createElement('div');
             div.className = `msg ${remitente}`;
-            div.innerHTML = texto.replace(/\*\*(.*?)\*\*/g, '<b>$1</b>').replace(/\n/g, '<br>');
+
+            // Lógica de Imagen con Modal
+            if (urlImagen) {
+                const img = document.createElement('img');
+                img.src = urlImagen;
+                img.className = 'product-img';
+                img.onclick = function() {
+                    const modal = document.getElementById("imageModal");
+                    const modalImg = document.getElementById("imgFull");
+                    modal.style.display = "flex";
+                    modalImg.src = this.src;
+                };
+                div.appendChild(img);
+            }
+
+            const textContent = document.createElement('div');
+            textContent.innerHTML = texto.replace(/\*\*(.*?)\*\*/g, '<b>$1</b>').replace(/\n/g, '<br>');
+            div.appendChild(textContent);
 
             if (conBotones) {
                 const qDiv = document.createElement('div');
@@ -249,11 +302,6 @@
             chatWindow.scrollTo({ top: chatWindow.scrollHeight, behavior: 'smooth' });
         }
 
-        function autoPregunta(t) {
-            document.getElementById('user-input').value = t;
-            enviarMensaje();
-        }
-
         async function enviarMensaje() {
             const input = document.getElementById('user-input');
             const typing = document.getElementById('typing');
@@ -274,7 +322,7 @@
                 typing.style.display = 'none';
                 if (data.respuesta) {
                     historial.push({role: "user", content: texto}, {role: "assistant", content: data.respuesta});
-                    mostrarMensaje(data.respuesta, 'bot', false, data.mostrar_whatsapp);
+                    mostrarMensaje(data.respuesta, 'bot', false, data.mostrar_whatsapp, data.imagen);
                 }
             } catch (e) { 
                 typing.style.display = 'none';
@@ -282,6 +330,7 @@
             }
         }
 
+        function autoPregunta(t) { document.getElementById('user-input').value = t; enviarMensaje(); }
         document.getElementById('user-input').addEventListener('keypress', (e) => { if (e.key === 'Enter') enviarMensaje(); });
         window.onload = init;
     </script>
