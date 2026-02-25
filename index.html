@@ -2,27 +2,30 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>JAVIER AI • ELECTRO VENTAS</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>JAVIER AI • ELITE</title>
     <style>
         :root {
             --primary: #00ff9d;
             --secondary: #6c47ff;
             --bg-dark: #070b12;
-            --glass: rgba(15, 20, 30, 0.85);
-            --neon-glow: 0 0 15px rgba(0, 255, 157, 0.3);
+            --glass: rgba(15, 20, 30, 0.95);
+            --neon-glow: 0 0 20px rgba(0, 255, 157, 0.4);
         }
 
+        /* Reset para móviles */
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 
         body {
-            font-family: 'Segoe UI', Roboto, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             background: var(--bg-dark);
-            height: 100vh;
+            height: 100dvh; 
             overflow: hidden;
             color: #e2e8f0;
             display: flex;
             flex-direction: column;
+            position: fixed;
+            width: 100%;
         }
 
         #canvas-bg {
@@ -30,98 +33,73 @@
             top: 0; left: 0;
             width: 100%; height: 100%;
             z-index: -1;
-            opacity: 0.4;
+            opacity: 0.3;
         }
 
         header {
-            padding: 18px;
+            padding: env(safe-area-inset-top) 20px 15px 20px;
             text-align: center;
-            border-bottom: 1px solid rgba(0, 255, 157, 0.3);
+            border-bottom: 1px solid rgba(0, 255, 157, 0.2);
             background: var(--glass);
-            backdrop-filter: blur(15px);
-            z-index: 10;
+            backdrop-filter: blur(20px);
+            z-index: 100;
         }
 
-        header h1 { 
-            font-size: 1.2rem; 
-            letter-spacing: 5px; 
-            color: var(--primary); 
-            text-transform: uppercase;
-            text-shadow: 0 0 10px var(--primary);
-        }
-        
-        header p { font-size: 0.7rem; color: var(--secondary); letter-spacing: 3px; font-weight: bold; text-transform: uppercase; }
+        header h1 { font-size: 1.2rem; letter-spacing: 4px; color: var(--primary); text-transform: uppercase; text-shadow: var(--neon-glow); }
+        header p { font-size: 0.65rem; color: var(--secondary); letter-spacing: 2px; font-weight: bold; }
 
-        /* AREA DE CHAT CON PADDING DE SEGURIDAD */
+        /* AREA DE CHAT CON EL PADDING DE 50PX EXTRA SOBRE EL INPUT [Instrucción Recordada] */
         #chat-window {
             flex: 1;
             overflow-y: auto;
-            padding: 20px;
+            padding: 20px 15px;
             display: flex;
             flex-direction: column;
             gap: 15px;
-            padding-bottom: 160px; /* Padding para evitar que el input tape mensajes */
-            scrollbar-width: none;
+            /* 130px (input) + 50px (padding extra solicitado) = 180px */
+            padding-bottom: 180px; 
+            -webkit-overflow-scrolling: touch;
         }
-        #chat-window::-webkit-scrollbar { display: none; }
 
         .msg {
             max-width: 85%;
             padding: 14px 18px;
-            font-size: 14px;
-            border-radius: 12px;
-            animation: slideUp 0.4s ease-out;
+            font-size: 15px;
+            border-radius: 20px;
+            animation: slideUp 0.3s ease-out;
             line-height: 1.5;
             position: relative;
-            backdrop-filter: blur(5px);
         }
 
-        /* DISEÑO DE IMAGEN PRODUCTO */
+        .bot { align-self: flex-start; background: var(--glass); border: 1px solid rgba(108, 71, 255, 0.2); border-left: 4px solid var(--secondary); border-bottom-left-radius: 4px; }
+        .user { align-self: flex-end; background: rgba(0, 255, 157, 0.1); border: 1px solid var(--primary); border-bottom-right-radius: 4px; }
+
         .product-img {
-            max-width: 100%;
-            max-height: 300px;
-            border-radius: 10px;
-            margin-bottom: 12px;
-            border: 1px solid var(--secondary);
-            display: block;
-            cursor: zoom-in;
+            width: 100%;
+            max-height: 250px;
+            border-radius: 12px;
+            margin-bottom: 10px;
             object-fit: contain;
-            background: rgba(0,0,0,0.2);
+            background: #000;
         }
 
-        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-
-        .bot { 
-            align-self: flex-start; 
-            background: var(--glass); 
-            border: 1px solid rgba(108, 71, 255, 0.3);
-            border-left: 4px solid var(--secondary);
-        }
-
-        .user { 
-            align-self: flex-end; 
-            background: rgba(0, 255, 157, 0.08); 
-            border: 1px solid var(--primary);
-            box-shadow: var(--neon-glow);
-        }
-
-        /* CAJA DE ENTRADA FLOTANTE */
+        /* INPUT FLOTANTE MEJORADO */
         .input-container {
             position: fixed;
             bottom: 30px; 
             left: 50%;
             transform: translateX(-50%);
-            width: 90%;
-            max-width: 450px;
-            background: rgba(15, 23, 42, 0.95);
-            padding: 8px 18px;
-            border-radius: 50px;
+            width: 92%;
+            max-width: 500px;
+            background: rgba(15, 23, 42, 0.98);
+            padding: 8px 10px 8px 20px;
+            border-radius: 40px;
             display: flex;
             align-items: center;
             border: 1px solid var(--secondary);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.9);
-            z-index: 100;
-            backdrop-filter: blur(10px);
+            box-shadow: 0 10px 40px rgba(0,0,0,0.8);
+            z-index: 1000;
+            backdrop-filter: blur(20px);
         }
 
         input {
@@ -131,19 +109,20 @@
             background: transparent;
             color: white;
             font-size: 16px;
-            padding: 10px 5px;
+            padding: 12px 0;
         }
 
         .send-btn {
             background: var(--secondary);
             color: white;
             border: none;
-            width: 36px;
-            height: 36px;
+            width: 45px;
+            height: 45px;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
+            margin-left: 10px;
             cursor: pointer;
         }
 
@@ -151,79 +130,57 @@
             background: linear-gradient(90deg, #00ff9d, #00d1ff);
             color: #000 !important;
             padding: 12px;
-            border-radius: 8px;
+            border-radius: 12px;
             text-decoration: none;
             font-weight: 800;
-            display: flex;
-            justify-content: center;
-            margin-top: 12px;
+            display: block;
+            text-align: center;
+            margin-top: 10px;
             font-size: 11px;
-            text-transform: uppercase;
         }
 
-        .quick-replies { display: flex; overflow-x: auto; gap: 8px; margin-top: 12px; padding-bottom: 5px; }
+        .quick-replies { display: flex; overflow-x: auto; gap: 8px; margin-top: 10px; scrollbar-width: none; }
         .btn-quick {
             background: rgba(108, 71, 255, 0.1);
             border: 1px solid var(--secondary);
-            color: white;
-            padding: 7px 15px;
-            border-radius: 15px;
+            color: var(--primary);
+            padding: 8px 15px;
+            border-radius: 20px;
             font-size: 10px;
             white-space: nowrap;
         }
 
         #typing {
             position: fixed;
-            bottom: 95px;
-            left: 35px;
+            bottom: 110px;
+            left: 30px;
             font-size: 10px;
             color: var(--primary);
             display: none;
             font-weight: bold;
-            z-index: 99;
         }
 
-        /* MODAL LIGHTBOX */
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 2000;
-            left: 0; top: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.9);
-            backdrop-filter: blur(10px);
-            align-items: center;
-            justify-content: center;
-        }
-        .modal-content {
-            max-width: 90%;
-            max-height: 80%;
-            border-radius: 10px;
-            border: 2px solid var(--primary);
-        }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body>
     <canvas id="canvas-bg"></canvas>
     
     <header>
-        <h1 id="shop-name">ELECTRO VENTAS CUMANÁ</h1>
-        <p id="shop-tagline">JAVIER ASISTENTE VIRTUAL</p>
+        <h1 id="shop-name">SISTEMA JAVIER</h1>
+        <p id="shop-tagline">CONEXIÓN NEURONAL</p>
     </header>
 
     <div id="chat-window"></div>
     <div id="typing">JAVIER ESTÁ PROCESANDO...</div>
 
-    <div id="imageModal" class="modal" onclick="this.style.display='none'">
-        <img class="modal-content" id="imgFull">
-    </div>
-
     <div class="input-container">
-        <input type="text" id="user-input" placeholder="Pregunta a Javier..." autocomplete="off">
+        <input type="text" id="user-input" placeholder="Pregunta algo..." autocomplete="off">
         <button class="send-btn" onclick="enviarMensaje()">➤</button>
     </div>
 
     <script>
-        // Matrix Background
+        // Matrix BG
         const canvas = document.getElementById('canvas-bg');
         const ctx = canvas.getContext('2d');
         let width = canvas.width = window.innerWidth;
@@ -231,7 +188,7 @@
         const columns = Math.floor(width / 20);
         const drops = Array(columns).fill(1);
 
-        function drawMatrix() {
+        function draw() {
             ctx.fillStyle = 'rgba(7, 11, 18, 0.15)';
             ctx.fillRect(0, 0, width, height);
             ctx.fillStyle = '#00ff9d';
@@ -239,11 +196,11 @@
             drops.forEach((y, i) => {
                 const text = String.fromCharCode(Math.random() * 128);
                 ctx.fillText(text, i * 20, y * 20);
-                if (y * 20 > height && Math.random() > 0.975) drops[i] = 0;
+                if (y * 20 > height && Math.random() > 0.98) drops[i] = 0;
                 drops[i]++;
             });
         }
-        setInterval(drawMatrix, 50);
+        setInterval(draw, 50);
 
         const API_BASE = 'https://asistente-javier.onrender.com';
         let CONFIG = { contacto_whatsapp: "584120000000" };
@@ -257,7 +214,7 @@
                 document.getElementById('shop-tagline').innerText = CONFIG.tagline;
                 mostrarMensaje(CONFIG.mensaje_bienvenida, 'bot', true);
             } catch (e) {
-                mostrarMensaje("¡Hola! Soy Javier de Electro Ventas Cumaná. ¿En qué puedo ayudarte?", 'bot', true);
+                mostrarMensaje("Sistema en línea. Soy Javier. ¿Qué equipo buscas?", 'bot', true);
             }
         }
 
@@ -266,25 +223,12 @@
             const div = document.createElement('div');
             div.className = `msg ${remitente}`;
 
-            // --- DETECCIÓN DE IMAGEN (Link en texto o campo url) ---
-            let finalImg = urlImagen;
-            if (!finalImg) {
-                const imgRegex = /(https?:\/\/.*\.(?:png|jpg|jpeg|gif|webp))/i;
-                const match = texto.match(imgRegex);
-                if (match) {
-                    finalImg = match[0];
-                    texto = texto.replace(finalImg, ""); // Limpia el link del texto
-                }
-            }
-
-            if (finalImg) {
+            if (urlImagen) {
                 const img = document.createElement('img');
-                img.src = finalImg;
+                img.src = urlImagen;
                 img.className = 'product-img';
-                img.onclick = () => {
-                    document.getElementById("imageModal").style.display = "flex";
-                    document.getElementById("imgFull").src = finalImg;
-                };
+                // Si la imagen falla, no rompe el diseño
+                img.onerror = () => img.style.display = 'none';
                 div.appendChild(img);
             }
 
@@ -296,9 +240,9 @@
                 const qDiv = document.createElement('div');
                 qDiv.className = 'quick-replies';
                 qDiv.innerHTML = `
-                    <button class="btn-quick" onclick="autoPregunta('CATÁLOGO')">CATÁLOGO</button>
-                    <button class="btn-quick" onclick="autoPregunta('CRÉDITO')">CRÉDITO</button>
-                    <button class="btn-quick" onclick="autoPregunta('UBICACIÓN')">UBICACIÓN</button>
+                    <button class="btn-quick" onclick="auto('CATÁLOGO')">PRODUCTOS</button>
+                    <button class="btn-quick" onclick="auto('UBICACIÓN')">UBICACIÓN</button>
+                    <button class="btn-quick" onclick="auto('CRÉDITO')">CRÉDITO</button>
                 `;
                 div.appendChild(qDiv);
             }
@@ -308,23 +252,23 @@
                 btn.href = `https://wa.me/${CONFIG.contacto_whatsapp}`;
                 btn.className = 'btn-ws';
                 btn.target = "_blank";
-                btn.innerText = 'CONCRETAR POR WHATSAPP';
+                btn.innerText = 'CONCRETAR COMPRA';
                 div.appendChild(btn);
             }
 
             chatWindow.appendChild(div);
-            chatWindow.scrollTo({ top: chatWindow.scrollHeight, behavior: 'smooth' });
+            // Asegura scroll al fondo
+            setTimeout(() => { chatWindow.scrollTop = chatWindow.scrollHeight; }, 100);
         }
 
         async function enviarMensaje() {
             const input = document.getElementById('user-input');
-            const typing = document.getElementById('typing');
             const texto = input.value.trim();
             if(!texto) return;
 
             mostrarMensaje(texto, 'user');
             input.value = '';
-            typing.style.display = 'block';
+            document.getElementById('typing').style.display = 'block';
 
             try {
                 const res = await fetch(`${API_BASE}/chat`, {
@@ -333,19 +277,27 @@
                     body: JSON.stringify({ mensaje: texto, historial: historial })
                 });
                 const data = await res.json();
-                typing.style.display = 'none';
+                document.getElementById('typing').style.display = 'none';
                 if (data.respuesta) {
                     historial.push({role: "user", content: texto}, {role: "assistant", content: data.respuesta});
                     mostrarMensaje(data.respuesta, 'bot', false, data.mostrar_whatsapp, data.imagen);
                 }
             } catch (e) {
-                typing.style.display = 'none';
-                mostrarMensaje("ERROR DE CONEXIÓN", 'bot');
+                document.getElementById('typing').style.display = 'none';
+                mostrarMensaje("Error de conexión. Reintenta.", 'bot');
             }
         }
 
-        function autoPregunta(t) { document.getElementById('user-input').value = t; enviarMensaje(); }
-        document.getElementById('user-input').addEventListener('keypress', (e) => { if (e.key === 'Enter') enviarMensaje(); });
+        function auto(t) { document.getElementById('user-input').value = t; enviarMensaje(); }
+
+        // Compatibilidad total con Enter en móviles
+        document.getElementById('user-input').addEventListener('keydown', (e) => { 
+            if (e.key === 'Enter') { 
+                enviarMensaje(); 
+                document.getElementById('user-input').blur(); // Cierra teclado
+            } 
+        });
+
         window.onload = init;
     </script>
 </body>
