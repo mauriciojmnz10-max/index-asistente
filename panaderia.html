@@ -32,6 +32,8 @@
             flex-direction: column;
             background: rgba(253, 248, 242, 0.6);
             backdrop-filter: blur(10px);
+            position: relative;
+            z-index: 2;
         }
 
         /* Header elegante */
@@ -45,7 +47,7 @@
 
         .shop-name { font-size: 1.5rem; letter-spacing: 3px; color: var(--canela); text-transform: uppercase; }
 
-        /* ÁREA DE CHAT RECALIBRADA */
+        /* ÁREA DE CHAT CON PADDING DE SEGURIDAD */
         #chat-window {
             flex: 1;
             overflow-y: auto;
@@ -53,10 +55,11 @@
             display: flex;
             flex-direction: column;
             gap: 15px;
-            /* Padding inferior ajustado a 130px según tu preferencia */
-            padding-bottom: 130px; 
+            padding-bottom: 150px; 
             scroll-behavior: smooth;
+            scrollbar-width: none;
         }
+        #chat-window::-webkit-scrollbar { display: none; }
 
         /* BURBUJAS DE TEXTO */
         .msg {
@@ -67,6 +70,18 @@
             box-shadow: 0 4px 12px var(--sombra-premium);
             font-family: 'Inter', sans-serif;
             animation: slideUp 0.3s ease-out;
+            position: relative;
+        }
+
+        /* IMÁGENES DE PRODUCTOS (Panes/Dulces) */
+        .product-img {
+            width: 100%;
+            border-radius: 15px;
+            margin-bottom: 10px;
+            border: 2px solid var(--masa);
+            cursor: zoom-in;
+            display: block;
+            transition: 0.3s;
         }
 
         @keyframes slideUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
@@ -86,10 +101,10 @@
             border-radius: 22px 22px 4px 22px;
         }
 
-        /* CAJA FLOTANTE OPTIMIZADA */
+        /* CAJA FLOTANTE */
         .input-wrapper {
             position: fixed;
-            bottom: 45px; /* Elevado a 45px para que flote con espacio suficiente */
+            bottom: 30px; 
             left: 5%;
             right: 5%;
             z-index: 1000;
@@ -97,11 +112,11 @@
 
         .input-container {
             background: white;
-            padding: 10px 10px 10px 22px;
+            padding: 8px 8px 8px 22px;
             border-radius: 40px;
             display: flex;
             align-items: center;
-            box-shadow: 0 10px 30px rgba(92, 62, 45, 0.3); 
+            box-shadow: 0 10px 30px rgba(92, 62, 45, 0.2); 
             border: 1.5px solid var(--masa);
         }
 
@@ -125,10 +140,28 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: 0.2s;
         }
 
-        /* Indicador de carga */
+        /* VENTANA MODAL (LIGHTBOX) */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 3000;
+            left: 0; top: 0; width: 100%; height: 100%;
+            background: rgba(92, 62, 45, 0.9);
+            backdrop-filter: blur(8px);
+            align-items: center;
+            justify-content: center;
+        }
+        .modal-content {
+            max-width: 85%;
+            max-height: 75%;
+            border: 5px solid white;
+            border-radius: 20px;
+            animation: zoom 0.3s;
+        }
+        @keyframes zoom { from {transform: scale(0.8); opacity: 0;} to {transform: scale(1); opacity: 1;} }
+
         #typing {
             position: absolute;
             top: -45px;
@@ -142,7 +175,6 @@
             box-shadow: 0 5px 15px var(--sombra-premium);
             display: none;
             border: 1px solid var(--masa);
-            letter-spacing: 1px;
         }
 
         .quick-replies { display: flex; overflow-x: auto; gap: 8px; margin-top: 10px; padding-bottom: 5px; }
@@ -172,6 +204,10 @@
     </style>
 </head>
 <body>
+    <div id="imageModal" class="modal" onclick="this.style.display='none'">
+        <img class="modal-content" id="imgFull">
+    </div>
+
     <div class="app-container">
         <header class="bakery-header">
             <h1 class="shop-name" id="shop-name">JAVIER • BOULANGERIE</h1>
@@ -200,15 +236,31 @@
                 document.getElementById('shop-name').innerText = CONFIG.nombre_tienda || 'BOULANGERIE';
                 mostrarMensaje(CONFIG.mensaje_bienvenida || "¡Hola! Soy Javier. ¿Qué se te antoja hoy?", 'bot', true);
             } catch (e) { 
-                mostrarMensaje("Javier está en el horno. Intenta de nuevo.", 'bot');
+                mostrarMensaje("Error al conectar con la cocina.", 'bot');
             }
         }
 
-        function mostrarMensaje(texto, remitente, conBotones = false, mostrarWS = false) {
+        function mostrarMensaje(texto, remitente, conBotones = false, mostrarWS = false, urlImagen = null) {
             const chatWindow = document.getElementById('chat-window');
             const div = document.createElement('div');
             div.className = `msg ${remitente}`;
-            div.innerHTML = texto.replace(/\*\*(.*?)\*\*/g, '<b>$1</b>').replace(/\n/g, '<br>');
+
+            if (urlImagen) {
+                const img = document.createElement('img');
+                img.src = urlImagen;
+                img.className = 'product-img';
+                img.onclick = function() {
+                    const modal = document.getElementById("imageModal");
+                    const modalImg = document.getElementById("imgFull");
+                    modal.style.display = "flex";
+                    modalImg.src = this.src;
+                };
+                div.appendChild(img);
+            }
+
+            const textDiv = document.createElement('div');
+            textDiv.innerHTML = texto.replace(/\*\*(.*?)\*\*/g, '<b>$1</b>').replace(/\n/g, '<br>');
+            div.appendChild(textDiv);
 
             if (conBotones) {
                 const qDiv = document.createElement('div');
@@ -226,17 +278,12 @@
                 btn.href = `https://wa.me/${CONFIG.contacto_whatsapp}`;
                 btn.className = 'btn-ws';
                 btn.target = "_blank";
-                btn.innerHTML = 'PEDIR POR WHATSAPP';
+                btn.innerHTML = 'PEDIR POR WHATSAPP 🛒';
                 div.appendChild(btn);
             }
 
             chatWindow.appendChild(div);
             chatWindow.scrollTo({ top: chatWindow.scrollHeight, behavior: 'smooth' });
-        }
-
-        function autoPregunta(t) {
-            document.getElementById('user-input').value = t;
-            enviarMensaje();
         }
 
         async function enviarMensaje() {
@@ -259,7 +306,7 @@
                 typing.style.display = 'none';
                 if (data.respuesta) {
                     historial.push({role: "user", content: texto}, {role: "assistant", content: data.respuesta});
-                    mostrarMensaje(data.respuesta, 'bot', false, data.mostrar_whatsapp);
+                    mostrarMensaje(data.respuesta, 'bot', false, data.mostrar_whatsapp, data.imagen);
                 }
             } catch (e) { 
                 typing.style.display = 'none';
@@ -267,6 +314,7 @@
             }
         }
 
+        function autoPregunta(t) { document.getElementById('user-input').value = t; enviarMensaje(); }
         document.getElementById('user-input').addEventListener('keypress', (e) => { if (e.key === 'Enter') enviarMensaje(); });
         window.onload = init;
     </script>
