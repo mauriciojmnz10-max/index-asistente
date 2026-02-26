@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>MultiKAP • TAZ 2080</title>
+    <title>MultiKAP • TAZ Asistente</title>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700&family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -14,25 +14,44 @@
             --taz-white: #ffffff;
             --taz-black: #1a1308;
             --bg-light: #fcf5e8;
+            --bg-dark: #1a150e;
             --glass-white: rgba(255, 255, 255, 0.2);
+            --glass-dark: rgba(20, 15, 10, 0.7);
             --glass-user: rgba(255, 85, 0, 0.15);
             --glass-border: rgba(255, 85, 0, 0.3);
             --taz-gradient: linear-gradient(135deg, #ff5500 0%, #ff884d 50%, #ff5500 100%);
             --shadow-elegant: 0 20px 40px rgba(255, 85, 0, 0.2);
+            
+            /* Modo claro (por defecto) */
+            --bg-primary: var(--bg-light);
+            --text-primary: var(--taz-black);
+            --glass-primary: var(--glass-white);
+            --bubble-user: rgba(255, 85, 0, 0.12);
+            --header-bg: rgba(255, 255, 255, 0.15);
+        }
+
+        /* Modo oscuro */
+        body.dark-mode {
+            --bg-primary: var(--bg-dark);
+            --text-primary: var(--taz-cream);
+            --glass-primary: var(--glass-dark);
+            --bubble-user: rgba(255, 85, 0, 0.25);
+            --header-bg: rgba(20, 15, 10, 0.6);
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 
         body {
             font-family: 'Montserrat', sans-serif;
-            background: var(--bg-light);
+            background: var(--bg-primary);
             height: 100dvh; 
             overflow: hidden;
             display: flex;
             flex-direction: column;
             position: fixed;
             width: 100%;
-            color: var(--taz-black);
+            color: var(--text-primary);
+            transition: background 0.3s, color 0.3s;
         }
 
         #canvas-bg {
@@ -45,29 +64,67 @@
             pointer-events: none;
         }
 
-        /* HEADER MÁS CORTO */
+        /* Botón modo oscuro */
+        .theme-toggle {
+            position: fixed;
+            top: calc(env(safe-area-inset-top) + 10px);
+            right: 15px;
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background: var(--glass-primary);
+            backdrop-filter: blur(10px);
+            border: 2px solid var(--taz-orange);
+            color: var(--taz-orange);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            cursor: pointer;
+            z-index: 1001;
+            box-shadow: 0 5px 15px rgba(255, 85, 0, 0.3);
+            transition: 0.3s;
+        }
+
+        .theme-toggle:active { transform: scale(0.9); }
+
+        /* Taz cambia de humor según modo */
+        body.dark-mode .taz-logo-img {
+            filter: sepia(0.5) hue-rotate(-10deg);
+        }
+
+        body.dark-mode .taz-thinking {
+            animation: thinkingDark 1s linear infinite;
+        }
+
+        @keyframes thinkingDark {
+            0% { transform: rotate(0deg) scale(1); }
+            50% { transform: rotate(180deg) scale(1.2); }
+            100% { transform: rotate(360deg) scale(1); }
+        }
+
         header {
-            padding: env(safe-area-inset-top) 15px 15px 15px; /* Reducido padding-bottom */
+            padding: env(safe-area-inset-top) 15px 15px 15px;
             text-align: center;
-            background: rgba(255, 255, 255, 0.15);
+            background: var(--header-bg);
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
             z-index: 100;
             position: relative;
             border-bottom: none;
             box-shadow: none;
-            /* Header más corto: menos altura total */
             max-height: 130px;
+            transition: background 0.3s;
         }
 
-        /* Línea naranja como LÍMITE INFERIOR del header */
+        /* Línea naranja con brillo cuando Taz piensa */
         header::after {
             content: '';
             position: absolute;
-            bottom: 0; /* Pegada al borde inferior del header */
+            bottom: 0;
             left: 0;
             width: 100%;
-            height: 3px; /* Un poco más gruesa para que se note como límite */
+            height: 3px;
             background: linear-gradient(90deg, 
                 transparent 0%, 
                 #ff5500 20%, 
@@ -77,18 +134,30 @@
             opacity: 0.9;
             box-shadow: 0 0 15px #ff5500;
             z-index: 1;
+            transition: box-shadow 0.3s, opacity 0.3s;
+        }
+
+        header.brilliant-line::after {
+            box-shadow: 0 0 30px #ff5500, 0 0 60px #ff5500;
+            opacity: 1;
+            animation: linePulse 0.8s infinite alternate;
+        }
+
+        @keyframes linePulse {
+            from { box-shadow: 0 0 20px #ff5500; }
+            to { box-shadow: 0 0 40px #ff5500, 0 0 60px #ff884d; }
         }
 
         .logo-container {
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 2px; /* Reducido gap */
+            gap: 2px;
             position: relative;
             z-index: 2;
         }
 
-        /* LOGO MÁS ABAJO ROMPIENDO EL LÍMITE */
+        /* LOGO CON SOMBRA MÁS PRONUNCIADA AL REBOTAR */
         .taz-logo-img {
             width: 100px;
             height: 100px;
@@ -98,16 +167,20 @@
             box-shadow: 0 10px 30px rgba(255, 85, 0, 0.5);
             animation: bounce 6s ease-in-out infinite;
             order: 2;
-            /* Valor negativo para romper el límite */
-            margin-bottom: -35px; /* Hace que el logo sobresalga por debajo */
-            margin-top: -5px; /* Ajuste fino */
+            margin-bottom: -35px;
+            margin-top: -5px;
             position: relative;
-            z-index: 10; /* Por encima de la línea */
+            z-index: 10;
+            transition: box-shadow 0.3s;
+        }
+
+        .taz-logo-img.bouncing {
+            box-shadow: 0 20px 40px rgba(255, 85, 0, 0.8), 0 0 30px #ff5500;
         }
 
         @keyframes bounce { 
             0%, 100% { transform: translateY(0); } 
-            50% { transform: translateY(-8px); } 
+            50% { transform: translateY(-10px); } 
         }
 
         .logo-text {
@@ -124,7 +197,6 @@
             order: 1;
             position: relative;
             z-index: 4;
-            margin-bottom: 0px;
         }
 
         #chat-window {
@@ -136,44 +208,46 @@
             gap: 15px;
             padding-bottom: 180px; 
             -webkit-overflow-scrolling: touch;
-            /* El primer mensaje empezará justo después del logo */
             margin-top: 10px;
         }
 
-        /* BURBUJAS DE CRISTAL */
+        /* BURBUJAS CON DESTELLOS AL APARECER */
         .msg {
             max-width: 85%;
             padding: 16px 22px;
             font-size: 15px;
             border-radius: 24px;
             line-height: 1.5;
-            animation: fadeIn 0.4s ease;
             backdrop-filter: blur(15px);
             -webkit-backdrop-filter: blur(15px);
             border: 1px solid rgba(255, 85, 0, 0.3);
             box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.1);
+            animation: messageGlow 0.5s ease;
+        }
+
+        @keyframes messageGlow {
+            0% { opacity: 0; transform: translateY(10px); box-shadow: 0 0 0 rgba(255,85,0,0); }
+            50% { opacity: 0.8; transform: translateY(0); box-shadow: 0 0 30px rgba(255,85,0,0.3); }
+            100% { opacity: 1; transform: translateY(0); box-shadow: 0 8px 32px 0 rgba(0,0,0,0.1); }
         }
 
         .bot { 
             align-self: flex-start; 
-            background: rgba(255, 255, 255, 0.2);
+            background: var(--glass-primary);
             border-left: 5px solid var(--taz-orange);
-            color: var(--taz-black);
+            color: var(--text-primary);
             border-top-left-radius: 4px;
-            text-shadow: 0 1px 3px rgba(255, 255, 255, 0.8);
         }
 
         .user { 
             align-self: flex-end; 
-            background: rgba(255, 85, 0, 0.12);
+            background: var(--bubble-user);
             border-right: 5px solid var(--taz-brown);
-            color: var(--taz-brown);
+            color: var(--text-primary);
             border-top-right-radius: 4px;
             font-weight: 500;
-            text-shadow: 0 1px 3px rgba(255, 255, 255, 0.8);
         }
 
-        /* INPUT FLOTANTE */
         .input-container {
             position: fixed;
             bottom: 30px; 
@@ -181,7 +255,7 @@
             transform: translateX(-50%);
             width: 92%;
             max-width: 500px;
-            background: rgba(255, 255, 255, 0.2);
+            background: var(--glass-primary);
             padding: 6px 6px 6px 25px;
             border-radius: 60px;
             display: flex;
@@ -198,14 +272,14 @@
             border: none;
             outline: none;
             background: transparent;
-            color: var(--taz-black);
+            color: var(--text-primary);
             font-size: 16px;
             padding: 14px 0;
             font-family: 'Montserrat', sans-serif;
         }
 
         input::placeholder {
-            color: rgba(26, 19, 8, 0.6);
+            color: rgba(90, 70, 50, 0.6);
         }
 
         .send-btn {
@@ -226,6 +300,46 @@
 
         .send-btn:active { transform: scale(0.9); }
 
+        /* Múltiples asesores */
+        .advisor-buttons {
+            display: flex;
+            overflow-x: auto;
+            gap: 12px;
+            padding: 15px 0 10px 0;
+            scrollbar-width: none;
+            justify-content: center;
+            flex-wrap: wrap; /* Para escritorio */
+        }
+        .advisor-buttons::-webkit-scrollbar { display: none; }
+
+        .advisor-btn {
+            background: var(--glass-primary);
+            border: 2px solid var(--taz-orange);
+            color: var(--taz-orange);
+            padding: 12px 20px;
+            border-radius: 40px;
+            font-size: 14px;
+            font-weight: 600;
+            backdrop-filter: blur(10px);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            white-space: nowrap;
+            transition: 0.2s;
+        }
+
+        .advisor-btn:active {
+            background: var(--taz-orange);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .advisor-btn.active {
+            background: var(--taz-orange);
+            color: white;
+        }
+
         .quick-replies { 
             display: flex; 
             overflow-x: auto; 
@@ -236,7 +350,7 @@
         .quick-replies::-webkit-scrollbar { display: none; }
 
         .btn-quick { 
-            background: rgba(255, 255, 255, 0.2);
+            background: var(--glass-primary);
             border: 2px solid var(--taz-orange); 
             color: var(--taz-orange-dark); 
             padding: 12px 24px;
@@ -244,11 +358,9 @@
             font-size: 14px;
             font-weight: 600; 
             backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
             box-shadow: 0 4px 10px rgba(0,0,0,0.1);
             cursor: pointer;
             transition: all 0.2s;
-            text-shadow: 0 1px 3px rgba(255, 255, 255, 0.5);
         }
 
         .btn-quick:active {
@@ -265,11 +377,10 @@
             font-size: 13px; 
             color: var(--taz-orange-dark); 
             display: none; 
-            background: rgba(255, 255, 255, 0.15);
+            background: var(--glass-primary);
             padding: 10px 22px;
             border-radius: 30px;
             backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
             z-index: 1000;
             box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
             border: 1px solid var(--taz-orange);
@@ -301,62 +412,182 @@
             40% { transform: scale(1); opacity: 1; }
         }
 
+        /* Animación más loca cuando piensa */
         .taz-thinking {
             display: inline-block;
-            animation: thinkingSpin 1s linear infinite;
+            animation: thinkingSpin 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55) infinite;
             font-size: 16px;
         }
 
         @keyframes thinkingSpin {
-            0% { transform: rotate(0deg); }
-            25% { transform: rotate(20deg); }
-            75% { transform: rotate(-20deg); }
-            100% { transform: rotate(0deg); }
+            0% { transform: rotate(0deg) scale(1); }
+            25% { transform: rotate(90deg) scale(1.3); }
+            50% { transform: rotate(180deg) scale(1); }
+            75% { transform: rotate(270deg) scale(1.3); }
+            100% { transform: rotate(360deg) scale(1); }
         }
 
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-
-        .btn-ws { 
-            background: rgba(37, 211, 102, 0.7);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            color: white !important; 
-            padding: 14px 20px; 
-            border-radius: 30px; 
-            text-decoration: none; 
-            font-weight: 600; 
-            display: block; 
-            text-align: center; 
-            margin-top: 15px; 
-            box-shadow: 0 8px 20px rgba(37, 211, 102, 0.3);
-            transition: transform 0.2s;
-            border: 1px solid rgba(255, 255, 255, 0.3);
+        /* Carrito de compras */
+        .cart-container {
+            position: fixed;
+            bottom: 100px;
+            right: 15px;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: var(--taz-gradient);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+            z-index: 1000;
+            box-shadow: 0 5px 20px rgba(255,85,0,0.5);
+            transition: 0.3s;
         }
 
-        .btn-ws:active { transform: scale(0.97); }
+        .cart-container:active { transform: scale(0.9); }
+
+        .cart-count {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: var(--taz-brown);
+            color: white;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: bold;
+            border: 2px solid white;
+        }
+
+        .cart-modal {
+            position: fixed;
+            bottom: 170px;
+            right: 15px;
+            width: 280px;
+            max-width: 90%;
+            background: var(--glass-primary);
+            backdrop-filter: blur(20px);
+            border: 2px solid var(--taz-orange);
+            border-radius: 20px;
+            padding: 15px;
+            z-index: 1001;
+            display: none;
+            color: var(--text-primary);
+        }
+
+        .cart-modal.show { display: block; }
+
+        .cart-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(255,85,0,0.2);
+        }
+
+        .cart-total {
+            font-weight: bold;
+            margin: 10px 0;
+            color: var(--taz-orange);
+        }
+
+        .cart-ws-btn {
+            background: #25d366;
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 30px;
+            width: 100%;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        /* Media query para escritorio (sin romper móvil) */
+        @media (min-width: 768px) {
+            body {
+                position: relative;
+                height: 100vh;
+                max-width: 1200px;
+                margin: 0 auto;
+                border-left: 1px solid rgba(255,85,0,0.2);
+                border-right: 1px solid rgba(255,85,0,0.2);
+            }
+            
+            #chat-window {
+                max-width: 800px;
+                margin: 0 auto;
+                width: 100%;
+                padding-left: 30px;
+                padding-right: 30px;
+            }
+            
+            .input-container {
+                max-width: 700px;
+            }
+            
+            .advisor-buttons {
+                justify-content: center;
+            }
+            
+            .cart-modal {
+                right: calc(50% - 400px);
+            }
+            
+            .theme-toggle {
+                right: calc(50% - 500px);
+            }
+        }
 
         @media (max-width: 380px) {
             .taz-logo-img { width: 85px; height: 85px; margin-bottom: -30px; }
             .logo-text { font-size: 2rem; }
             .msg { max-width: 90%; }
             .btn-quick { padding: 10px 20px; font-size: 13px; }
+            .advisor-btn { padding: 10px 15px; font-size: 13px; }
         }
     </style>
 </head>
 <body>
+    <div class="theme-toggle" onclick="toggleTheme()">🌙</div>
+    
+    <div class="cart-container" onclick="toggleCart()">
+        🛒
+        <span class="cart-count" id="cartCount">0</span>
+    </div>
+    
+    <div class="cart-modal" id="cartModal">
+        <h3 style="margin-bottom: 10px; color: var(--taz-orange);">🛍️ Carrito Taz</h3>
+        <div id="cartItems"></div>
+        <div class="cart-total" id="cartTotal">Total: $0</div>
+        <button class="cart-ws-btn" onclick="sendCartToWhatsApp()">⚡ Enviar pedido a Taz</button>
+    </div>
+    
     <canvas id="canvas-bg"></canvas>
     
-    <header>
+    <header id="mainHeader">
         <div class="logo-container">
             <div class="logo-text">MULTIKAP</div>
-            <img src="https://i.postimg.cc/SRN4tL6c/FB-IMG-1772076157470-1.jpg" class="taz-logo-img" alt="MultiKAP Logo">
+            <img src="https://i.postimg.cc/SRN4tL6c/FB-IMG-1772076157470-1.jpg" class="taz-logo-img" id="tazLogo" alt="MultiKAP Logo">
         </div>
     </header>
 
     <div id="chat-window"></div>
+    
+    <div class="advisor-buttons">
+        <button class="advisor-btn active" onclick="switchAdvisor('motos', this)">🏍️ Taz Motos</button>
+        <button class="advisor-btn" onclick="switchAdvisor('papeleria', this)">📚 Taz Papelería</button>
+        <button class="advisor-btn" onclick="switchAdvisor('hogar', this)">🧹 Taz Hogar</button>
+    </div>
+    
     <div id="typing">
         <span class="taz-thinking">⚡</span>
-        <span>Taz está pensando</span>
+        <span id="typingText">Taz está pensando</span>
         <div class="typing-dots">
             <span></span>
             <span></span>
@@ -370,6 +601,314 @@
     </div>
 
     <script>
+        // ========== CONFIGURACIÓN ==========
+        const API_BASE = 'https://asistente-javier.onrender.com';
+        let CONFIG = { contacto_whatsapp: "584120000000" };
+        let historial = [];
+        
+        // Estado de la app
+        let currentAdvisor = 'motos';
+        let cart = JSON.parse(localStorage.getItem('multikap_cart')) || [];
+        let messages = JSON.parse(localStorage.getItem('multikap_chat')) || [];
+        
+        // Elementos
+        const chatWindow = document.getElementById('chat-window');
+        const typingIndicator = document.getElementById('typing');
+        const header = document.getElementById('mainHeader');
+        const tazLogo = document.getElementById('tazLogo');
+        const cartCount = document.getElementById('cartCount');
+        const cartModal = document.getElementById('cartModal');
+        const cartItems = document.getElementById('cartItems');
+        const cartTotal = document.getElementById('cartTotal');
+        
+        // ========== FUNCIONES PRINCIPALES ==========
+        
+        // Inicialización
+        async function init() {
+            try {
+                const res = await fetch(`${API_BASE}/config`);
+                CONFIG = await res.json();
+                
+                // Cargar mensajes guardados
+                messages.forEach(msg => {
+                    mostrarMensaje(msg.text, msg.sender, msg.hasButtons, msg.hasWS);
+                });
+                
+                if (messages.length === 0) {
+                    mostrarMensaje("⚡ ¡Hola! Soy Taz. Bienvenido al mundo MultiKAP. ¿Qué puedo buscar por ti hoy?", 'bot', true);
+                }
+                
+                updateCartDisplay();
+            } catch (e) {
+                mostrarMensaje("Bienvenido a MultiKAP. ¿En qué podemos asesorarte?", 'bot', true);
+            }
+        }
+
+        // Mostrar mensaje
+        function mostrarMensaje(texto, remitente, conBotones = false, mostrarWS = false) {
+            const div = document.createElement('div');
+            div.className = `msg ${remitente}`;
+            const content = document.createElement('div');
+            content.innerHTML = texto.replace(/\*\*(.*?)\*\*/g, '<b style="color: var(--taz-orange);">$1</b>').replace(/\n/g, '<br>');
+            div.appendChild(content);
+
+            if (conBotones) {
+                const qDiv = document.createElement('div');
+                qDiv.className = 'quick-replies';
+                qDiv.innerHTML = `
+                    <button class="btn-quick" onclick="addToCart('Repuesto de moto', 25)">🛒 Comprar</button>
+                    <button class="btn-quick" onclick="auto('Motos')">🏍️ Más motos</button>
+                    <button class="btn-quick" onclick="auto('Ofertas')">🔥 Ofertas</button>
+                `;
+                div.appendChild(qDiv);
+            }
+
+            if (mostrarWS) {
+                const btn = document.createElement('a');
+                btn.href = `https://wa.me/${CONFIG.contacto_whatsapp}`;
+                btn.className = 'btn-ws';
+                btn.target = "_blank";
+                btn.innerText = '⚡ HABLAR CON TAZ EN WHATSAPP ⚡';
+                div.appendChild(btn);
+            }
+
+            chatWindow.appendChild(div);
+            
+            // Guardar en localStorage
+            messages.push({
+                text: texto,
+                sender: remitente,
+                hasButtons: conBotones,
+                hasWS: mostrarWS,
+                timestamp: new Date().toISOString()
+            });
+            localStorage.setItem('multikap_chat', JSON.stringify(messages));
+            
+            scrollToBottom();
+        }
+
+        // Enviar mensaje
+        async function enviarMensaje() {
+            const input = document.getElementById('user-input');
+            const texto = input.value.trim();
+            if(!texto) return;
+            
+            mostrarMensaje(texto, 'user');
+            input.value = '';
+            
+            // Activar animaciones de Taz
+            startThinking();
+            
+            try {
+                const res = await fetch(`${API_BASE}/chat`, {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({ 
+                        mensaje: texto, 
+                        historial: historial,
+                        advisor: currentAdvisor 
+                    })
+                });
+                const data = await res.json();
+                stopThinking();
+                
+                if (data.respuesta) {
+                    historial.push(
+                        {role: "user", content: texto}, 
+                        {role: "assistant", content: data.respuesta}
+                    );
+                    mostrarMensaje(data.respuesta, 'bot', false, data.mostrar_whatsapp);
+                    
+                    // Vibración si está disponible
+                    if (navigator.vibrate) navigator.vibrate(50);
+                    
+                    // Sonido sutil (si el usuario lo permite)
+                    playMessageSound();
+                }
+            } catch (e) {
+                stopThinking();
+                mostrarMensaje("⚡ Taz tuvo un problema de conexión. ¿Repites?", 'bot');
+            }
+        }
+
+        // ========== MEJORAS DE EXPERIENCIA ==========
+        
+        // Sonido sutil
+        function playMessageSound() {
+            try {
+                const audio = new Audio('data:audio/wav;base64,UklGRlwAAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YVAAAAA8AP8A/gD+AP8A/wD/AP8A');
+                audio.volume = 0.2;
+                audio.play().catch(() => {}); // Ignorar errores
+            } catch (e) {}
+        }
+
+        // Animaciones más locas cuando piensa
+        function startThinking() {
+            typingIndicator.style.display = 'flex';
+            header.classList.add('brilliant-line');
+            tazLogo.classList.add('bouncing');
+            
+            // Cambiar texto según asesor
+            const typingText = document.getElementById('typingText');
+            if (currentAdvisor === 'motos') typingText.innerText = 'Taz Motos está pensando';
+            else if (currentAdvisor === 'papeleria') typingText.innerText = 'Taz Papelería está pensando';
+            else typingText.innerText = 'Taz Hogar está pensando';
+        }
+
+        function stopThinking() {
+            typingIndicator.style.display = 'none';
+            header.classList.remove('brilliant-line');
+            tazLogo.classList.remove('bouncing');
+        }
+
+        // Scroll suave
+        function scrollToBottom() {
+            setTimeout(() => { 
+                chatWindow.scrollTo({
+                    top: chatWindow.scrollHeight,
+                    behavior: 'smooth'
+                });
+            }, 100);
+        }
+
+        // ========== MÚLTIPLES ASESORES ==========
+        
+        function switchAdvisor(advisor, btn) {
+            currentAdvisor = advisor;
+            
+            // Actualizar botones
+            document.querySelectorAll('.advisor-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            
+            // Mensaje de bienvenida del asesor
+            let msg = '';
+            if (advisor === 'motos') msg = "🏍️ ¡Soy Taz Motos! ¿Qué repuestos o accesorios buscas?";
+            else if (advisor === 'papeleria') msg = "📚 ¡Soy Taz Papelería! Cuadernos, útiles, mochilas... ¿qué necesitas?";
+            else msg = "🧹 ¡Soy Taz Hogar! Productos de limpieza y organización para tu casa";
+            
+            mostrarMensaje(msg, 'bot', true);
+            
+            // Vibración
+            if (navigator.vibrate) navigator.vibrate(30);
+        }
+
+        // ========== CARRITO DE COMPRAS ==========
+        
+        function addToCart(producto, precio) {
+            cart.push({ producto, precio, advisor: currentAdvisor });
+            localStorage.setItem('multikap_cart', JSON.stringify(cart));
+            updateCartDisplay();
+            
+            // Feedback
+            if (navigator.vibrate) navigator.vibrate(20);
+            mostrarMensaje(`✅ Añadido "${producto}" al carrito`, 'bot');
+        }
+
+        function updateCartDisplay() {
+            cartCount.innerText = cart.length;
+            
+            if (cartItems) {
+                if (cart.length === 0) {
+                    cartItems.innerHTML = '<p style="opacity:0.7;">Carrito vacío</p>';
+                    cartTotal.innerText = 'Total: $0';
+                    return;
+                }
+                
+                let html = '';
+                let total = 0;
+                cart.forEach((item, i) => {
+                    total += item.precio;
+                    html += `
+                        <div class="cart-item">
+                            <span>${item.producto}</span>
+                            <span>$${item.precio} 
+                                <button onclick="removeFromCart(${i})" style="background:none; border:none; color:red;">✖</button>
+                            </span>
+                        </div>
+                    `;
+                });
+                cartItems.innerHTML = html;
+                cartTotal.innerText = `Total: $${total}`;
+            }
+        }
+
+        function removeFromCart(index) {
+            cart.splice(index, 1);
+            localStorage.setItem('multikap_cart', JSON.stringify(cart));
+            updateCartDisplay();
+        }
+
+        function toggleCart() {
+            cartModal.classList.toggle('show');
+            updateCartDisplay();
+        }
+
+        function sendCartToWhatsApp() {
+            if (cart.length === 0) {
+                alert('¡El carrito está vacío!');
+                return;
+            }
+            
+            let mensaje = "🛒 *Pedido MultiKAP - TAZ 2080*%0A%0A";
+            let total = 0;
+            
+            cart.forEach(item => {
+                mensaje += `• ${item.producto}: $${item.precio}%0A`;
+                total += item.precio;
+            });
+            
+            mensaje += `%0A*Total: $${total}*%0A`;
+            mensaje += `%0AAsesor: Taz ${currentAdvisor === 'motos' ? '🏍️' : currentAdvisor === 'papeleria' ? '📚' : '🧹'}`;
+            
+            window.open(`https://wa.me/${CONFIG.contacto_whatsapp}?text=${mensaje}`, '_blank');
+            
+            // Limpiar carrito después de enviar
+            cart = [];
+            localStorage.setItem('multikap_cart', JSON.stringify(cart));
+            updateCartDisplay();
+            cartModal.classList.remove('show');
+        }
+
+        // ========== MODO OSCURO/CLARO ==========
+        
+        function toggleTheme() {
+            document.body.classList.toggle('dark-mode');
+            const themeBtn = document.querySelector('.theme-toggle');
+            themeBtn.innerText = document.body.classList.contains('dark-mode') ? '☀️' : '🌙';
+            
+            // Guardar preferencia
+            localStorage.setItem('multikap_theme', document.body.classList.contains('dark-mode') ? 'dark' : 'light');
+        }
+
+        // Cargar tema guardado
+        const savedTheme = localStorage.getItem('multikap_theme');
+        if (savedTheme === 'dark') {
+            document.body.classList.add('dark-mode');
+            document.querySelector('.theme-toggle').innerText = '☀️';
+        }
+
+        // ========== AUTOCOMPLETAR ==========
+        function auto(texto) { 
+            document.getElementById('user-input').value = texto; 
+            enviarMensaje(); 
+        }
+
+        // ========== EVENT LISTENERS ==========
+        document.getElementById('user-input').addEventListener('keydown', (e) => { 
+            if (e.key === 'Enter') { 
+                enviarMensaje(); 
+                document.getElementById('user-input').blur(); 
+            } 
+        });
+
+        // Cerrar carrito al hacer clic fuera
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('.cart-container') && !e.target.closest('.cart-modal')) {
+                cartModal.classList.remove('show');
+            }
+        });
+
+        // ========== CANVAS BACKGROUND ==========
         const canvas = document.getElementById('canvas-bg');
         const ctx = canvas.getContext('2d');
         
@@ -401,79 +940,7 @@
         }
         setInterval(draw, 60);
 
-        const API_BASE = 'https://asistente-javier.onrender.com';
-        let CONFIG = { contacto_whatsapp: "584120000000" };
-        let historial = [];
-
-        async function init() {
-            try {
-                const res = await fetch(`${API_BASE}/config`);
-                CONFIG = await res.json();
-                mostrarMensaje("⚡ ¡Hola! Soy Taz. Bienvenido al mundo MultiKAP. ¿Qué puedo buscar por ti hoy?", 'bot', true);
-            } catch (e) {
-                mostrarMensaje("Bienvenido a MultiKAP. ¿En qué podemos asesorarte?", 'bot', true);
-            }
-        }
-
-        function mostrarMensaje(texto, remitente, conBotones = false, mostrarWS = false) {
-            const chatWindow = document.getElementById('chat-window');
-            const div = document.createElement('div');
-            div.className = `msg ${remitente}`;
-            const content = document.createElement('div');
-            content.innerHTML = texto.replace(/\*\*(.*?)\*\*/g, '<b style="color: var(--taz-orange);">$1</b>').replace(/\n/g, '<br>');
-            div.appendChild(content);
-
-            if (conBotones) {
-                const qDiv = document.createElement('div');
-                qDiv.className = 'quick-replies';
-                qDiv.innerHTML = `
-                    <button class="btn-quick" onclick="auto('Motos')">🏍️ Repuestos Moto</button>
-                    <button class="btn-quick" onclick="auto('Papelería')">📚 Papelería</button>
-                    <button class="btn-quick" onclick="auto('Hogar')">🧹 Hogar</button>
-                `;
-                div.appendChild(qDiv);
-            }
-
-            if (mostrarWS) {
-                const btn = document.createElement('a');
-                btn.href = `https://wa.me/${CONFIG.contacto_whatsapp}`;
-                btn.className = 'btn-ws';
-                btn.target = "_blank";
-                btn.innerText = '⚡ HABLAR CON TAZ EN WHATSAPP ⚡';
-                div.appendChild(btn);
-            }
-
-            chatWindow.appendChild(div);
-            setTimeout(() => { chatWindow.scrollTop = chatWindow.scrollHeight; }, 100);
-        }
-
-        async function enviarMensaje() {
-            const input = document.getElementById('user-input');
-            const texto = input.value.trim();
-            if(!texto) return;
-            mostrarMensaje(texto, 'user');
-            input.value = '';
-            document.getElementById('typing').style.display = 'flex';
-            try {
-                const res = await fetch(`${API_BASE}/chat`, {
-                    method: 'POST',
-                    headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({ mensaje: texto, historial: historial })
-                });
-                const data = await res.json();
-                document.getElementById('typing').style.display = 'none';
-                if (data.respuesta) {
-                    historial.push({role: "user", content: texto}, {role: "assistant", content: data.respuesta});
-                    mostrarMensaje(data.respuesta, 'bot', false, data.mostrar_whatsapp);
-                }
-            } catch (e) {
-                document.getElementById('typing').style.display = 'none';
-                mostrarMensaje("⚡ Taz tuvo un problema de conexión. ¿Repites?", 'bot');
-            }
-        }
-
-        function auto(t) { document.getElementById('user-input').value = t; enviarMensaje(); }
-        document.getElementById('user-input').addEventListener('keydown', (e) => { if (e.key === 'Enter') { enviarMensaje(); document.getElementById('user-input').blur(); } });
+        // Iniciar
         window.onload = init;
     </script>
 </body>
