@@ -777,54 +777,93 @@
         const advisorMenu = document.getElementById('advisorMenu');
         const typingText = document.getElementById('typingText');
         
-        // ========== FUNCIÓN DE INICIO ==========
-        async function init() {
-            try {
-                // Cargar configuración desde el backend
-                const res = await fetch(`${API_BASE}/config`);
-                CONFIG = await res.json();
-                
-                // ===== CARGAR CATÁLOGOS =====
-                if (CONFIG.catalogo_motos && CONFIG.catalogo_motos.length > 0) {
-                    catalogo_motos = CONFIG.catalogo_motos;
-                    console.log("✅ Catálogo motos cargado:", catalogo_motos.length, "productos");
-                } else {
-                    console.warn("⚠️ No se encontró catalogo_motos en CONFIG");
-                }
-                
-                if (CONFIG.catalogo_papeleria && CONFIG.catalogo_papeleria.length > 0) {
-                    catalogo_papeleria = CONFIG.catalogo_papeleria;
-                    console.log("✅ Catálogo papelería cargado:", catalogo_papeleria.length, "productos");
-                } else {
-                    console.warn("⚠️ No se encontró catalogo_papeleria en CONFIG");
-                }
-                
-                if (CONFIG.catalogo_hogar && CONFIG.catalogo_hogar.length > 0) {
-                    catalogo_hogar = CONFIG.catalogo_hogar;
-                    console.log("✅ Catálogo hogar cargado:", catalogo_hogar.length, "productos");
-                } else {
-                    console.warn("⚠️ No se encontró catalogo_hogar en CONFIG");
-                }
-                
-                // Cargar mensajes guardados
-                messages.forEach(msg => {
-                    mostrarMensaje(msg.text, msg.sender, msg.hasButtons, msg.hasWS, false);
-                });
-                
-                // SOLO mostrar mensaje de bienvenida si no hay historial
-                if (messages.length === 0) {
-                    mostrarMensaje(CONFIG.mensaje_bienvenida || "⚡ **¡Hola! Soy Taz, tu asistente virtual de MultiKAP.** ⚡\n\nTengo varios modos de asesoramiento que puedes ver en el botón naranja de la parte superior derecha (🏍️).\n\nSelecciona un asesor para ver nuestro **catálogo completo** con precios en $ y Bs.", 'bot', true);
-                }
-                
-                updateCartDisplay();
-                updateTypingText();
-            } catch (e) {
-                console.log("Error de conexión, usando modo offline");
-                if (messages.length === 0) {
-                    mostrarMensaje("⚡ **¡Hola! Soy Taz, tu asistente virtual de MultiKAP.** ⚡\n\nTengo varios modos de asesoramiento que puedes ver en el botón naranja de la parte superior derecha (🏍️).\n\nSelecciona un asesor para ver nuestro **catálogo completo** con precios en $ y Bs.", 'bot', true);
-                }
-            }
+       // ========== FUNCIÓN DE INICIO CORREGIDA CON DEPURACIÓN ==========
+async function init() {
+    try {
+        // Cargar configuración desde el backend
+        const res = await fetch(`${API_BASE}/config`);
+        CONFIG = await res.json();
+        
+        // ===== DEPURACIÓN: Ver qué está llegando exactamente =====
+        console.log("🔍 CONFIG COMPLETO:", CONFIG);
+        console.log("🔍 Tipo de CONFIG:", typeof CONFIG);
+        console.log("🔍 ¿CONFIG es array?", Array.isArray(CONFIG));
+        console.log("🔍 Propiedades de CONFIG:", Object.keys(CONFIG));
+        console.log("🔍 catalogo_motos existe?", CONFIG.hasOwnProperty('catalogo_motos'));
+        console.log("🔍 catalogo_motos valor:", CONFIG.catalogo_motos);
+        console.log("🔍 catalogo_motos es array?", Array.isArray(CONFIG.catalogo_motos));
+        // ========================================================
+        
+        // ===== CARGAR CATÁLOGOS =====
+        if (CONFIG.catalogo_motos && Array.isArray(CONFIG.catalogo_motos) && CONFIG.catalogo_motos.length > 0) {
+            catalogo_motos = CONFIG.catalogo_motos;
+            console.log("✅ Catálogo motos cargado:", catalogo_motos.length, "productos");
+        } else {
+            console.warn("⚠️ No se encontró catalogo_motos válido en CONFIG");
+            // Fallback: datos de ejemplo para probar
+            catalogo_motos = [
+                {"emoji": "🏍️", "nombre": "Freno Delantero", "detalles": "Pastillas y disco", "precio": 25},
+                {"emoji": "🔧", "nombre": "Cadena", "detalles": "Kit completo", "precio": 45}
+            ];
         }
+        
+        if (CONFIG.catalogo_papeleria && Array.isArray(CONFIG.catalogo_papeleria) && CONFIG.catalogo_papeleria.length > 0) {
+            catalogo_papeleria = CONFIG.catalogo_papeleria;
+            console.log("✅ Catálogo papelería cargado:", catalogo_papeleria.length, "productos");
+        } else {
+            console.warn("⚠️ No se encontró catalogo_papeleria válido en CONFIG");
+            catalogo_papeleria = [
+                {"emoji": "📓", "nombre": "Cuaderno", "detalles": "100 hojas", "precio": 5},
+                {"emoji": "✏️", "nombre": "Lápices", "detalles": "Pack 10", "precio": 3}
+            ];
+        }
+        
+        if (CONFIG.catalogo_hogar && Array.isArray(CONFIG.catalogo_hogar) && CONFIG.catalogo_hogar.length > 0) {
+            catalogo_hogar = CONFIG.catalogo_hogar;
+            console.log("✅ Catálogo hogar cargado:", catalogo_hogar.length, "productos");
+        } else {
+            console.warn("⚠️ No se encontró catalogo_hogar válido en CONFIG");
+            catalogo_hogar = [
+                {"emoji": "🧹", "nombre": "Escoba", "detalles": "Cerdas duras", "precio": 10},
+                {"emoji": "🧽", "nombre": "Esponjas", "detalles": "Pack 3", "precio": 4}
+            ];
+        }
+        
+        // Cargar mensajes guardados
+        messages.forEach(msg => {
+            mostrarMensaje(msg.text, msg.sender, msg.hasButtons, msg.hasWS, false);
+        });
+        
+        // SOLO mostrar mensaje de bienvenida si no hay historial
+        if (messages.length === 0) {
+            mostrarMensaje(CONFIG.mensaje_bienvenida || "⚡ **¡Hola! Soy Taz, tu asistente virtual de MultiKAP.** ⚡\n\nTengo varios modos de asesoramiento que puedes ver en el botón naranja de la parte superior derecha (🏍️).\n\nSelecciona un asesor para ver nuestro **catálogo completo** con precios en $ y Bs.", 'bot', true);
+        }
+        
+        updateCartDisplay();
+        updateTypingText();
+    } catch (e) {
+        console.error("❌ Error en init:", e);
+        console.log("Error de conexión, usando modo offline con datos de ejemplo");
+        
+        // Datos de ejemplo para modo offline
+        catalogo_motos = [
+            {"emoji": "🏍️", "nombre": "Freno Delantero", "detalles": "Pastillas y disco", "precio": 25},
+            {"emoji": "🔧", "nombre": "Cadena", "detalles": "Kit completo", "precio": 45}
+        ];
+        catalogo_papeleria = [
+            {"emoji": "📓", "nombre": "Cuaderno", "detalles": "100 hojas", "precio": 5},
+            {"emoji": "✏️", "nombre": "Lápices", "detalles": "Pack 10", "precio": 3}
+        ];
+        catalogo_hogar = [
+            {"emoji": "🧹", "nombre": "Escoba", "detalles": "Cerdas duras", "precio": 10},
+            {"emoji": "🧽", "nombre": "Esponjas", "detalles": "Pack 3", "precio": 4}
+        ];
+        
+        if (messages.length === 0) {
+            mostrarMensaje("⚡ **¡Hola! Soy Taz, tu asistente virtual de MultiKAP.** ⚡\n\nTengo varios modos de asesoramiento que puedes ver en el botón naranja de la parte superior derecha (🏍️).\n\nSelecciona un asesor para ver nuestro **catálogo completo** con precios en $ y Bs.", 'bot', true);
+        }
+    }
+}
 
         // ========== MOSTRAR CATÁLOGO ==========
         function mostrarCatalogo(advisor) {
