@@ -37,12 +37,7 @@
             --header-bg: rgba(20, 15, 10, 0.6);
         }
 
-        * { 
-            margin: 0; 
-            padding: 0; 
-            box-sizing: border-box; 
-            -webkit-tap-highlight-color: transparent; 
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 
         body {
             font-family: 'Montserrat', sans-serif;
@@ -59,17 +54,13 @@
 
         #canvas-bg {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
             z-index: -1;
             opacity: 0.45;
             pointer-events: none;
-            /* El borde puede causar problemas en Chrome, lo movemos a otro lado */
         }
 
-        /* Borde sutil del canvas como elemento separado */
         .canvas-border {
             position: fixed;
             top: 0;
@@ -111,9 +102,7 @@
             position: relative;
         }
 
-        .theme-toggle:active, .advisor-toggle:active { 
-            transform: scale(0.9); 
-        }
+        .theme-toggle:active, .advisor-toggle:active { transform: scale(0.9); }
 
         .advisor-menu {
             position: absolute;
@@ -133,9 +122,7 @@
             z-index: 1002;
         }
 
-        .advisor-menu.show {
-            display: flex;
-        }
+        .advisor-menu.show { display: flex; }
 
         .advisor-option {
             padding: 12px 15px;
@@ -166,16 +153,6 @@
 
         body.dark-mode .taz-logo-img {
             filter: sepia(0.5) hue-rotate(-10deg);
-        }
-
-        body.dark-mode .taz-thinking {
-            animation: thinkingDark 1s linear infinite;
-        }
-
-        @keyframes thinkingDark {
-            0% { transform: rotate(0deg) scale(1); }
-            50% { transform: rotate(180deg) scale(1.2); }
-            100% { transform: rotate(360deg) scale(1); }
         }
 
         header {
@@ -245,7 +222,6 @@
             position: relative;
             z-index: 10;
             transition: box-shadow 0.3s;
-            /* Fix para Chrome */
             will-change: transform;
         }
 
@@ -323,6 +299,72 @@
             font-weight: 500;
         }
 
+        .productos-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            gap: 10px;
+            margin: 10px 0;
+            width: 100%;
+        }
+
+        .producto-card {
+            background: var(--glass-primary);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid var(--taz-orange);
+            border-radius: 16px;
+            padding: 12px 8px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+        .producto-card:active {
+            transform: scale(0.95);
+            background: rgba(255, 85, 0, 0.2);
+            border-color: var(--taz-orange);
+        }
+
+        .producto-emoji {
+            font-size: 32px;
+            filter: drop-shadow(0 4px 6px rgba(255,85,0,0.3));
+        }
+
+        .producto-nombre {
+            font-weight: 600;
+            font-size: 13px;
+            text-align: center;
+            color: var(--text-primary);
+        }
+
+        .producto-precio {
+            font-weight: 700;
+            color: var(--taz-orange);
+            font-size: 16px;
+        }
+
+        .producto-add {
+            background: var(--taz-gradient);
+            color: white;
+            border: none;
+            border-radius: 30px;
+            padding: 6px 16px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 4px;
+        }
+
+        .producto-add:active {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(255,85,0,0.3);
+        }
+
         .input-container {
             position: fixed;
             bottom: 30px; 
@@ -355,7 +397,7 @@
 
         input::placeholder {
             color: rgba(90, 70, 50, 0.6);
-            opacity: 1; /* Fix para Chrome */
+            opacity: 1;
         }
 
         .send-btn {
@@ -374,42 +416,38 @@
             transition: 0.3s;
         }
 
-        .send-btn:active { 
-            transform: scale(0.9); 
-        }
+        .send-btn:active { transform: scale(0.9); }
 
         .quick-replies { 
             display: flex; 
             overflow-x: auto; 
-            gap: 15px;
-            padding: 15px 0 10px 0;
+            gap: 8px;
+            padding: 10px 0 5px 0;
             scrollbar-width: none; 
         }
-        .quick-replies::-webkit-scrollbar { 
-            display: none; 
-        }
+        .quick-replies::-webkit-scrollbar { display: none; }
 
         .btn-quick { 
             background: var(--glass-primary);
-            border: 2px solid var(--taz-orange); 
+            border: 1px solid var(--taz-orange); 
             color: var(--taz-orange-dark); 
-            padding: 12px 24px;
-            border-radius: 40px; 
-            font-size: 14px;
-            font-weight: 600; 
+            padding: 6px 14px;
+            border-radius: 30px; 
+            font-size: 12px;
+            font-weight: 500; 
             backdrop-filter: blur(10px);
             -webkit-backdrop-filter: blur(10px);
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
             cursor: pointer;
             transition: all 0.2s;
             white-space: nowrap;
         }
 
         .btn-quick:active {
-            background: rgba(255, 85, 0, 0.3);
+            background: var(--taz-orange);
             color: white;
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(255, 85, 0, 0.3);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 10px rgba(255, 85, 0, 0.2);
         }
 
         #typing { 
@@ -459,7 +497,7 @@
             display: inline-block;
             animation: thinkingSpin 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55) infinite;
             font-size: 16px;
-            will-change: transform; /* Fix para Chrome */
+            will-change: transform;
         }
 
         @keyframes thinkingSpin {
@@ -489,9 +527,7 @@
             transition: 0.3s;
         }
 
-        .cart-container:active { 
-            transform: scale(0.9); 
-        }
+        .cart-container:active { transform: scale(0.9); }
 
         .cart-count {
             position: absolute;
@@ -527,9 +563,7 @@
             color: var(--text-primary);
         }
 
-        .cart-modal.show { 
-            display: block; 
-        }
+        .cart-modal.show { display: block; }
 
         .cart-item {
             display: flex;
@@ -598,13 +632,19 @@
             .cart-modal {
                 right: calc(50% - 400px);
             }
+            
+            .productos-grid {
+                grid-template-columns: repeat(4, 1fr);
+            }
         }
 
         @media (max-width: 380px) {
             .taz-logo-img { width: 85px; height: 85px; margin-bottom: -30px; }
             .logo-text { font-size: 2rem; }
             .msg { max-width: 90%; }
-            .btn-quick { padding: 10px 20px; font-size: 13px; }
+            .productos-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
         }
     </style>
 </head>
@@ -623,8 +663,8 @@
                 <button class="advisor-option" onclick="switchAdvisor('papeleria', '📚', this)">
                     <span>📚</span> Taz Papelería
                 </button>
-                <button class="advisor-option" onclick="switchAdvisor('hogar', '🧹', this)">
-                    <span>🧹</span> Taz Hogar
+                <button class="advisor-option" onclick="switchAdvisor('hogar', '🏠', this)">
+                    <span>🏠</span> Taz Hogar
                 </button>
             </div>
         </div>
@@ -678,6 +718,34 @@
         let cart = JSON.parse(localStorage.getItem('multikap_cart')) || [];
         let messages = JSON.parse(localStorage.getItem('multikap_chat')) || [];
         
+        // Catálogo de productos con emojis
+        const productos = {
+            motos: [
+                { emoji: '🏍️', nombre: 'Freno delantero', precio: 25 },
+                { emoji: '🔧', nombre: 'Cadena transmisión', precio: 45 },
+                { emoji: '🛢️', nombre: 'Aceite 20W50', precio: 12 },
+                { emoji: '🔋', nombre: 'Batería', precio: 60 },
+                { emoji: '💡', nombre: 'Foco LED', precio: 15 },
+                { emoji: '⚙️', nombre: 'Kit de arrastre', precio: 35 }
+            ],
+            papeleria: [
+                { emoji: '📓', nombre: 'Cuaderno', precio: 5 },
+                { emoji: '✏️', nombre: 'Lápices (10)', precio: 3 },
+                { emoji: '🖊️', nombre: 'Bolígrafos (10)', precio: 8 },
+                { emoji: '🎒', nombre: 'Mochila', precio: 35 },
+                { emoji: '📏', nombre: 'Regla metálica', precio: 3 },
+                { emoji: '📌', nombre: 'Resaltadores', precio: 6 }
+            ],
+            hogar: [
+                { emoji: '🧹', nombre: 'Escoba', precio: 10 },
+                { emoji: '🧽', nombre: 'Esponjas (3)', precio: 4 },
+                { emoji: '🧴', nombre: 'Detergente 5L', precio: 15 },
+                { emoji: '🏠', nombre: 'Ambientador', precio: 7 },
+                { emoji: '🧺', nombre: 'Cesto ropa', precio: 22 },
+                { emoji: '🧼', nombre: 'Jabón líquido', precio: 9 }
+            ]
+        };
+        
         // Elementos
         const chatWindow = document.getElementById('chat-window');
         const typingIndicator = document.getElementById('typing');
@@ -698,23 +766,76 @@
                 const res = await fetch(`${API_BASE}/config`);
                 CONFIG = await res.json();
                 
+                // Cargar mensajes guardados
                 messages.forEach(msg => {
-                    mostrarMensaje(msg.text, msg.sender, msg.hasButtons, msg.hasWS);
+                    mostrarMensaje(msg.text, msg.sender, msg.hasButtons, msg.hasWS, false);
                 });
                 
+                // SOLO mostrar mensaje de bienvenida si no hay historial
                 if (messages.length === 0) {
-                    mostrarMensaje("⚡ **¡Hola! Soy Taz, tu asistente virtual de MultiKAP.** ⚡\n\nTengo varios modos de asesoramiento que puedes ver en el botón naranja de la parte superior derecha (🏍️).\n\nSimplemente escríbeme lo que necesitas y con gusto te ayudaré con repuestos de moto, papelería o artículos para el hogar.", 'bot', true);
+                    mostrarMensaje("⚡ **¡Hola! Soy Taz, tu asistente virtual de MultiKAP.** ⚡\n\nTengo varios modos de asesoramiento que puedes ver en el botón naranja de la parte superior derecha (🏍️).\n\nSelecciona un asesor para ver productos o simplemente escríbeme lo que necesitas.", 'bot', true);
                 }
                 
                 updateCartDisplay();
                 updateTypingText();
             } catch (e) {
                 console.log("Error de conexión, usando modo offline");
-                mostrarMensaje("⚡ **¡Hola! Soy Taz, tu asistente virtual de MultiKAP.** ⚡\n\nTengo varios modos de asesoramiento que puedes ver en el botón naranja de la parte superior derecha (🏍️).\n\nSimplemente escríbeme lo que necesitas y con gusto te ayudaré con repuestos de moto, papelería o artículos para el hogar.", 'bot', true);
+                // SOLO mostrar mensaje de bienvenida si no hay historial
+                if (messages.length === 0) {
+                    mostrarMensaje("⚡ **¡Hola! Soy Taz, tu asistente virtual de MultiKAP.** ⚡\n\nTengo varios modos de asesoramiento que puedes ver en el botón naranja de la parte superior derecha (🏍️).\n\nSelecciona un asesor para ver productos o simplemente escríbeme lo que necesitas.", 'bot', true);
+                }
             }
         }
 
-        function mostrarMensaje(texto, remitente, conBotones = false, mostrarWS = false) {
+        // Función para mostrar productos en formato grid
+        function mostrarProductos(advisor) {
+            const productosLista = productos[advisor];
+            const advisorNombre = advisor === 'motos' ? 'Motos' : advisor === 'papeleria' ? 'Papelería' : 'Hogar';
+            
+            let html = `<div style="margin-bottom: 8px;">🛍️ **Productos Taz ${advisorNombre}:**</div>`;
+            html += '<div class="productos-grid">';
+            
+            productosLista.forEach(p => {
+                html += `
+                    <div class="producto-card" onclick="addToCart('${advisor === 'hogar' ? '🏠' : p.emoji} ${p.nombre}', ${p.precio})">
+                        <div class="producto-emoji">${p.emoji}</div>
+                        <div class="producto-nombre">${p.nombre}</div>
+                        <div class="producto-precio">$${p.precio}</div>
+                        <button class="producto-add" onclick="event.stopPropagation(); addToCart('${advisor === 'hogar' ? '🏠' : p.emoji} ${p.nombre}', ${p.precio})">
+                            🛒 Añadir
+                        </button>
+                    </div>
+                `;
+            });
+            
+            html += '</div>';
+            
+            // Crear un mensaje especial para productos
+            const div = document.createElement('div');
+            div.className = 'msg bot';
+            const content = document.createElement('div');
+            content.innerHTML = html.replace(/\*\*(.*?)\*\*/g, '<b style="color: var(--taz-orange);">$1</b>');
+            div.appendChild(content);
+            chatWindow.appendChild(div);
+            
+            // Guardar en localStorage
+            messages.push({
+                text: "🛍️ [Productos mostrados]",
+                sender: 'bot',
+                hasButtons: false,
+                hasWS: false,
+                timestamp: new Date().toISOString()
+            });
+            
+            if (messages.length > 50) {
+                messages = messages.slice(-50);
+            }
+            localStorage.setItem('multikap_chat', JSON.stringify(messages));
+            
+            scrollToBottom();
+        }
+
+        function mostrarMensaje(texto, remitente, conBotones = false, mostrarWS = false, guardar = true) {
             const div = document.createElement('div');
             div.className = `msg ${remitente}`;
             const content = document.createElement('div');
@@ -725,7 +846,7 @@
                 const qDiv = document.createElement('div');
                 qDiv.className = 'quick-replies';
                 qDiv.innerHTML = `
-                    <button class="btn-quick" onclick="auto('¿Qué productos tienen?')">📋 Productos</button>
+                    <button class="btn-quick" onclick="mostrarProductos('${currentAdvisor}')">📋 Ver productos</button>
                     <button class="btn-quick" onclick="auto('Horarios')">⏰ Horarios</button>
                     <button class="btn-quick" onclick="auto('Formas de pago')">💳 Pagos</button>
                 `;
@@ -744,20 +865,21 @@
 
             chatWindow.appendChild(div);
             
-            messages.push({
-                text: texto,
-                sender: remitente,
-                hasButtons: conBotones,
-                hasWS: mostrarWS,
-                timestamp: new Date().toISOString()
-            });
-            
-            // Limitar el historial guardado a los últimos 50 mensajes
-            if (messages.length > 50) {
-                messages = messages.slice(-50);
+            if (guardar) {
+                messages.push({
+                    text: texto,
+                    sender: remitente,
+                    hasButtons: conBotones,
+                    hasWS: mostrarWS,
+                    timestamp: new Date().toISOString()
+                });
+                
+                if (messages.length > 50) {
+                    messages = messages.slice(-50);
+                }
+                
+                localStorage.setItem('multikap_chat', JSON.stringify(messages));
             }
-            
-            localStorage.setItem('multikap_chat', JSON.stringify(messages));
             
             scrollToBottom();
         }
@@ -783,9 +905,7 @@
                     })
                 });
                 
-                if (!res.ok) {
-                    throw new Error('Error en la respuesta');
-                }
+                if (!res.ok) throw new Error('Error en la respuesta');
                 
                 const data = await res.json();
                 stopThinking();
@@ -796,7 +916,6 @@
                         {role: "assistant", content: data.respuesta}
                     );
                     
-                    // Limitar historial
                     if (historial.length > 20) {
                         historial = historial.slice(-20);
                     }
@@ -832,11 +951,13 @@
             updateTypingText();
             
             let msg = '';
-            if (advisor === 'motos') msg = "🏍️ Ahora estás hablando con **Taz Motos**. ¿En qué puedo ayudarte?";
-            else if (advisor === 'papeleria') msg = "📚 Cambiaste a **Taz Papelería**. ¿Qué necesitas?";
-            else msg = "🧹 Cambiaste a **Taz Hogar**. ¿Qué producto buscas?";
+            if (advisor === 'motos') msg = "🏍️ Ahora estás hablando con **Taz Motos**. ¿Qué repuestos necesitas?";
+            else if (advisor === 'papeleria') msg = "📚 Cambiaste a **Taz Papelería**. ¿Buscas útiles?";
+            else msg = "🏠 Cambiaste a **Taz Hogar**. ¿Qué producto de limpieza necesitas?";
             
             mostrarMensaje(msg, 'bot', true);
+            // Mostrar productos automáticamente al cambiar de asesor
+            mostrarProductos(advisor);
             
             if (navigator.vibrate) navigator.vibrate(30);
             
@@ -886,7 +1007,28 @@
             updateCartDisplay();
             
             if (navigator.vibrate) navigator.vibrate(20);
-            mostrarMensaje(`✅ Añadido "${producto}" al carrito`, 'bot');
+            
+            // Feedback visual rápido
+            const toast = document.createElement('div');
+            toast.style.position = 'fixed';
+            toast.style.bottom = '180px';
+            toast.style.left = '50%';
+            toast.style.transform = 'translateX(-50%)';
+            toast.style.background = 'var(--taz-gradient)';
+            toast.style.color = 'white';
+            toast.style.padding = '10px 20px';
+            toast.style.borderRadius = '30px';
+            toast.style.fontSize = '14px';
+            toast.style.fontWeight = 'bold';
+            toast.style.zIndex = '2000';
+            toast.style.boxShadow = '0 5px 20px rgba(0,0,0,0.3)';
+            toast.style.animation = 'fadeInOut 1.5s ease';
+            toast.innerText = '✅ Añadido al carrito';
+            document.body.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.remove();
+            }, 1500);
         }
 
         function updateCartDisplay() {
@@ -1028,14 +1170,31 @@
         
         const savedAdvisor = localStorage.getItem('multikap_advisor');
         if (savedAdvisor) {
-            const icon = savedAdvisor === 'motos' ? '🏍️' : savedAdvisor === 'papeleria' ? '📚' : '🧹';
+            const icon = savedAdvisor === 'motos' ? '🏍️' : savedAdvisor === 'papeleria' ? '📚' : '🏠';
             const btn = document.querySelector(`.advisor-option[onclick*="${savedAdvisor}"]`);
             if (btn) {
-                switchAdvisor(savedAdvisor, icon, btn);
+                // Cambiamos el advisor pero SIN mostrar productos automáticamente
+                currentAdvisor = savedAdvisor;
+                currentAdvisorIcon = icon;
+                advisorIcon.innerText = icon;
+                btn.classList.add('active');
+                updateTypingText();
             }
         }
 
         window.onload = init;
+
+        // Animación para el toast
+        const style = document.createElement('style');
+        style.innerHTML = `
+            @keyframes fadeInOut {
+                0% { opacity: 0; transform: translateX(-50%) translateY(20px); }
+                15% { opacity: 1; transform: translateX(-50%) translateY(0); }
+                85% { opacity: 1; transform: translateX(-50%) translateY(0); }
+                100% { opacity: 0; transform: translateX(-50%) translateY(-20px); }
+            }
+        `;
+        document.head.appendChild(style);
     </script>
 </body>
 </html>
