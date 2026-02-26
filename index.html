@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>MultiKAP • TAZ Asistente</title>
+    <title>MultiKAP • TAZ 2080</title>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700&family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -64,11 +64,18 @@
             pointer-events: none;
         }
 
-        /* Botón modo oscuro */
-        .theme-toggle {
+        /* Botones flotantes superiores */
+        .floating-buttons {
             position: fixed;
             top: calc(env(safe-area-inset-top) + 10px);
             right: 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            z-index: 1001;
+        }
+
+        .theme-toggle, .advisor-toggle {
             width: 45px;
             height: 45px;
             border-radius: 50%;
@@ -81,12 +88,61 @@
             justify-content: center;
             font-size: 20px;
             cursor: pointer;
-            z-index: 1001;
             box-shadow: 0 5px 15px rgba(255, 85, 0, 0.3);
             transition: 0.3s;
+            position: relative;
         }
 
-        .theme-toggle:active { transform: scale(0.9); }
+        .theme-toggle:active, .advisor-toggle:active { transform: scale(0.9); }
+
+        /* Menú desplegable de asesores */
+        .advisor-menu {
+            position: absolute;
+            top: 50px;
+            right: 0;
+            background: var(--glass-primary);
+            backdrop-filter: blur(20px);
+            border: 2px solid var(--taz-orange);
+            border-radius: 20px;
+            padding: 8px;
+            display: none;
+            flex-direction: column;
+            gap: 5px;
+            min-width: 180px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            z-index: 1002;
+        }
+
+        .advisor-menu.show {
+            display: flex;
+        }
+
+        .advisor-option {
+            padding: 12px 15px;
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--text-primary);
+            cursor: pointer;
+            transition: 0.2s;
+            white-space: nowrap;
+            border: none;
+            background: transparent;
+            width: 100%;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .advisor-option:hover, .advisor-option:active {
+            background: var(--taz-orange);
+            color: white;
+        }
+
+        .advisor-option.active {
+            background: var(--taz-orange);
+            color: white;
+        }
 
         /* Taz cambia de humor según modo */
         body.dark-mode .taz-logo-img {
@@ -157,7 +213,6 @@
             z-index: 2;
         }
 
-        /* LOGO CON SOMBRA MÁS PRONUNCIADA AL REBOTAR */
         .taz-logo-img {
             width: 100px;
             height: 100px;
@@ -211,7 +266,6 @@
             margin-top: 10px;
         }
 
-        /* BURBUJAS CON DESTELLOS AL APARECER */
         .msg {
             max-width: 85%;
             padding: 16px 22px;
@@ -300,46 +354,6 @@
 
         .send-btn:active { transform: scale(0.9); }
 
-        /* Múltiples asesores */
-        .advisor-buttons {
-            display: flex;
-            overflow-x: auto;
-            gap: 12px;
-            padding: 15px 0 10px 0;
-            scrollbar-width: none;
-            justify-content: center;
-            flex-wrap: wrap; /* Para escritorio */
-        }
-        .advisor-buttons::-webkit-scrollbar { display: none; }
-
-        .advisor-btn {
-            background: var(--glass-primary);
-            border: 2px solid var(--taz-orange);
-            color: var(--taz-orange);
-            padding: 12px 20px;
-            border-radius: 40px;
-            font-size: 14px;
-            font-weight: 600;
-            backdrop-filter: blur(10px);
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            white-space: nowrap;
-            transition: 0.2s;
-        }
-
-        .advisor-btn:active {
-            background: var(--taz-orange);
-            color: white;
-            transform: translateY(-2px);
-        }
-
-        .advisor-btn.active {
-            background: var(--taz-orange);
-            color: white;
-        }
-
         .quick-replies { 
             display: flex; 
             overflow-x: auto; 
@@ -412,7 +426,6 @@
             40% { transform: scale(1); opacity: 1; }
         }
 
-        /* Animación más loca cuando piensa */
         .taz-thinking {
             display: inline-block;
             animation: thinkingSpin 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55) infinite;
@@ -427,7 +440,6 @@
             100% { transform: rotate(360deg) scale(1); }
         }
 
-        /* Carrito de compras */
         .cart-container {
             position: fixed;
             bottom: 100px;
@@ -508,7 +520,6 @@
             cursor: pointer;
         }
 
-        /* Media query para escritorio (sin romper móvil) */
         @media (min-width: 768px) {
             body {
                 position: relative;
@@ -531,16 +542,8 @@
                 max-width: 700px;
             }
             
-            .advisor-buttons {
-                justify-content: center;
-            }
-            
             .cart-modal {
                 right: calc(50% - 400px);
-            }
-            
-            .theme-toggle {
-                right: calc(50% - 500px);
             }
         }
 
@@ -549,12 +552,27 @@
             .logo-text { font-size: 2rem; }
             .msg { max-width: 90%; }
             .btn-quick { padding: 10px 20px; font-size: 13px; }
-            .advisor-btn { padding: 10px 15px; font-size: 13px; }
         }
     </style>
 </head>
 <body>
-    <div class="theme-toggle" onclick="toggleTheme()">🌙</div>
+    <div class="floating-buttons">
+        <div class="theme-toggle" onclick="toggleTheme()">🌙</div>
+        <div class="advisor-toggle" onclick="toggleAdvisorMenu()">
+            <span id="advisorIcon">🏍️</span>
+            <div class="advisor-menu" id="advisorMenu">
+                <button class="advisor-option active" onclick="switchAdvisor('motos', '🏍️', this)">
+                    <span>🏍️</span> Taz Motos
+                </button>
+                <button class="advisor-option" onclick="switchAdvisor('papeleria', '📚', this)">
+                    <span>📚</span> Taz Papelería
+                </button>
+                <button class="advisor-option" onclick="switchAdvisor('hogar', '🧹', this)">
+                    <span>🧹</span> Taz Hogar
+                </button>
+            </div>
+        </div>
+    </div>
     
     <div class="cart-container" onclick="toggleCart()">
         🛒
@@ -579,15 +597,9 @@
 
     <div id="chat-window"></div>
     
-    <div class="advisor-buttons">
-        <button class="advisor-btn active" onclick="switchAdvisor('motos', this)">🏍️ Taz Motos</button>
-        <button class="advisor-btn" onclick="switchAdvisor('papeleria', this)">📚 Taz Papelería</button>
-        <button class="advisor-btn" onclick="switchAdvisor('hogar', this)">🧹 Taz Hogar</button>
-    </div>
-    
     <div id="typing">
         <span class="taz-thinking">⚡</span>
-        <span id="typingText">Taz está pensando</span>
+        <span id="typingText">Taz Motos está pensando</span>
         <div class="typing-dots">
             <span></span>
             <span></span>
@@ -608,6 +620,7 @@
         
         // Estado de la app
         let currentAdvisor = 'motos';
+        let currentAdvisorIcon = '🏍️';
         let cart = JSON.parse(localStorage.getItem('multikap_cart')) || [];
         let messages = JSON.parse(localStorage.getItem('multikap_chat')) || [];
         
@@ -620,16 +633,17 @@
         const cartModal = document.getElementById('cartModal');
         const cartItems = document.getElementById('cartItems');
         const cartTotal = document.getElementById('cartTotal');
+        const advisorIcon = document.getElementById('advisorIcon');
+        const advisorMenu = document.getElementById('advisorMenu');
+        const typingText = document.getElementById('typingText');
         
         // ========== FUNCIONES PRINCIPALES ==========
         
-        // Inicialización
         async function init() {
             try {
                 const res = await fetch(`${API_BASE}/config`);
                 CONFIG = await res.json();
                 
-                // Cargar mensajes guardados
                 messages.forEach(msg => {
                     mostrarMensaje(msg.text, msg.sender, msg.hasButtons, msg.hasWS);
                 });
@@ -639,12 +653,12 @@
                 }
                 
                 updateCartDisplay();
+                updateTypingText();
             } catch (e) {
                 mostrarMensaje("Bienvenido a MultiKAP. ¿En qué podemos asesorarte?", 'bot', true);
             }
         }
 
-        // Mostrar mensaje
         function mostrarMensaje(texto, remitente, conBotones = false, mostrarWS = false) {
             const div = document.createElement('div');
             div.className = `msg ${remitente}`;
@@ -656,8 +670,8 @@
                 const qDiv = document.createElement('div');
                 qDiv.className = 'quick-replies';
                 qDiv.innerHTML = `
-                    <button class="btn-quick" onclick="addToCart('Repuesto de moto', 25)">🛒 Comprar</button>
-                    <button class="btn-quick" onclick="auto('Motos')">🏍️ Más motos</button>
+                    <button class="btn-quick" onclick="addToCart('Producto', 25)">🛒 Comprar</button>
+                    <button class="btn-quick" onclick="auto('Más info')">ℹ️ Más info</button>
                     <button class="btn-quick" onclick="auto('Ofertas')">🔥 Ofertas</button>
                 `;
                 div.appendChild(qDiv);
@@ -674,7 +688,6 @@
 
             chatWindow.appendChild(div);
             
-            // Guardar en localStorage
             messages.push({
                 text: texto,
                 sender: remitente,
@@ -687,7 +700,6 @@
             scrollToBottom();
         }
 
-        // Enviar mensaje
         async function enviarMensaje() {
             const input = document.getElementById('user-input');
             const texto = input.value.trim();
@@ -696,7 +708,6 @@
             mostrarMensaje(texto, 'user');
             input.value = '';
             
-            // Activar animaciones de Taz
             startThinking();
             
             try {
@@ -719,10 +730,7 @@
                     );
                     mostrarMensaje(data.respuesta, 'bot', false, data.mostrar_whatsapp);
                     
-                    // Vibración si está disponible
                     if (navigator.vibrate) navigator.vibrate(50);
-                    
-                    // Sonido sutil (si el usuario lo permite)
                     playMessageSound();
                 }
             } catch (e) {
@@ -731,28 +739,61 @@
             }
         }
 
+        // ========== SELECTOR DE ASESORES ==========
+        
+        function toggleAdvisorMenu() {
+            advisorMenu.classList.toggle('show');
+        }
+
+        function switchAdvisor(advisor, icon, btn) {
+            currentAdvisor = advisor;
+            currentAdvisorIcon = icon;
+            advisorIcon.innerText = icon;
+            
+            // Actualizar opciones activas
+            document.querySelectorAll('.advisor-option').forEach(opt => opt.classList.remove('active'));
+            btn.classList.add('active');
+            
+            // Cerrar menú
+            advisorMenu.classList.remove('show');
+            
+            // Actualizar texto de typing
+            updateTypingText();
+            
+            // Mensaje de bienvenida
+            let msg = '';
+            if (advisor === 'motos') msg = "🏍️ ¡Soy Taz Motos! ¿Qué repuestos o accesorios buscas?";
+            else if (advisor === 'papeleria') msg = "📚 ¡Soy Taz Papelería! Cuadernos, útiles, mochilas... ¿qué necesitas?";
+            else msg = "🧹 ¡Soy Taz Hogar! Productos de limpieza y organización para tu casa";
+            
+            mostrarMensaje(msg, 'bot', true);
+            
+            if (navigator.vibrate) navigator.vibrate(30);
+            
+            // Guardar preferencia
+            localStorage.setItem('multikap_advisor', advisor);
+        }
+
+        function updateTypingText() {
+            if (currentAdvisor === 'motos') typingText.innerText = 'Taz Motos está pensando';
+            else if (currentAdvisor === 'papeleria') typingText.innerText = 'Taz Papelería está pensando';
+            else typingText.innerText = 'Taz Hogar está pensando';
+        }
+
         // ========== MEJORAS DE EXPERIENCIA ==========
         
-        // Sonido sutil
         function playMessageSound() {
             try {
                 const audio = new Audio('data:audio/wav;base64,UklGRlwAAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YVAAAAA8AP8A/gD+AP8A/wD/AP8A');
                 audio.volume = 0.2;
-                audio.play().catch(() => {}); // Ignorar errores
+                audio.play().catch(() => {});
             } catch (e) {}
         }
 
-        // Animaciones más locas cuando piensa
         function startThinking() {
             typingIndicator.style.display = 'flex';
             header.classList.add('brilliant-line');
             tazLogo.classList.add('bouncing');
-            
-            // Cambiar texto según asesor
-            const typingText = document.getElementById('typingText');
-            if (currentAdvisor === 'motos') typingText.innerText = 'Taz Motos está pensando';
-            else if (currentAdvisor === 'papeleria') typingText.innerText = 'Taz Papelería está pensando';
-            else typingText.innerText = 'Taz Hogar está pensando';
         }
 
         function stopThinking() {
@@ -761,7 +802,6 @@
             tazLogo.classList.remove('bouncing');
         }
 
-        // Scroll suave
         function scrollToBottom() {
             setTimeout(() => { 
                 chatWindow.scrollTo({
@@ -771,35 +811,13 @@
             }, 100);
         }
 
-        // ========== MÚLTIPLES ASESORES ==========
-        
-        function switchAdvisor(advisor, btn) {
-            currentAdvisor = advisor;
-            
-            // Actualizar botones
-            document.querySelectorAll('.advisor-btn').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-            
-            // Mensaje de bienvenida del asesor
-            let msg = '';
-            if (advisor === 'motos') msg = "🏍️ ¡Soy Taz Motos! ¿Qué repuestos o accesorios buscas?";
-            else if (advisor === 'papeleria') msg = "📚 ¡Soy Taz Papelería! Cuadernos, útiles, mochilas... ¿qué necesitas?";
-            else msg = "🧹 ¡Soy Taz Hogar! Productos de limpieza y organización para tu casa";
-            
-            mostrarMensaje(msg, 'bot', true);
-            
-            // Vibración
-            if (navigator.vibrate) navigator.vibrate(30);
-        }
-
-        // ========== CARRITO DE COMPRAS ==========
+        // ========== CARRITO ==========
         
         function addToCart(producto, precio) {
             cart.push({ producto, precio, advisor: currentAdvisor });
             localStorage.setItem('multikap_cart', JSON.stringify(cart));
             updateCartDisplay();
             
-            // Feedback
             if (navigator.vibrate) navigator.vibrate(20);
             mostrarMensaje(`✅ Añadido "${producto}" al carrito`, 'bot');
         }
@@ -858,36 +876,26 @@
             });
             
             mensaje += `%0A*Total: $${total}*%0A`;
-            mensaje += `%0AAsesor: Taz ${currentAdvisor === 'motos' ? '🏍️' : currentAdvisor === 'papeleria' ? '📚' : '🧹'}`;
+            mensaje += `%0AAsesor: Taz ${currentAdvisorIcon}`;
             
             window.open(`https://wa.me/${CONFIG.contacto_whatsapp}?text=${mensaje}`, '_blank');
             
-            // Limpiar carrito después de enviar
             cart = [];
             localStorage.setItem('multikap_cart', JSON.stringify(cart));
             updateCartDisplay();
             cartModal.classList.remove('show');
         }
 
-        // ========== MODO OSCURO/CLARO ==========
+        // ========== MODO OSCURO ==========
         
         function toggleTheme() {
             document.body.classList.toggle('dark-mode');
             const themeBtn = document.querySelector('.theme-toggle');
             themeBtn.innerText = document.body.classList.contains('dark-mode') ? '☀️' : '🌙';
-            
-            // Guardar preferencia
             localStorage.setItem('multikap_theme', document.body.classList.contains('dark-mode') ? 'dark' : 'light');
         }
 
-        // Cargar tema guardado
-        const savedTheme = localStorage.getItem('multikap_theme');
-        if (savedTheme === 'dark') {
-            document.body.classList.add('dark-mode');
-            document.querySelector('.theme-toggle').innerText = '☀️';
-        }
-
-        // ========== AUTOCOMPLETAR ==========
+        // ========== UTILIDADES ==========
         function auto(texto) { 
             document.getElementById('user-input').value = texto; 
             enviarMensaje(); 
@@ -901,14 +909,16 @@
             } 
         });
 
-        // Cerrar carrito al hacer clic fuera
         document.addEventListener('click', (e) => {
+            if (!e.target.closest('.advisor-toggle')) {
+                advisorMenu.classList.remove('show');
+            }
             if (!e.target.closest('.cart-container') && !e.target.closest('.cart-modal')) {
                 cartModal.classList.remove('show');
             }
         });
 
-        // ========== CANVAS BACKGROUND ==========
+        // ========== CANVAS ==========
         const canvas = document.getElementById('canvas-bg');
         const ctx = canvas.getContext('2d');
         
@@ -940,7 +950,20 @@
         }
         setInterval(draw, 60);
 
-        // Iniciar
+        // Cargar preferencias guardadas
+        const savedTheme = localStorage.getItem('multikap_theme');
+        if (savedTheme === 'dark') {
+            document.body.classList.add('dark-mode');
+            document.querySelector('.theme-toggle').innerText = '☀️';
+        }
+        
+        const savedAdvisor = localStorage.getItem('multikap_advisor');
+        if (savedAdvisor) {
+            switchAdvisor(savedAdvisor, 
+                savedAdvisor === 'motos' ? '🏍️' : savedAdvisor === 'papeleria' ? '📚' : '🧹',
+                document.querySelector(`.advisor-option[onclick*="${savedAdvisor}"]`));
+        }
+
         window.onload = init;
     </script>
 </body>
