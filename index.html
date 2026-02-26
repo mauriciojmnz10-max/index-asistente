@@ -22,7 +22,6 @@
             --taz-gradient: linear-gradient(135deg, #ff5500 0%, #ff884d 50%, #ff5500 100%);
             --shadow-elegant: 0 20px 40px rgba(255, 85, 0, 0.2);
             
-            /* Modo claro (por defecto) */
             --bg-primary: var(--bg-light);
             --text-primary: var(--taz-black);
             --glass-primary: var(--glass-white);
@@ -30,7 +29,6 @@
             --header-bg: rgba(255, 255, 255, 0.15);
         }
 
-        /* Modo oscuro */
         body.dark-mode {
             --bg-primary: var(--bg-dark);
             --text-primary: var(--taz-cream);
@@ -64,7 +62,6 @@
             pointer-events: none;
         }
 
-        /* Botones flotantes superiores */
         .floating-buttons {
             position: fixed;
             top: calc(env(safe-area-inset-top) + 10px);
@@ -95,7 +92,6 @@
 
         .theme-toggle:active, .advisor-toggle:active { transform: scale(0.9); }
 
-        /* Menú desplegable de asesores */
         .advisor-menu {
             position: absolute;
             top: 50px;
@@ -113,9 +109,7 @@
             z-index: 1002;
         }
 
-        .advisor-menu.show {
-            display: flex;
-        }
+        .advisor-menu.show { display: flex; }
 
         .advisor-option {
             padding: 12px 15px;
@@ -144,7 +138,6 @@
             color: white;
         }
 
-        /* Taz cambia de humor según modo */
         body.dark-mode .taz-logo-img {
             filter: sepia(0.5) hue-rotate(-10deg);
         }
@@ -173,7 +166,6 @@
             transition: background 0.3s;
         }
 
-        /* Línea naranja con brillo cuando Taz piensa */
         header::after {
             content: '';
             position: absolute;
@@ -302,6 +294,25 @@
             font-weight: 500;
         }
 
+        /* Productos clickeables */
+        .product-item {
+            display: inline-block;
+            background: rgba(255, 85, 0, 0.1);
+            padding: 5px 12px;
+            border-radius: 20px;
+            margin: 3px;
+            border: 1px solid var(--taz-orange);
+            cursor: pointer;
+            transition: 0.2s;
+            font-weight: 600;
+        }
+
+        .product-item:active {
+            background: var(--taz-orange);
+            color: white;
+            transform: scale(0.95);
+        }
+
         .input-container {
             position: fixed;
             bottom: 30px; 
@@ -357,31 +368,32 @@
         .quick-replies { 
             display: flex; 
             overflow-x: auto; 
-            gap: 15px;
-            padding: 15px 0 10px 0;
+            gap: 8px; /* Reducido */
+            padding: 12px 0 8px 0;
             scrollbar-width: none; 
         }
         .quick-replies::-webkit-scrollbar { display: none; }
 
         .btn-quick { 
             background: var(--glass-primary);
-            border: 2px solid var(--taz-orange); 
+            border: 1px solid var(--taz-orange); /* Borde más fino */
             color: var(--taz-orange-dark); 
-            padding: 12px 24px;
-            border-radius: 40px; 
-            font-size: 14px;
+            padding: 6px 14px; /* Más pequeño */
+            border-radius: 30px; 
+            font-size: 12px; /* Más pequeño */
             font-weight: 600; 
             backdrop-filter: blur(10px);
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
             cursor: pointer;
             transition: all 0.2s;
+            white-space: nowrap;
         }
 
         .btn-quick:active {
-            background: rgba(255, 85, 0, 0.3);
+            background: var(--taz-orange);
             color: white;
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(255, 85, 0, 0.3);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 10px rgba(255, 85, 0, 0.2);
         }
 
         #typing { 
@@ -513,11 +525,12 @@
             background: #25d366;
             color: white;
             border: none;
-            padding: 12px;
+            padding: 14px;
             border-radius: 30px;
             width: 100%;
             font-weight: bold;
             cursor: pointer;
+            font-size: 14px;
         }
 
         @media (min-width: 768px) {
@@ -551,7 +564,7 @@
             .taz-logo-img { width: 85px; height: 85px; margin-bottom: -30px; }
             .logo-text { font-size: 2rem; }
             .msg { max-width: 90%; }
-            .btn-quick { padding: 10px 20px; font-size: 13px; }
+            .btn-quick { padding: 5px 12px; font-size: 11px; }
         }
     </style>
 </head>
@@ -567,8 +580,8 @@
                 <button class="advisor-option" onclick="switchAdvisor('papeleria', '📚', this)">
                     <span>📚</span> Taz Papelería
                 </button>
-                <button class="advisor-option" onclick="switchAdvisor('hogar', '🧹', this)">
-                    <span>🧹</span> Taz Hogar
+                <button class="advisor-option" onclick="switchAdvisor('hogar', '🏠', this)"> <!-- Cambiado a casita -->
+                    <span>🏠</span> Taz Hogar
                 </button>
             </div>
         </div>
@@ -583,7 +596,7 @@
         <h3 style="margin-bottom: 10px; color: var(--taz-orange);">🛍️ Carrito Taz</h3>
         <div id="cartItems"></div>
         <div class="cart-total" id="cartTotal">Total: $0</div>
-        <button class="cart-ws-btn" onclick="sendCartToWhatsApp()">⚡ Enviar pedido a Taz</button>
+        <button class="cart-ws-btn" onclick="sendCartToWhatsApp()">💰 CONCRETAR COMPRA POR WHATSAPP</button>
     </div>
     
     <canvas id="canvas-bg"></canvas>
@@ -624,6 +637,28 @@
         let cart = JSON.parse(localStorage.getItem('multikap_cart')) || [];
         let messages = JSON.parse(localStorage.getItem('multikap_chat')) || [];
         
+        // Catálogo de productos (ejemplo)
+        const productos = {
+            motos: [
+                { nombre: '🏍️ Freno delantero', precio: 25 },
+                { nombre: '🏍️ Cadena de transmisión', precio: 45 },
+                { nombre: '🏍️ Aceite 20W50', precio: 12 },
+                { nombre: '🏍️ Batería', precio: 60 }
+            ],
+            papeleria: [
+                { nombre: '📚 Cuaderno universitario', precio: 5 },
+                { nombre: '📚 Bolígrafos (pack 10)', precio: 8 },
+                { nombre: '📚 Mochila escolar', precio: 35 },
+                { nombre: '📚 Regla metálica', precio: 3 }
+            ],
+            hogar: [
+                { nombre: '🏠 Escoba', precio: 10 },
+                { nombre: '🏠 Trapo de piso', precio: 6 },
+                { nombre: '🏠 Detergente 5L', precio: 15 },
+                { nombre: '🏠 Ambientador', precio: 7 }
+            ]
+        };
+        
         // Elementos
         const chatWindow = document.getElementById('chat-window');
         const typingIndicator = document.getElementById('typing');
@@ -645,21 +680,34 @@
                 CONFIG = await res.json();
                 
                 messages.forEach(msg => {
-                    mostrarMensaje(msg.text, msg.sender, msg.hasButtons, msg.hasWS);
+                    mostrarMensaje(msg.text, msg.sender, msg.hasButtons, msg.hasWS, msg.products);
                 });
                 
                 if (messages.length === 0) {
                     mostrarMensaje("⚡ ¡Hola! Soy Taz. Bienvenido al mundo MultiKAP. ¿Qué puedo buscar por ti hoy?", 'bot', true);
+                    mostrarProductos(currentAdvisor);
                 }
                 
                 updateCartDisplay();
                 updateTypingText();
             } catch (e) {
                 mostrarMensaje("Bienvenido a MultiKAP. ¿En qué podemos asesorarte?", 'bot', true);
+                mostrarProductos(currentAdvisor);
             }
         }
 
-        function mostrarMensaje(texto, remitente, conBotones = false, mostrarWS = false) {
+        function mostrarProductos(advisor) {
+            const productosLista = productos[advisor];
+            let texto = "**Productos disponibles:**\n\n";
+            
+            productosLista.forEach(p => {
+                texto += `<span class="product-item" onclick="addToCart('${p.nombre}', ${p.precio})">${p.nombre} - $${p.precio}</span> `;
+            });
+            
+            mostrarMensaje(texto, 'bot');
+        }
+
+        function mostrarMensaje(texto, remitente, conBotones = false, mostrarWS = false, esProductos = false) {
             const div = document.createElement('div');
             div.className = `msg ${remitente}`;
             const content = document.createElement('div');
@@ -670,19 +718,18 @@
                 const qDiv = document.createElement('div');
                 qDiv.className = 'quick-replies';
                 qDiv.innerHTML = `
-                    <button class="btn-quick" onclick="addToCart('Producto', 25)">🛒 Comprar</button>
-                    <button class="btn-quick" onclick="auto('Más info')">ℹ️ Más info</button>
+                    <button class="btn-quick" onclick="verProductos()">📋 Ver productos</button>
                     <button class="btn-quick" onclick="auto('Ofertas')">🔥 Ofertas</button>
+                    <button class="btn-quick" onclick="auto('Ayuda')">❓ Ayuda</button>
                 `;
                 div.appendChild(qDiv);
             }
 
             if (mostrarWS) {
-                const btn = document.createElement('a');
-                btn.href = `https://wa.me/${CONFIG.contacto_whatsapp}`;
-                btn.className = 'btn-ws';
-                btn.target = "_blank";
-                btn.innerText = '⚡ HABLAR CON TAZ EN WHATSAPP ⚡';
+                const btn = document.createElement('button');
+                btn.className = 'cart-ws-btn';
+                btn.onclick = () => sendCartToWhatsApp();
+                btn.innerText = '💰 CONCRETAR COMPRA POR WHATSAPP';
                 div.appendChild(btn);
             }
 
@@ -698,6 +745,10 @@
             localStorage.setItem('multikap_chat', JSON.stringify(messages));
             
             scrollToBottom();
+        }
+
+        function verProductos() {
+            mostrarProductos(currentAdvisor);
         }
 
         async function enviarMensaje() {
@@ -750,27 +801,23 @@
             currentAdvisorIcon = icon;
             advisorIcon.innerText = icon;
             
-            // Actualizar opciones activas
             document.querySelectorAll('.advisor-option').forEach(opt => opt.classList.remove('active'));
             btn.classList.add('active');
             
-            // Cerrar menú
             advisorMenu.classList.remove('show');
             
-            // Actualizar texto de typing
             updateTypingText();
             
-            // Mensaje de bienvenida
             let msg = '';
             if (advisor === 'motos') msg = "🏍️ ¡Soy Taz Motos! ¿Qué repuestos o accesorios buscas?";
             else if (advisor === 'papeleria') msg = "📚 ¡Soy Taz Papelería! Cuadernos, útiles, mochilas... ¿qué necesitas?";
-            else msg = "🧹 ¡Soy Taz Hogar! Productos de limpieza y organización para tu casa";
+            else msg = "🏠 ¡Soy Taz Hogar! Productos de limpieza y organización para tu casa";
             
             mostrarMensaje(msg, 'bot', true);
+            mostrarProductos(advisor);
             
             if (navigator.vibrate) navigator.vibrate(30);
             
-            // Guardar preferencia
             localStorage.setItem('multikap_advisor', advisor);
         }
 
@@ -820,6 +867,14 @@
             
             if (navigator.vibrate) navigator.vibrate(20);
             mostrarMensaje(`✅ Añadido "${producto}" al carrito`, 'bot');
+            
+            // Mostrar carrito brevemente
+            cartModal.classList.add('show');
+            setTimeout(() => {
+                if (!cartModal.matches(':hover')) {
+                    cartModal.classList.remove('show');
+                }
+            }, 2000);
         }
 
         function updateCartDisplay() {
@@ -840,7 +895,7 @@
                         <div class="cart-item">
                             <span>${item.producto}</span>
                             <span>$${item.precio} 
-                                <button onclick="removeFromCart(${i})" style="background:none; border:none; color:red;">✖</button>
+                                <button onclick="removeFromCart(${i})" style="background:none; border:none; color:red; font-size:16px;">✖</button>
                             </span>
                         </div>
                     `;
@@ -959,9 +1014,9 @@
         
         const savedAdvisor = localStorage.getItem('multikap_advisor');
         if (savedAdvisor) {
-            switchAdvisor(savedAdvisor, 
-                savedAdvisor === 'motos' ? '🏍️' : savedAdvisor === 'papeleria' ? '📚' : '🧹',
-                document.querySelector(`.advisor-option[onclick*="${savedAdvisor}"]`));
+            const icon = savedAdvisor === 'motos' ? '🏍️' : savedAdvisor === 'papeleria' ? '📚' : '🏠';
+            const btn = document.querySelector(`.advisor-option[onclick*="${savedAdvisor}"]`);
+            if (btn) switchAdvisor(savedAdvisor, icon, btn);
         }
 
         window.onload = init;
