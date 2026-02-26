@@ -707,6 +707,12 @@
     </div>
 
     <script>
+        // ========== LIMPIAR LOCALSTORAGE (ESTA ES LA CLAVE) ==========
+        localStorage.removeItem('multikap_chat');
+        localStorage.removeItem('multikap_cart');
+        localStorage.removeItem('multikap_advisor');
+        // ============================================================
+        
         // ========== CONFIGURACIÓN ==========
         const API_BASE = 'https://asistente-javier.onrender.com';
         let CONFIG = { contacto_whatsapp: "584120000000" };
@@ -715,34 +721,28 @@
         // Estado de la app
         let currentAdvisor = 'motos';
         let currentAdvisorIcon = '🏍️';
-        let cart = JSON.parse(localStorage.getItem('multikap_cart')) || [];
-        let messages = JSON.parse(localStorage.getItem('multikap_chat')) || [];
+        let cart = [];
+        let messages = [];
         
-        // Catálogo de productos con emojis
+        // Catálogo de productos
         const productos = {
             motos: [
                 { emoji: '🏍️', nombre: 'Freno delantero', precio: 25 },
                 { emoji: '🔧', nombre: 'Cadena transmisión', precio: 45 },
                 { emoji: '🛢️', nombre: 'Aceite 20W50', precio: 12 },
-                { emoji: '🔋', nombre: 'Batería', precio: 60 },
-                { emoji: '💡', nombre: 'Foco LED', precio: 15 },
-                { emoji: '⚙️', nombre: 'Kit de arrastre', precio: 35 }
+                { emoji: '🔋', nombre: 'Batería', precio: 60 }
             ],
             papeleria: [
                 { emoji: '📓', nombre: 'Cuaderno', precio: 5 },
                 { emoji: '✏️', nombre: 'Lápices (10)', precio: 3 },
                 { emoji: '🖊️', nombre: 'Bolígrafos (10)', precio: 8 },
-                { emoji: '🎒', nombre: 'Mochila', precio: 35 },
-                { emoji: '📏', nombre: 'Regla metálica', precio: 3 },
-                { emoji: '📌', nombre: 'Resaltadores', precio: 6 }
+                { emoji: '🎒', nombre: 'Mochila', precio: 35 }
             ],
             hogar: [
                 { emoji: '🧹', nombre: 'Escoba', precio: 10 },
                 { emoji: '🧽', nombre: 'Esponjas (3)', precio: 4 },
                 { emoji: '🧴', nombre: 'Detergente 5L', precio: 15 },
-                { emoji: '🏠', nombre: 'Ambientador', precio: 7 },
-                { emoji: '🧺', nombre: 'Cesto ropa', precio: 22 },
-                { emoji: '🧼', nombre: 'Jabón líquido', precio: 9 }
+                { emoji: '🏠', nombre: 'Ambientador', precio: 7 }
             ]
         };
         
@@ -759,35 +759,24 @@
         const advisorMenu = document.getElementById('advisorMenu');
         const typingText = document.getElementById('typingText');
         
-        // ========== FUNCIONES PRINCIPALES ==========
-        
+        // ========== FUNCIÓN DE INICIO ==========
         async function init() {
             try {
                 const res = await fetch(`${API_BASE}/config`);
                 CONFIG = await res.json();
                 
-                // Cargar mensajes guardados
-                messages.forEach(msg => {
-                    mostrarMensaje(msg.text, msg.sender, msg.hasButtons, msg.hasWS, false);
-                });
-                
-                // SOLO mostrar mensaje de bienvenida si no hay historial
-                if (messages.length === 0) {
-                    mostrarMensaje("⚡ **¡Hola! Soy Taz, tu asistente virtual de MultiKAP.** ⚡\n\nTengo varios modos de asesoramiento que puedes ver en el botón naranja de la parte superior derecha (🏍️).\n\nSelecciona un asesor para ver productos o simplemente escríbeme lo que necesitas.", 'bot', true);
-                }
+                // SOLO mostrar mensaje de bienvenida
+                mostrarMensaje("⚡ **¡Hola! Soy Taz, tu asistente virtual de MultiKAP.** ⚡\n\nTengo varios modos de asesoramiento que puedes ver en el botón naranja de la parte superior derecha (🏍️).\n\nSelecciona un asesor para ver productos o simplemente escríbeme lo que necesitas.", 'bot', true);
                 
                 updateCartDisplay();
                 updateTypingText();
             } catch (e) {
-                console.log("Error de conexión, usando modo offline");
-                // SOLO mostrar mensaje de bienvenida si no hay historial
-                if (messages.length === 0) {
-                    mostrarMensaje("⚡ **¡Hola! Soy Taz, tu asistente virtual de MultiKAP.** ⚡\n\nTengo varios modos de asesoramiento que puedes ver en el botón naranja de la parte superior derecha (🏍️).\n\nSelecciona un asesor para ver productos o simplemente escríbeme lo que necesitas.", 'bot', true);
-                }
+                console.log("Error de conexión");
+                mostrarMensaje("⚡ **¡Hola! Soy Taz, tu asistente virtual de MultiKAP.** ⚡\n\nTengo varios modos de asesoramiento que puedes ver en el botón naranja de la parte superior derecha (🏍️).\n\nSelecciona un asesor para ver productos o simplemente escríbeme lo que necesitas.", 'bot', true);
             }
         }
 
-        // Función para mostrar productos en formato grid
+        // Función para mostrar productos
         function mostrarProductos(advisor) {
             const productosLista = productos[advisor];
             const advisorNombre = advisor === 'motos' ? 'Motos' : advisor === 'papeleria' ? 'Papelería' : 'Hogar';
@@ -810,7 +799,6 @@
             
             html += '</div>';
             
-            // Crear un mensaje especial para productos
             const div = document.createElement('div');
             div.className = 'msg bot';
             const content = document.createElement('div');
@@ -818,24 +806,10 @@
             div.appendChild(content);
             chatWindow.appendChild(div);
             
-            // Guardar en localStorage
-            messages.push({
-                text: "🛍️ [Productos mostrados]",
-                sender: 'bot',
-                hasButtons: false,
-                hasWS: false,
-                timestamp: new Date().toISOString()
-            });
-            
-            if (messages.length > 50) {
-                messages = messages.slice(-50);
-            }
-            localStorage.setItem('multikap_chat', JSON.stringify(messages));
-            
             scrollToBottom();
         }
 
-        function mostrarMensaje(texto, remitente, conBotones = false, mostrarWS = false, guardar = true) {
+        function mostrarMensaje(texto, remitente, conBotones = false, mostrarWS = false) {
             const div = document.createElement('div');
             div.className = `msg ${remitente}`;
             const content = document.createElement('div');
@@ -864,23 +838,6 @@
             }
 
             chatWindow.appendChild(div);
-            
-            if (guardar) {
-                messages.push({
-                    text: texto,
-                    sender: remitente,
-                    hasButtons: conBotones,
-                    hasWS: mostrarWS,
-                    timestamp: new Date().toISOString()
-                });
-                
-                if (messages.length > 50) {
-                    messages = messages.slice(-50);
-                }
-                
-                localStorage.setItem('multikap_chat', JSON.stringify(messages));
-            }
-            
             scrollToBottom();
         }
 
@@ -956,12 +913,9 @@
             else msg = "🏠 Cambiaste a **Taz Hogar**. ¿Qué producto de limpieza necesitas?";
             
             mostrarMensaje(msg, 'bot', true);
-            // Mostrar productos automáticamente al cambiar de asesor
             mostrarProductos(advisor);
             
             if (navigator.vibrate) navigator.vibrate(30);
-            
-            localStorage.setItem('multikap_advisor', advisor);
         }
 
         function updateTypingText() {
@@ -1003,12 +957,10 @@
         
         function addToCart(producto, precio) {
             cart.push({ producto, precio, advisor: currentAdvisor });
-            localStorage.setItem('multikap_cart', JSON.stringify(cart));
             updateCartDisplay();
             
             if (navigator.vibrate) navigator.vibrate(20);
             
-            // Feedback visual rápido
             const toast = document.createElement('div');
             toast.style.position = 'fixed';
             toast.style.bottom = '180px';
@@ -1061,7 +1013,6 @@
 
         function removeFromCart(index) {
             cart.splice(index, 1);
-            localStorage.setItem('multikap_cart', JSON.stringify(cart));
             updateCartDisplay();
         }
 
@@ -1090,7 +1041,6 @@
             window.open(`https://wa.me/${CONFIG.contacto_whatsapp}?text=${mensaje}`, '_blank');
             
             cart = [];
-            localStorage.setItem('multikap_cart', JSON.stringify(cart));
             updateCartDisplay();
             cartModal.classList.remove('show');
         }
@@ -1101,7 +1051,6 @@
             document.body.classList.toggle('dark-mode');
             const themeBtn = document.querySelector('.theme-toggle');
             themeBtn.innerText = document.body.classList.contains('dark-mode') ? '☀️' : '🌙';
-            localStorage.setItem('multikap_theme', document.body.classList.contains('dark-mode') ? 'dark' : 'light');
         }
 
         // ========== UTILIDADES ==========
@@ -1161,26 +1110,8 @@
         }
         setInterval(draw, 60);
 
-        // Cargar preferencias guardadas
-        const savedTheme = localStorage.getItem('multikap_theme');
-        if (savedTheme === 'dark') {
-            document.body.classList.add('dark-mode');
-            document.querySelector('.theme-toggle').innerText = '☀️';
-        }
-        
-        const savedAdvisor = localStorage.getItem('multikap_advisor');
-        if (savedAdvisor) {
-            const icon = savedAdvisor === 'motos' ? '🏍️' : savedAdvisor === 'papeleria' ? '📚' : '🏠';
-            const btn = document.querySelector(`.advisor-option[onclick*="${savedAdvisor}"]`);
-            if (btn) {
-                // Cambiamos el advisor pero SIN mostrar productos automáticamente
-                currentAdvisor = savedAdvisor;
-                currentAdvisorIcon = icon;
-                advisorIcon.innerText = icon;
-                btn.classList.add('active');
-                updateTypingText();
-            }
-        }
+        // NO cargar nada de localStorage
+        // Solo iniciar con mensaje de bienvenida
 
         window.onload = init;
 
