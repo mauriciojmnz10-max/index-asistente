@@ -14,9 +14,8 @@
             --taz-white: #ffffff;
             --taz-black: #1a1308;
             --bg-light: #fcf5e8;
-            /* Efecto Cristal */
-            --glass-white: rgba(255, 255, 255, 0.75);
-            --glass-border: rgba(255, 255, 255, 0.4);
+            --glass-white: rgba(255, 255, 255, 0.3); /* Más transparente */
+            --glass-border: rgba(255, 85, 0, 0.2); /* Borde naranja sutil */
             --taz-gradient: linear-gradient(135deg, #ff5500 0%, #ff884d 50%, #ff5500 100%);
             --shadow-elegant: 0 20px 40px rgba(255, 85, 0, 0.2);
         }
@@ -40,19 +39,28 @@
             top: 0; left: 0;
             width: 100%; height: 100%;
             z-index: -1;
-            opacity: 0.25;
+            opacity: 0.4; /* Aumentado para que se note más el cristal encima */
+            border: 2px solid rgba(255, 85, 0, 0.15);
+            pointer-events: none;
         }
 
-        /* HEADER DE CRISTAL */
+        /* HEADER CON VERDADERO EFECTO CRISTAL */
         header {
             padding: env(safe-area-inset-top) 15px 20px 15px;
             text-align: center;
-            background: rgba(255, 250, 240, 0.85);
-            backdrop-filter: blur(15px);
-            -webkit-backdrop-filter: blur(15px);
+            background: rgba(255, 250, 240, 0.25); /* Mucho más transparente */
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
             z-index: 100;
-            border-bottom: 1px solid var(--glass-border);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            border-bottom: 1px solid rgba(255, 85, 0, 0.3);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            /* Para que se vea el fondo a través */
+            position: relative;
+        }
+
+        /* Para asegurar que el texto sea legible sobre el cristal */
+        header .logo-text {
+            text-shadow: 0 2px 10px rgba(255, 255, 255, 0.8);
         }
 
         .logo-container {
@@ -67,8 +75,8 @@
             height: 80px;
             border-radius: 50%;
             object-fit: cover;
-            border: 3px solid var(--taz-orange);
-            box-shadow: 0 0 25px rgba(255, 85, 0, 0.4);
+            border: 3px solid rgba(255, 255, 255, 0.9); /* Borde blanco para que resalte */
+            box-shadow: 0 0 30px rgba(255, 85, 0, 0.6);
             animation: spin 12s linear infinite;
         }
 
@@ -83,11 +91,10 @@
             -webkit-text-fill-color: transparent;
             font-weight: 700;
             text-transform: uppercase;
-            filter: drop-shadow(0 4px 8px rgba(255, 85, 0, 0.2));
+            filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.2));
             line-height: 1.2;
         }
 
-        /* ÁREA DE MENSAJES */
         #chat-window {
             flex: 1;
             overflow-y: auto;
@@ -99,7 +106,7 @@
             -webkit-overflow-scrolling: touch;
         }
 
-        /* BURBUJAS DE CRISTAL */
+        /* BURBUJAS CON VERDADERO EFECTO CRISTAL */
         .msg {
             max-width: 85%;
             padding: 16px 22px;
@@ -107,30 +114,33 @@
             border-radius: 24px;
             line-height: 1.5;
             animation: fadeIn 0.4s ease;
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            border: 1px solid var(--glass-border);
-            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.07);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 85, 0, 0.25);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.1);
         }
 
         .bot { 
             align-self: flex-start; 
-            background: rgba(255, 255, 255, 0.85); 
+            background: rgba(255, 255, 255, 0.2); /* Mucho más transparente */
             border-left: 4px solid var(--taz-orange); 
             color: var(--taz-black);
             border-top-left-radius: 4px;
+            /* Para legibilidad del texto sobre fondo transparente */
+            text-shadow: 0 1px 3px rgba(255, 255, 255, 0.8);
         }
 
         .user { 
             align-self: flex-end; 
-            background: rgba(255, 243, 224, 0.7); 
+            background: rgba(255, 243, 224, 0.2); /* Más transparente */
             border-right: 4px solid var(--taz-brown);
             color: var(--taz-brown);
             border-top-right-radius: 4px;
             font-weight: 500;
+            text-shadow: 0 1px 3px rgba(255, 255, 255, 0.8);
         }
 
-        /* INPUT FLOTANTE */
+        /* INPUT FLOTANTE CON CRISTAL */
         .input-container {
             position: fixed;
             bottom: 30px; 
@@ -138,15 +148,16 @@
             transform: translateX(-50%);
             width: 92%;
             max-width: 500px;
-            background: rgba(255, 255, 255, 0.9);
+            background: rgba(255, 255, 255, 0.2); /* Transparente */
             padding: 6px 6px 6px 25px;
             border-radius: 60px;
             display: flex;
             align-items: center;
-            border: 1px solid var(--taz-orange);
-            box-shadow: 0 15px 35px rgba(255, 85, 0, 0.2);
+            border: 1px solid rgba(255, 85, 0, 0.4);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
             z-index: 1000;
-            backdrop-filter: blur(8px);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
         }
 
         input {
@@ -158,6 +169,11 @@
             font-size: 16px;
             padding: 14px 0;
             font-family: 'Montserrat', sans-serif;
+        }
+
+        input::placeholder {
+            color: rgba(26, 19, 8, 0.6);
+            font-weight: 400;
         }
 
         .send-btn {
@@ -172,25 +188,42 @@
             justify-content: center;
             cursor: pointer;
             font-size: 24px;
-            box-shadow: 0 5px 15px rgba(255, 85, 0, 0.3);
+            box-shadow: 0 5px 15px rgba(255, 85, 0, 0.4);
             transition: 0.3s;
         }
 
         .send-btn:active { transform: scale(0.9); }
 
-        .quick-replies { display: flex; overflow-x: auto; gap: 12px; padding: 10px 0; scrollbar-width: none; }
+        .quick-replies { 
+            display: flex; 
+            overflow-x: auto; 
+            gap: 15px;
+            padding: 15px 0 10px 0;
+            scrollbar-width: none; 
+        }
         .quick-replies::-webkit-scrollbar { display: none; }
 
         .btn-quick { 
-            background: rgba(255, 255, 255, 0.8); 
-            border: 1px solid var(--taz-orange); 
+            background: rgba(255, 255, 255, 0.2); /* Transparente */
+            border: 1px solid rgba(255, 85, 0, 0.4); 
             color: var(--taz-orange-dark); 
-            padding: 10px 22px; 
+            padding: 12px 24px;
             border-radius: 40px; 
-            font-size: 13px; 
+            font-size: 14px;
             font-weight: 600; 
-            backdrop-filter: blur(5px);
-            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            cursor: pointer;
+            transition: all 0.2s;
+            text-shadow: 0 1px 3px rgba(255, 255, 255, 0.5);
+        }
+
+        .btn-quick:active {
+            background: rgba(255, 85, 0, 0.3);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(255, 85, 0, 0.3);
         }
 
         #typing { 
@@ -200,17 +233,61 @@
             font-size: 13px; 
             color: var(--taz-orange-dark); 
             display: none; 
-            background: rgba(255,255,255,0.8);
-            padding: 8px 20px;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 10px 22px;
             border-radius: 30px;
-            backdrop-filter: blur(5px);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
             z-index: 1000;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
+            border: 1px solid rgba(255, 85, 0, 0.3);
+            align-items: center;
+            gap: 8px;
+            font-weight: 500;
+        }
+
+        .typing-dots {
+            display: inline-flex;
+            gap: 4px;
+            margin-left: 5px;
+        }
+
+        .typing-dots span {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--taz-orange);
+            display: inline-block;
+            animation: typingBounce 1.4s infinite ease-in-out both;
+        }
+
+        .typing-dots span:nth-child(1) { animation-delay: -0.32s; }
+        .typing-dots span:nth-child(2) { animation-delay: -0.16s; }
+
+        @keyframes typingBounce {
+            0%, 80%, 100% { transform: scale(0.6); opacity: 0.6; }
+            40% { transform: scale(1); opacity: 1; }
+        }
+
+        .taz-thinking {
+            display: inline-block;
+            animation: thinkingSpin 1s linear infinite;
+            font-size: 16px;
+        }
+
+        @keyframes thinkingSpin {
+            0% { transform: rotate(0deg); }
+            25% { transform: rotate(20deg); }
+            75% { transform: rotate(-20deg); }
+            100% { transform: rotate(0deg); }
         }
 
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
         .btn-ws { 
-            background: #25d366; 
+            background: rgba(37, 211, 102, 0.8);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
             color: white !important; 
             padding: 14px 20px; 
             border-radius: 30px; 
@@ -219,9 +296,19 @@
             display: block; 
             text-align: center; 
             margin-top: 15px; 
-            box-shadow: 0 8px 20px rgba(37, 211, 102, 0.2);
+            box-shadow: 0 8px 20px rgba(37, 211, 102, 0.3);
+            transition: transform 0.2s;
+            border: 1px solid rgba(255, 255, 255, 0.3);
         }
 
+        .btn-ws:active { transform: scale(0.97); }
+
+        @media (max-width: 380px) {
+            .taz-logo-img { width: 70px; height: 70px; }
+            .logo-text { font-size: 1.8rem; }
+            .msg { max-width: 90%; }
+            .btn-quick { padding: 10px 20px; font-size: 13px; }
+        }
     </style>
 </head>
 <body>
@@ -235,7 +322,15 @@
     </header>
 
     <div id="chat-window"></div>
-    <div id="typing">⚡ Taz está pensando... ⚡</div>
+    <div id="typing">
+        <span class="taz-thinking">⚡</span>
+        <span>Taz está pensando</span>
+        <div class="typing-dots">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+    </div>
 
     <div class="input-container">
         <input type="text" id="user-input" placeholder="Escribe aquí..." autocomplete="off">
@@ -257,11 +352,11 @@
         const drops = Array(columns).fill(1);
 
         function draw() {
-            ctx.fillStyle = 'rgba(252, 245, 232, 0.15)';
+            ctx.fillStyle = 'rgba(252, 245, 232, 0.2)';
             ctx.fillRect(0, 0, canvas.width, canvas.height);
             ctx.fillStyle = '#ff5500';
-            ctx.font = '16px "Montserrat"';
-            ctx.globalAlpha = 0.1;
+            ctx.font = '18px "Montserrat"';
+            ctx.globalAlpha = 0.15;
             
             drops.forEach((y, i) => {
                 const symbols = '⚡✦✧';
@@ -326,7 +421,7 @@
             if(!texto) return;
             mostrarMensaje(texto, 'user');
             input.value = '';
-            document.getElementById('typing').style.display = 'block';
+            document.getElementById('typing').style.display = 'flex';
             try {
                 const res = await fetch(`${API_BASE}/chat`, {
                     method: 'POST',
