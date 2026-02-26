@@ -784,11 +784,27 @@
                 const res = await fetch(`${API_BASE}/config`);
                 CONFIG = await res.json();
                 
-                // Actualizar tasa si viene en alguna respuesta (opcional)
-                // Cargar catálogos desde el JSON
-                if (CONFIG.catalogo_motos) catalogo_motos = CONFIG.catalogo_motos;
-                if (CONFIG.catalogo_papeleria) catalogo_papeleria = CONFIG.catalogo_papeleria;
-                if (CONFIG.catalogo_hogar) catalogo_hogar = CONFIG.catalogo_hogar;
+                // ===== CARGAR CATÁLOGOS =====
+                if (CONFIG.catalogo_motos && CONFIG.catalogo_motos.length > 0) {
+                    catalogo_motos = CONFIG.catalogo_motos;
+                    console.log("✅ Catálogo motos cargado:", catalogo_motos.length, "productos");
+                } else {
+                    console.warn("⚠️ No se encontró catalogo_motos en CONFIG");
+                }
+                
+                if (CONFIG.catalogo_papeleria && CONFIG.catalogo_papeleria.length > 0) {
+                    catalogo_papeleria = CONFIG.catalogo_papeleria;
+                    console.log("✅ Catálogo papelería cargado:", catalogo_papeleria.length, "productos");
+                } else {
+                    console.warn("⚠️ No se encontró catalogo_papeleria en CONFIG");
+                }
+                
+                if (CONFIG.catalogo_hogar && CONFIG.catalogo_hogar.length > 0) {
+                    catalogo_hogar = CONFIG.catalogo_hogar;
+                    console.log("✅ Catálogo hogar cargado:", catalogo_hogar.length, "productos");
+                } else {
+                    console.warn("⚠️ No se encontró catalogo_hogar en CONFIG");
+                }
                 
                 // Cargar mensajes guardados
                 messages.forEach(msg => {
@@ -822,12 +838,14 @@
             } else if (advisor === 'papeleria') {
                 productos = catalogo_papeleria;
                 titulo = "📚 TAZ PAPELERÍA";
-            } else {
+            } else if (advisor === 'hogar') {
                 productos = catalogo_hogar;
                 titulo = "🏠 TAZ HOGAR";
             }
             
-            if (productos.length === 0) {
+            console.log(`Mostrando catálogo ${advisor}:`, productos.length, "productos");
+            
+            if (!productos || productos.length === 0) {
                 mostrarMensaje("🛍️ No hay productos disponibles en este momento.", 'bot');
                 return;
             }
