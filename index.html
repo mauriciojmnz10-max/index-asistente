@@ -299,71 +299,109 @@
             font-weight: 500;
         }
 
+        /* ===== ESTILO CATÁLOGO ===== */
+        .catalogo-container {
+            width: 100%;
+            margin: 5px 0;
+        }
+
+        .catalogo-titulo {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--taz-orange);
+            margin-bottom: 12px;
+            text-align: center;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
         .productos-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-            gap: 10px;
+            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+            gap: 12px;
             margin: 10px 0;
             width: 100%;
         }
 
-        .producto-card {
+        .producto-card-catalogo {
             background: var(--glass-primary);
             backdrop-filter: blur(10px);
             -webkit-backdrop-filter: blur(10px);
-            border: 1px solid var(--taz-orange);
-            border-radius: 16px;
-            padding: 12px 8px;
+            border: 2px solid var(--taz-orange);
+            border-radius: 20px;
+            padding: 16px 10px;
             display: flex;
             flex-direction: column;
             align-items: center;
             gap: 8px;
             cursor: pointer;
-            transition: all 0.2s;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            transition: all 0.3s;
+            box-shadow: 0 8px 20px rgba(255, 85, 0, 0.2);
         }
 
-        .producto-card:active {
-            transform: scale(0.95);
-            background: rgba(255, 85, 0, 0.2);
+        .producto-card-catalogo:active {
+            transform: scale(0.97);
+            background: rgba(255, 85, 0, 0.15);
             border-color: var(--taz-orange);
         }
 
         .producto-emoji {
-            font-size: 32px;
-            filter: drop-shadow(0 4px 6px rgba(255,85,0,0.3));
+            font-size: 48px;
+            filter: drop-shadow(0 8px 12px rgba(255,85,0,0.4));
+            margin-bottom: 5px;
         }
 
         .producto-nombre {
-            font-weight: 600;
-            font-size: 13px;
+            font-weight: 700;
+            font-size: 15px;
             text-align: center;
             color: var(--text-primary);
+            margin-bottom: 5px;
         }
 
-        .producto-precio {
-            font-weight: 700;
+        .producto-detalles {
+            font-size: 12px;
+            color: var(--text-primary);
+            opacity: 0.8;
+            text-align: center;
+            margin-bottom: 8px;
+            font-style: italic;
+        }
+
+        .producto-precio-dolar {
+            font-weight: 800;
             color: var(--taz-orange);
-            font-size: 16px;
+            font-size: 20px;
+            text-shadow: 0 2px 5px rgba(255,85,0,0.3);
         }
 
-        .producto-add {
+        .producto-precio-bs {
+            font-weight: 600;
+            color: var(--taz-brown);
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+
+        .producto-add-catalogo {
             background: var(--taz-gradient);
             color: white;
             border: none;
-            border-radius: 30px;
-            padding: 6px 16px;
-            font-size: 12px;
-            font-weight: 600;
+            border-radius: 40px;
+            padding: 10px 20px;
+            font-size: 13px;
+            font-weight: 700;
             cursor: pointer;
             width: 100%;
-            margin-top: 4px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: 0 4px 15px rgba(255,85,0,0.4);
         }
 
-        .producto-add:active {
+        .producto-add-catalogo:active {
             transform: translateY(-2px);
-            box-shadow: 0 4px 10px rgba(255,85,0,0.3);
+            box-shadow: 0 8px 20px rgba(255,85,0,0.6);
         }
+        /* ========================== */
 
         .input-container {
             position: fixed;
@@ -634,7 +672,7 @@
             }
             
             .productos-grid {
-                grid-template-columns: repeat(4, 1fr);
+                grid-template-columns: repeat(3, 1fr);
             }
         }
 
@@ -645,6 +683,8 @@
             .productos-grid {
                 grid-template-columns: repeat(2, 1fr);
             }
+            .producto-emoji { font-size: 40px; }
+            .producto-precio-dolar { font-size: 18px; }
         }
     </style>
 </head>
@@ -707,44 +747,22 @@
     </div>
 
     <script>
-        // ========== LIMPIAR LOCALSTORAGE (ESTA ES LA CLAVE) ==========
-        localStorage.removeItem('multikap_chat');
-        localStorage.removeItem('multikap_cart');
-        localStorage.removeItem('multikap_advisor');
-        // ============================================================
-        
         // ========== CONFIGURACIÓN ==========
         const API_BASE = 'https://asistente-javier.onrender.com';
         let CONFIG = { contacto_whatsapp: "584120000000" };
         let historial = [];
+        let TASA_BCV = 60; // Valor por defecto, se actualizará desde el backend
         
         // Estado de la app
         let currentAdvisor = 'motos';
         let currentAdvisorIcon = '🏍️';
-        let cart = [];
-        let messages = [];
+        let cart = JSON.parse(localStorage.getItem('multikap_cart')) || [];
+        let messages = JSON.parse(localStorage.getItem('multikap_chat')) || [];
         
-        // Catálogo de productos
-        const productos = {
-            motos: [
-                { emoji: '🏍️', nombre: 'Freno delantero', precio: 25 },
-                { emoji: '🔧', nombre: 'Cadena transmisión', precio: 45 },
-                { emoji: '🛢️', nombre: 'Aceite 20W50', precio: 12 },
-                { emoji: '🔋', nombre: 'Batería', precio: 60 }
-            ],
-            papeleria: [
-                { emoji: '📓', nombre: 'Cuaderno', precio: 5 },
-                { emoji: '✏️', nombre: 'Lápices (10)', precio: 3 },
-                { emoji: '🖊️', nombre: 'Bolígrafos (10)', precio: 8 },
-                { emoji: '🎒', nombre: 'Mochila', precio: 35 }
-            ],
-            hogar: [
-                { emoji: '🧹', nombre: 'Escoba', precio: 10 },
-                { emoji: '🧽', nombre: 'Esponjas (3)', precio: 4 },
-                { emoji: '🧴', nombre: 'Detergente 5L', precio: 15 },
-                { emoji: '🏠', nombre: 'Ambientador', precio: 7 }
-            ]
-        };
+        // Catálogos (se cargarán desde el JSON)
+        let catalogo_motos = [];
+        let catalogo_papeleria = [];
+        let catalogo_hogar = [];
         
         // Elementos
         const chatWindow = document.getElementById('chat-window');
@@ -762,54 +780,105 @@
         // ========== FUNCIÓN DE INICIO ==========
         async function init() {
             try {
+                // Cargar configuración desde el backend
                 const res = await fetch(`${API_BASE}/config`);
                 CONFIG = await res.json();
                 
-                // SOLO mostrar mensaje de bienvenida
-                mostrarMensaje("⚡ **¡Hola! Soy Taz, tu asistente virtual de MultiKAP.** ⚡\n\nTengo varios modos de asesoramiento que puedes ver en el botón naranja de la parte superior derecha (🏍️).\n\nSelecciona un asesor para ver productos o simplemente escríbeme lo que necesitas.", 'bot', true);
+                // Actualizar tasa si viene en alguna respuesta (opcional)
+                // Cargar catálogos desde el JSON
+                if (CONFIG.catalogo_motos) catalogo_motos = CONFIG.catalogo_motos;
+                if (CONFIG.catalogo_papeleria) catalogo_papeleria = CONFIG.catalogo_papeleria;
+                if (CONFIG.catalogo_hogar) catalogo_hogar = CONFIG.catalogo_hogar;
+                
+                // Cargar mensajes guardados
+                messages.forEach(msg => {
+                    mostrarMensaje(msg.text, msg.sender, msg.hasButtons, msg.hasWS, false);
+                });
+                
+                // SOLO mostrar mensaje de bienvenida si no hay historial
+                if (messages.length === 0) {
+                    mostrarMensaje(CONFIG.mensaje_bienvenida || "⚡ **¡Hola! Soy Taz, tu asistente virtual de MultiKAP.** ⚡\n\nTengo varios modos de asesoramiento que puedes ver en el botón naranja de la parte superior derecha (🏍️).\n\nSelecciona un asesor para ver nuestro **catálogo completo** con precios en $ y Bs.", 'bot', true);
+                }
                 
                 updateCartDisplay();
                 updateTypingText();
             } catch (e) {
-                console.log("Error de conexión");
-                mostrarMensaje("⚡ **¡Hola! Soy Taz, tu asistente virtual de MultiKAP.** ⚡\n\nTengo varios modos de asesoramiento que puedes ver en el botón naranja de la parte superior derecha (🏍️).\n\nSelecciona un asesor para ver productos o simplemente escríbeme lo que necesitas.", 'bot', true);
+                console.log("Error de conexión, usando modo offline");
+                if (messages.length === 0) {
+                    mostrarMensaje("⚡ **¡Hola! Soy Taz, tu asistente virtual de MultiKAP.** ⚡\n\nTengo varios modos de asesoramiento que puedes ver en el botón naranja de la parte superior derecha (🏍️).\n\nSelecciona un asesor para ver nuestro **catálogo completo** con precios en $ y Bs.", 'bot', true);
+                }
             }
         }
 
-        // Función para mostrar productos
-        function mostrarProductos(advisor) {
-            const productosLista = productos[advisor];
-            const advisorNombre = advisor === 'motos' ? 'Motos' : advisor === 'papeleria' ? 'Papelería' : 'Hogar';
+        // ========== MOSTRAR CATÁLOGO ==========
+        function mostrarCatalogo(advisor) {
+            let productos = [];
+            let titulo = "";
+            let tasa = TASA_BCV;
             
-            let html = `<div style="margin-bottom: 8px;">🛍️ **Productos Taz ${advisorNombre}:**</div>`;
-            html += '<div class="productos-grid">';
+            if (advisor === 'motos') {
+                productos = catalogo_motos;
+                titulo = "🏍️ TAZ MOTOS";
+            } else if (advisor === 'papeleria') {
+                productos = catalogo_papeleria;
+                titulo = "📚 TAZ PAPELERÍA";
+            } else {
+                productos = catalogo_hogar;
+                titulo = "🏠 TAZ HOGAR";
+            }
             
-            productosLista.forEach(p => {
+            if (productos.length === 0) {
+                mostrarMensaje("🛍️ No hay productos disponibles en este momento.", 'bot');
+                return;
+            }
+            
+            let html = `<div class="catalogo-container">`;
+            html += `<div class="catalogo-titulo">${titulo}</div>`;
+            html += `<div class="productos-grid">`;
+            
+            productos.forEach(p => {
+                const precioBs = (p.precio * tasa).toFixed(2);
                 html += `
-                    <div class="producto-card" onclick="addToCart('${advisor === 'hogar' ? '🏠' : p.emoji} ${p.nombre}', ${p.precio})">
+                    <div class="producto-card-catalogo">
                         <div class="producto-emoji">${p.emoji}</div>
                         <div class="producto-nombre">${p.nombre}</div>
-                        <div class="producto-precio">$${p.precio}</div>
-                        <button class="producto-add" onclick="event.stopPropagation(); addToCart('${advisor === 'hogar' ? '🏠' : p.emoji} ${p.nombre}', ${p.precio})">
-                            🛒 Añadir
+                        <div class="producto-detalles">${p.detalles}</div>
+                        <div class="producto-precio-dolar">$${p.precio}</div>
+                        <div class="producto-precio-bs">Bs ${precioBs}</div>
+                        <button class="producto-add-catalogo" onclick="addToCart('${p.emoji} ${p.nombre}', ${p.precio})">
+                            🛒 AÑADIR
                         </button>
                     </div>
                 `;
             });
             
-            html += '</div>';
+            html += '</div></div>';
             
             const div = document.createElement('div');
             div.className = 'msg bot';
             const content = document.createElement('div');
-            content.innerHTML = html.replace(/\*\*(.*?)\*\*/g, '<b style="color: var(--taz-orange);">$1</b>');
+            content.innerHTML = html;
             div.appendChild(content);
             chatWindow.appendChild(div);
+            
+            // Guardar en localStorage
+            messages.push({
+                text: "🛍️ [Catálogo mostrado]",
+                sender: 'bot',
+                hasButtons: false,
+                hasWS: false,
+                timestamp: new Date().toISOString()
+            });
+            
+            if (messages.length > 50) {
+                messages = messages.slice(-50);
+            }
+            localStorage.setItem('multikap_chat', JSON.stringify(messages));
             
             scrollToBottom();
         }
 
-        function mostrarMensaje(texto, remitente, conBotones = false, mostrarWS = false) {
+        function mostrarMensaje(texto, remitente, conBotones = false, mostrarWS = false, guardar = true) {
             const div = document.createElement('div');
             div.className = `msg ${remitente}`;
             const content = document.createElement('div');
@@ -820,7 +889,7 @@
                 const qDiv = document.createElement('div');
                 qDiv.className = 'quick-replies';
                 qDiv.innerHTML = `
-                    <button class="btn-quick" onclick="mostrarProductos('${currentAdvisor}')">📋 Ver productos</button>
+                    <button class="btn-quick" onclick="mostrarCatalogo('${currentAdvisor}')">📋 Ver catálogo</button>
                     <button class="btn-quick" onclick="auto('Horarios')">⏰ Horarios</button>
                     <button class="btn-quick" onclick="auto('Formas de pago')">💳 Pagos</button>
                 `;
@@ -838,6 +907,23 @@
             }
 
             chatWindow.appendChild(div);
+            
+            if (guardar) {
+                messages.push({
+                    text: texto,
+                    sender: remitente,
+                    hasButtons: conBotones,
+                    hasWS: mostrarWS,
+                    timestamp: new Date().toISOString()
+                });
+                
+                if (messages.length > 50) {
+                    messages = messages.slice(-50);
+                }
+                
+                localStorage.setItem('multikap_chat', JSON.stringify(messages));
+            }
+            
             scrollToBottom();
         }
 
@@ -858,7 +944,7 @@
                     body: JSON.stringify({ 
                         mensaje: texto, 
                         historial: historial,
-                        advisor: currentAdvisor 
+                        advisor: currentAdvisor  // Importante: enviamos el asesor actual
                     })
                 });
                 
@@ -866,6 +952,10 @@
                 
                 const data = await res.json();
                 stopThinking();
+                
+                if (data.tasa) {
+                    TASA_BCV = data.tasa; // Actualizar tasa
+                }
                 
                 if (data.respuesta) {
                     historial.push(
@@ -908,14 +998,16 @@
             updateTypingText();
             
             let msg = '';
-            if (advisor === 'motos') msg = "🏍️ Ahora estás hablando con **Taz Motos**. ¿Qué repuestos necesitas?";
-            else if (advisor === 'papeleria') msg = "📚 Cambiaste a **Taz Papelería**. ¿Buscas útiles?";
-            else msg = "🏠 Cambiaste a **Taz Hogar**. ¿Qué producto de limpieza necesitas?";
+            if (advisor === 'motos') msg = "🏍️ Ahora estás en **TAZ MOTOS**. Aquí tienes nuestro catálogo de repuestos:";
+            else if (advisor === 'papeleria') msg = "📚 Cambiaste a **TAZ PAPELERÍA**. Mira nuestros útiles escolares:";
+            else msg = "🏠 Cambiaste a **TAZ HOGAR**. Estos son nuestros productos de limpieza:";
             
-            mostrarMensaje(msg, 'bot', true);
-            mostrarProductos(advisor);
+            mostrarMensaje(msg, 'bot');
+            mostrarCatalogo(advisor);
             
             if (navigator.vibrate) navigator.vibrate(30);
+            
+            localStorage.setItem('multikap_advisor', advisor);
         }
 
         function updateTypingText() {
@@ -957,6 +1049,7 @@
         
         function addToCart(producto, precio) {
             cart.push({ producto, precio, advisor: currentAdvisor });
+            localStorage.setItem('multikap_cart', JSON.stringify(cart));
             updateCartDisplay();
             
             if (navigator.vibrate) navigator.vibrate(20);
@@ -1007,12 +1100,13 @@
                     `;
                 });
                 cartItems.innerHTML = html;
-                cartTotal.innerText = `Total: $${total}`;
+                cartTotal.innerText = `Total: $${total} (Bs ${(total * TASA_BCV).toFixed(2)})`;
             }
         }
 
         function removeFromCart(index) {
             cart.splice(index, 1);
+            localStorage.setItem('multikap_cart', JSON.stringify(cart));
             updateCartDisplay();
         }
 
@@ -1031,16 +1125,17 @@
             let total = 0;
             
             cart.forEach(item => {
-                mensaje += `• ${item.producto}: $${item.precio}%0A`;
+                mensaje += `• ${item.producto}: $${item.precio} (Bs ${(item.precio * TASA_BCV).toFixed(2)})%0A`;
                 total += item.precio;
             });
             
-            mensaje += `%0A*Total: $${total}*%0A`;
+            mensaje += `%0A*Total: $${total} (Bs ${(total * TASA_BCV).toFixed(2)})*%0A`;
             mensaje += `%0AAsesor: Taz ${currentAdvisorIcon}`;
             
             window.open(`https://wa.me/${CONFIG.contacto_whatsapp}?text=${mensaje}`, '_blank');
             
             cart = [];
+            localStorage.setItem('multikap_cart', JSON.stringify(cart));
             updateCartDisplay();
             cartModal.classList.remove('show');
         }
@@ -1051,6 +1146,7 @@
             document.body.classList.toggle('dark-mode');
             const themeBtn = document.querySelector('.theme-toggle');
             themeBtn.innerText = document.body.classList.contains('dark-mode') ? '☀️' : '🌙';
+            localStorage.setItem('multikap_theme', document.body.classList.contains('dark-mode') ? 'dark' : 'light');
         }
 
         // ========== UTILIDADES ==========
@@ -1110,8 +1206,31 @@
         }
         setInterval(draw, 60);
 
-        // NO cargar nada de localStorage
-        // Solo iniciar con mensaje de bienvenida
+        // Cargar preferencias guardadas
+        const savedTheme = localStorage.getItem('multikap_theme');
+        if (savedTheme === 'dark') {
+            document.body.classList.add('dark-mode');
+            document.querySelector('.theme-toggle').innerText = '☀️';
+        }
+        
+        const savedAdvisor = localStorage.getItem('multikap_advisor');
+        if (savedAdvisor) {
+            if (savedAdvisor === 'motos') {
+                currentAdvisorIcon = '🏍️';
+                advisorIcon.innerText = '🏍️';
+                document.querySelectorAll('.advisor-option')[0].classList.add('active');
+            } else if (savedAdvisor === 'papeleria') {
+                currentAdvisorIcon = '📚';
+                advisorIcon.innerText = '📚';
+                document.querySelectorAll('.advisor-option')[1].classList.add('active');
+            } else if (savedAdvisor === 'hogar') {
+                currentAdvisorIcon = '🏠';
+                advisorIcon.innerText = '🏠';
+                document.querySelectorAll('.advisor-option')[2].classList.add('active');
+            }
+            currentAdvisor = savedAdvisor;
+            updateTypingText();
+        }
 
         window.onload = init;
 
