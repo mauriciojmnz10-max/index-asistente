@@ -4,20 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>MultiKAP • TAZ 2080</title>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700&family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
     <style>
         :root {
             --taz-orange: #ff5500;
-            --taz-orange-dark: #cc4400;
             --taz-brown: #5c3e1f;
-            --taz-cream: #fff3e0;
-            --taz-white: #ffffff;
-            --taz-black: #1a1308;
             --bg-light: #fcf5e8;
-            --glass-white: rgba(255, 255, 255, 0.3); /* Más transparente */
-            --glass-border: rgba(255, 85, 0, 0.2); /* Borde naranja sutil */
-            --taz-gradient: linear-gradient(135deg, #ff5500 0%, #ff884d 50%, #ff5500 100%);
-            --shadow-elegant: 0 20px 40px rgba(255, 85, 0, 0.2);
+            --glass-white: rgba(255, 255, 255, 0.4); /* Transparencia real */
+            --glass-user: rgba(255, 85, 0, 0.15); /* Cristal naranja */
+            --taz-gradient: linear-gradient(135deg, #ff5500 0%, #ff884d 100%);
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
@@ -31,70 +26,55 @@
             flex-direction: column;
             position: fixed;
             width: 100%;
-            color: var(--taz-black);
         }
 
+        /* FONDO DINÁMICO MÁS VISIBLE PARA NOTAR TRANSPARENCIA */
         #canvas-bg {
             position: fixed;
             top: 0; left: 0;
             width: 100%; height: 100%;
             z-index: -1;
-            opacity: 0.4; /* Aumentado para que se note más el cristal encima */
-            border: 2px solid rgba(255, 85, 0, 0.15);
-            pointer-events: none;
+            opacity: 0.4; /* Subí la opacidad del fondo */
         }
 
-        /* HEADER CON VERDADERO EFECTO CRISTAL */
+        /* HEADER GLASS CON LOGO GIGANTE */
         header {
-            padding: env(safe-area-inset-top) 15px 20px 15px;
-            text-align: center;
-            background: rgba(255, 250, 240, 0.25); /* Mucho más transparente */
+            padding: env(safe-area-inset-top) 20px 20px 20px;
+            background: rgba(255, 255, 255, 0.6);
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
             z-index: 100;
-            border-bottom: 1px solid rgba(255, 85, 0, 0.3);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-            /* Para que se vea el fondo a través */
-            position: relative;
-        }
-
-        /* Para asegurar que el texto sea legible sobre el cristal */
-        header .logo-text {
-            text-shadow: 0 2px 10px rgba(255, 255, 255, 0.8);
-        }
-
-        .logo-container {
+            border-bottom: 2px solid rgba(255, 85, 0, 0.3);
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 8px;
         }
 
         .taz-logo-img {
-            width: 80px;
-            height: 80px;
+            width: 120px; /* LOGO MUCHO MÁS GRANDE */
+            height: 120px;
             border-radius: 50%;
             object-fit: cover;
-            border: 3px solid rgba(255, 255, 255, 0.9); /* Borde blanco para que resalte */
-            box-shadow: 0 0 30px rgba(255, 85, 0, 0.6);
-            animation: spin 12s linear infinite;
+            border: 4px solid var(--taz-orange);
+            box-shadow: 0 10px 30px rgba(255, 85, 0, 0.4);
+            margin-bottom: 10px;
+            animation: bounce 6s ease-in-out infinite;
         }
 
-        @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
 
         .logo-text {
             font-family: 'Playfair Display', serif;
-            font-size: 2.2rem;
-            letter-spacing: 4px;
+            font-size: 2.5rem;
+            letter-spacing: 5px;
             background: var(--taz-gradient);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             font-weight: 700;
             text-transform: uppercase;
-            filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.2));
-            line-height: 1.2;
         }
 
+        /* BURBUJAS DE CRISTAL (GLASSMORPHISM) */
         #chat-window {
             flex: 1;
             overflow-y: auto;
@@ -103,61 +83,53 @@
             flex-direction: column;
             gap: 15px;
             padding-bottom: 180px; 
-            -webkit-overflow-scrolling: touch;
         }
 
-        /* BURBUJAS CON VERDADERO EFECTO CRISTAL */
         .msg {
-            max-width: 85%;
-            padding: 16px 22px;
-            font-size: 15px;
-            border-radius: 24px;
-            line-height: 1.5;
-            animation: fadeIn 0.4s ease;
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 85, 0, 0.25);
-            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.1);
+            max-width: 80%;
+            padding: 16px 20px;
+            font-size: 16px;
+            border-radius: 20px;
+            line-height: 1.4;
+            backdrop-filter: blur(12px); /* EFECTO CRISTAL */
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            animation: fadeIn 0.3s ease;
         }
 
         .bot { 
             align-self: flex-start; 
-            background: rgba(255, 255, 255, 0.2); /* Mucho más transparente */
-            border-left: 4px solid var(--taz-orange); 
-            color: var(--taz-black);
-            border-top-left-radius: 4px;
-            /* Para legibilidad del texto sobre fondo transparente */
-            text-shadow: 0 1px 3px rgba(255, 255, 255, 0.8);
+            background: var(--glass-white); 
+            color: #000;
+            border-left: 5px solid var(--taz-orange);
         }
 
         .user { 
             align-self: flex-end; 
-            background: rgba(255, 243, 224, 0.2); /* Más transparente */
-            border-right: 4px solid var(--taz-brown);
+            background: var(--glass-user); 
             color: var(--taz-brown);
-            border-top-right-radius: 4px;
-            font-weight: 500;
-            text-shadow: 0 1px 3px rgba(255, 255, 255, 0.8);
+            border-right: 5px solid var(--taz-brown);
+            font-weight: 600;
         }
 
-        /* INPUT FLOTANTE CON CRISTAL */
+        /* INPUT FLOTANTE CRISTALIZADO */
         .input-container {
             position: fixed;
             bottom: 30px; 
             left: 50%;
             transform: translateX(-50%);
-            width: 92%;
+            width: 90%;
             max-width: 500px;
-            background: rgba(255, 255, 255, 0.2); /* Transparente */
-            padding: 6px 6px 6px 25px;
-            border-radius: 60px;
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(15px);
+            padding: 8px 8px 8px 25px;
+            border-radius: 50px;
             display: flex;
             align-items: center;
-            border: 1px solid rgba(255, 85, 0, 0.4);
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+            border: 2px solid var(--taz-orange);
+            box-shadow: 0 15px 35px rgba(255, 85, 0, 0.2);
             z-index: 1000;
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
         }
 
         input {
@@ -165,172 +137,43 @@
             border: none;
             outline: none;
             background: transparent;
-            color: var(--taz-black);
             font-size: 16px;
-            padding: 14px 0;
-            font-family: 'Montserrat', sans-serif;
-        }
-
-        input::placeholder {
-            color: rgba(26, 19, 8, 0.6);
-            font-weight: 400;
+            color: #000;
         }
 
         .send-btn {
             background: var(--taz-gradient);
             color: white;
             border: none;
-            width: 52px;
-            height: 52px;
+            width: 50px;
+            height: 50px;
             border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            font-size: 22px;
             cursor: pointer;
-            font-size: 24px;
-            box-shadow: 0 5px 15px rgba(255, 85, 0, 0.4);
-            transition: 0.3s;
         }
-
-        .send-btn:active { transform: scale(0.9); }
-
-        .quick-replies { 
-            display: flex; 
-            overflow-x: auto; 
-            gap: 15px;
-            padding: 15px 0 10px 0;
-            scrollbar-width: none; 
-        }
-        .quick-replies::-webkit-scrollbar { display: none; }
 
         .btn-quick { 
-            background: rgba(255, 255, 255, 0.2); /* Transparente */
-            border: 1px solid rgba(255, 85, 0, 0.4); 
-            color: var(--taz-orange-dark); 
-            padding: 12px 24px;
-            border-radius: 40px; 
-            font-size: 14px;
-            font-weight: 600; 
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-            cursor: pointer;
-            transition: all 0.2s;
-            text-shadow: 0 1px 3px rgba(255, 255, 255, 0.5);
-        }
-
-        .btn-quick:active {
-            background: rgba(255, 85, 0, 0.3);
-            color: white;
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(255, 85, 0, 0.3);
-        }
-
-        #typing { 
-            position: fixed; 
-            bottom: 110px; 
-            left: 30px; 
-            font-size: 13px; 
-            color: var(--taz-orange-dark); 
-            display: none; 
-            background: rgba(255, 255, 255, 0.2);
-            padding: 10px 22px;
-            border-radius: 30px;
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            z-index: 1000;
-            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
-            border: 1px solid rgba(255, 85, 0, 0.3);
-            align-items: center;
-            gap: 8px;
-            font-weight: 500;
-        }
-
-        .typing-dots {
-            display: inline-flex;
-            gap: 4px;
-            margin-left: 5px;
-        }
-
-        .typing-dots span {
-            width: 6px;
-            height: 6px;
-            border-radius: 50%;
-            background: var(--taz-orange);
-            display: inline-block;
-            animation: typingBounce 1.4s infinite ease-in-out both;
-        }
-
-        .typing-dots span:nth-child(1) { animation-delay: -0.32s; }
-        .typing-dots span:nth-child(2) { animation-delay: -0.16s; }
-
-        @keyframes typingBounce {
-            0%, 80%, 100% { transform: scale(0.6); opacity: 0.6; }
-            40% { transform: scale(1); opacity: 1; }
-        }
-
-        .taz-thinking {
-            display: inline-block;
-            animation: thinkingSpin 1s linear infinite;
-            font-size: 16px;
-        }
-
-        @keyframes thinkingSpin {
-            0% { transform: rotate(0deg); }
-            25% { transform: rotate(20deg); }
-            75% { transform: rotate(-20deg); }
-            100% { transform: rotate(0deg); }
+            background: rgba(255, 255, 255, 0.5);
+            border: 1px solid var(--taz-orange);
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--taz-orange);
+            backdrop-filter: blur(5px);
         }
 
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-
-        .btn-ws { 
-            background: rgba(37, 211, 102, 0.8);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            color: white !important; 
-            padding: 14px 20px; 
-            border-radius: 30px; 
-            text-decoration: none; 
-            font-weight: 600; 
-            display: block; 
-            text-align: center; 
-            margin-top: 15px; 
-            box-shadow: 0 8px 20px rgba(37, 211, 102, 0.3);
-            transition: transform 0.2s;
-            border: 1px solid rgba(255, 255, 255, 0.3);
-        }
-
-        .btn-ws:active { transform: scale(0.97); }
-
-        @media (max-width: 380px) {
-            .taz-logo-img { width: 70px; height: 70px; }
-            .logo-text { font-size: 1.8rem; }
-            .msg { max-width: 90%; }
-            .btn-quick { padding: 10px 20px; font-size: 13px; }
-        }
     </style>
 </head>
 <body>
     <canvas id="canvas-bg"></canvas>
-    
     <header>
-        <div class="logo-container">
-            <img src="https://i.postimg.cc/SRN4tL6c/FB-IMG-1772076157470-1.jpg" class="taz-logo-img" alt="MultiKAP Logo">
-            <div class="logo-text">MULTIKAP</div>
-        </div>
+        <img src="https://i.postimg.cc/SRN4tL6c/FB-IMG-1772076157470-1.jpg" class="taz-logo-img" alt="MultiKAP Logo">
+        <div class="logo-text">MULTIKAP</div>
     </header>
 
     <div id="chat-window"></div>
-    <div id="typing">
-        <span class="taz-thinking">⚡</span>
-        <span>Taz está pensando</span>
-        <div class="typing-dots">
-            <span></span>
-            <span></span>
-            <span></span>
-        </div>
-    </div>
 
     <div class="input-container">
         <input type="text" id="user-input" placeholder="Escribe aquí..." autocomplete="off">
@@ -338,111 +181,46 @@
     </div>
 
     <script>
+        // Animación de rayos para notar la transparencia
         const canvas = document.getElementById('canvas-bg');
         const ctx = canvas.getContext('2d');
-        
-        function resizeCanvas() {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-        }
-        resizeCanvas();
-        window.addEventListener('resize', resizeCanvas);
-
-        const columns = Math.floor(canvas.width / 25);
-        const drops = Array(columns).fill(1);
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        const drops = Array(Math.floor(canvas.width / 25)).fill(1);
 
         function draw() {
             ctx.fillStyle = 'rgba(252, 245, 232, 0.2)';
             ctx.fillRect(0, 0, canvas.width, canvas.height);
             ctx.fillStyle = '#ff5500';
-            ctx.font = '18px "Montserrat"';
-            ctx.globalAlpha = 0.15;
-            
+            ctx.font = '20px Montserrat';
             drops.forEach((y, i) => {
-                const symbols = '⚡✦✧';
-                const text = symbols[Math.floor(Math.random() * symbols.length)];
+                const text = Math.random() > 0.5 ? "⚡" : "🌀";
                 ctx.fillText(text, i * 25, y * 25);
                 if (y * 25 > canvas.height && Math.random() > 0.975) drops[i] = 0;
                 drops[i]++;
             });
-            ctx.globalAlpha = 1;
         }
-        setInterval(draw, 60);
+        setInterval(draw, 50);
 
-        const API_BASE = 'https://asistente-javier.onrender.com';
-        let CONFIG = { contacto_whatsapp: "584120000000" };
-        let historial = [];
-
-        async function init() {
-            try {
-                const res = await fetch(`${API_BASE}/config`);
-                CONFIG = await res.json();
-                mostrarMensaje("⚡ ¡Hola! Soy Taz. Bienvenido al mundo MultiKAP. ¿Qué puedo buscar por ti hoy?", 'bot', true);
-            } catch (e) {
-                mostrarMensaje("Bienvenido a MultiKAP. ¿En qué podemos asesorarte?", 'bot', true);
-            }
-        }
-
-        function mostrarMensaje(texto, remitente, conBotones = false, mostrarWS = false) {
+        function mostrarMensaje(texto, remitente) {
             const chatWindow = document.getElementById('chat-window');
             const div = document.createElement('div');
             div.className = `msg ${remitente}`;
-            const content = document.createElement('div');
-            content.innerHTML = texto.replace(/\*\*(.*?)\*\*/g, '<b style="color: var(--taz-orange);">$1</b>').replace(/\n/g, '<br>');
-            div.appendChild(content);
-
-            if (conBotones) {
-                const qDiv = document.createElement('div');
-                qDiv.className = 'quick-replies';
-                qDiv.innerHTML = `
-                    <button class="btn-quick" onclick="auto('Motos')">🏍️ Repuestos Moto</button>
-                    <button class="btn-quick" onclick="auto('Papelería')">📚 Papelería</button>
-                    <button class="btn-quick" onclick="auto('Hogar')">🧹 Hogar</button>
-                `;
-                div.appendChild(qDiv);
-            }
-
-            if (mostrarWS) {
-                const btn = document.createElement('a');
-                btn.href = `https://wa.me/${CONFIG.contacto_whatsapp}`;
-                btn.className = 'btn-ws';
-                btn.target = "_blank";
-                btn.innerText = '⚡ HABLAR CON TAZ EN WHATSAPP ⚡';
-                div.appendChild(btn);
-            }
-
+            div.innerHTML = texto;
             chatWindow.appendChild(div);
-            setTimeout(() => { chatWindow.scrollTop = chatWindow.scrollHeight; }, 100);
+            chatWindow.scrollTop = chatWindow.scrollHeight;
         }
 
-        async function enviarMensaje() {
+        function enviarMensaje() {
             const input = document.getElementById('user-input');
-            const texto = input.value.trim();
-            if(!texto) return;
-            mostrarMensaje(texto, 'user');
+            if(!input.value) return;
+            mostrarMensaje(input.value, 'user');
             input.value = '';
-            document.getElementById('typing').style.display = 'flex';
-            try {
-                const res = await fetch(`${API_BASE}/chat`, {
-                    method: 'POST',
-                    headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({ mensaje: texto, historial: historial })
-                });
-                const data = await res.json();
-                document.getElementById('typing').style.display = 'none';
-                if (data.respuesta) {
-                    historial.push({role: "user", content: texto}, {role: "assistant", content: data.respuesta});
-                    mostrarMensaje(data.respuesta, 'bot', false, data.mostrar_whatsapp);
-                }
-            } catch (e) {
-                document.getElementById('typing').style.display = 'none';
-                mostrarMensaje("⚡ Taz tuvo un problema de conexión. ¿Repites?", 'bot');
-            }
+            // Simulación Taz
+            setTimeout(() => { mostrarMensaje("⚡ ¡Recibido! Estamos procesando tu pedido en MultiKAP...", 'bot'); }, 600);
         }
-
-        function auto(t) { document.getElementById('user-input').value = t; enviarMensaje(); }
-        document.getElementById('user-input').addEventListener('keydown', (e) => { if (e.key === 'Enter') { enviarMensaje(); document.getElementById('user-input').blur(); } });
-        window.onload = init;
+        
+        window.onload = () => { mostrarMensaje("⚡ ¡Hola! Soy Taz. Mira cómo se ve el fondo a través de mis mensajes de cristal.", 'bot'); };
     </script>
 </body>
 </html>
