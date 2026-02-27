@@ -756,7 +756,7 @@
         const API_BASE = 'https://asistente-javier.onrender.com';
         let CONFIG = { contacto_whatsapp: "584120000000" };
         let historial = [];
-        let TASA_BCV = 60; // Valor por defecto, se actualizará desde el backend
+        let TASA_BCV = 60;
         
         // Estado de la app
         let currentAdvisor = 'motos';
@@ -764,7 +764,7 @@
         let cart = JSON.parse(localStorage.getItem('multikap_cart')) || [];
         let messages = JSON.parse(localStorage.getItem('multikap_chat')) || [];
         
-        // Catálogos (CORREGIDO: ahora son arrays vacíos que se llenarán desde el JSON)
+        // Catálogos - CORREGIDO: ahora son objetos globales
         let catalogo_motos = [];
         let catalogo_papeleria = [];
         let catalogo_hogar = [];
@@ -782,7 +782,7 @@
         const advisorMenu = document.getElementById('advisorMenu');
         const typingText = document.getElementById('typingText');
         
-        // ========== FUNCIÓN DE INICIO CORREGIDA ==========
+        // ========== FUNCIÓN DE INICIO ==========
         async function init() {
             try {
                 // Cargar configuración desde el backend
@@ -791,7 +791,7 @@
                 
                 console.log("✅ Configuración cargada:", CONFIG);
                 
-                // CORREGIDO: Asignar correctamente los catálogos
+                // CORREGIDO: Asignar correctamente los catálogos a las variables globales
                 if (CONFIG.catalogo_motos && Array.isArray(CONFIG.catalogo_motos)) {
                     catalogo_motos = CONFIG.catalogo_motos;
                     console.log("✅ Catálogo motos cargado:", catalogo_motos.length, "productos");
@@ -863,6 +863,7 @@
             let titulo = "";
             let tasa = TASA_BCV;
             
+            // CORREGIDO: Usar las variables globales directamente
             if (advisor === 'motos') {
                 productos = catalogo_motos;
                 titulo = "🏍️ TAZ MOTOS";
@@ -874,7 +875,7 @@
                 titulo = "🏠 TAZ HOGAR";
             }
             
-            console.log(`Mostrando catálogo ${advisor}:`, productos.length, "productos");
+            console.log(`Mostrando catálogo ${advisor}:`, productos ? productos.length : 0, "productos");
             
             if (!productos || productos.length === 0) {
                 mostrarMensaje("🛍️ No hay productos disponibles en este momento.", 'bot');
@@ -887,6 +888,8 @@
             
             productos.forEach(p => {
                 const precioBs = (p.precio * tasa).toFixed(2);
+                // CORREGIDO: Escapar comillas simples en el nombre del producto
+                const nombreProducto = p.nombre.replace(/'/g, "\\'");
                 html += `
                     <div class="producto-card-catalogo">
                         <div class="producto-emoji">${p.emoji}</div>
@@ -894,7 +897,7 @@
                         <div class="producto-detalles">${p.detalles}</div>
                         <div class="producto-precio-dolar">$${p.precio}</div>
                         <div class="producto-precio-bs">Bs ${precioBs}</div>
-                        <button class="producto-add-catalogo" onclick="addToCart('${p.emoji} ${p.nombre}', ${p.precio})">
+                        <button class="producto-add-catalogo" onclick="addToCart('${p.emoji} ${nombreProducto}', ${p.precio})">
                             🛒 AÑADIR
                         </button>
                     </div>
@@ -937,6 +940,7 @@
             if (conBotones) {
                 const qDiv = document.createElement('div');
                 qDiv.className = 'quick-replies';
+                // CORREGIDO: Usar currentAdvisor directamente
                 qDiv.innerHTML = `
                     <button class="btn-quick" onclick="mostrarCatalogo('${currentAdvisor}')">📋 Ver catálogo</button>
                     <button class="btn-quick" onclick="auto('Horarios')">⏰ Horarios</button>
