@@ -314,11 +314,12 @@
             letter-spacing: 1px;
         }
 
+        /* ===== TARJETAS MÁS PEQUEÑAS ===== */
         .productos-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-            gap: 12px;
-            margin: 10px 0;
+            grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+            gap: 8px;
+            margin: 8px 0;
             width: 100%;
         }
 
@@ -326,79 +327,226 @@
             background: var(--glass-primary);
             backdrop-filter: blur(10px);
             -webkit-backdrop-filter: blur(10px);
-            border: 2px solid var(--taz-orange);
-            border-radius: 20px;
-            padding: 16px 10px;
+            border: 1px solid var(--taz-orange);
+            border-radius: 16px;
+            padding: 10px 6px;
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 8px;
+            gap: 4px;
             cursor: pointer;
-            transition: all 0.3s;
-            box-shadow: 0 8px 20px rgba(255, 85, 0, 0.2);
+            transition: all 0.2s;
+            box-shadow: 0 4px 10px rgba(255, 85, 0, 0.15);
         }
 
         .producto-card-catalogo:active {
-            transform: scale(0.97);
+            transform: scale(0.96);
             background: rgba(255, 85, 0, 0.15);
             border-color: var(--taz-orange);
         }
 
         .producto-emoji {
-            font-size: 48px;
-            filter: drop-shadow(0 8px 12px rgba(255,85,0,0.4));
-            margin-bottom: 5px;
+            font-size: 32px;
+            filter: drop-shadow(0 4px 6px rgba(255,85,0,0.3));
+            margin-bottom: 2px;
         }
 
         .producto-nombre {
-            font-weight: 700;
-            font-size: 15px;
+            font-weight: 600;
+            font-size: 13px;
             text-align: center;
             color: var(--text-primary);
-            margin-bottom: 5px;
+            margin-bottom: 2px;
+            line-height: 1.2;
         }
 
         .producto-detalles {
-            font-size: 12px;
+            font-size: 10px;
             color: var(--text-primary);
-            opacity: 0.8;
+            opacity: 0.7;
             text-align: center;
-            margin-bottom: 8px;
+            margin-bottom: 4px;
             font-style: italic;
+            line-height: 1.2;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            height: 24px;
         }
 
         .producto-precio-dolar {
-            font-weight: 800;
+            font-weight: 700;
             color: var(--taz-orange);
-            font-size: 20px;
-            text-shadow: 0 2px 5px rgba(255,85,0,0.3);
+            font-size: 16px;
+            text-shadow: 0 1px 3px rgba(255,85,0,0.2);
         }
 
         .producto-precio-bs {
-            font-weight: 600;
+            font-weight: 500;
             color: var(--taz-brown);
-            font-size: 14px;
-            margin-bottom: 10px;
+            font-size: 11px;
+            margin-bottom: 6px;
         }
 
         .producto-add-catalogo {
             background: var(--taz-gradient);
             color: white;
             border: none;
-            border-radius: 40px;
-            padding: 10px 20px;
-            font-size: 13px;
-            font-weight: 700;
+            border-radius: 30px;
+            padding: 6px 10px;
+            font-size: 11px;
+            font-weight: 600;
             cursor: pointer;
             width: 100%;
             text-transform: uppercase;
-            letter-spacing: 1px;
-            box-shadow: 0 4px 15px rgba(255,85,0,0.4);
+            letter-spacing: 0.5px;
+            box-shadow: 0 2px 8px rgba(255,85,0,0.3);
         }
 
         .producto-add-catalogo:active {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(255,85,0,0.6);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(255,85,0,0.5);
+        }
+
+        /* ===== MODAL DE DETALLES ===== */
+        .producto-modal {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 85%;
+            max-width: 320px;
+            background: var(--glass-primary);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 3px solid var(--taz-orange);
+            border-radius: 30px;
+            padding: 25px 20px;
+            z-index: 2000;
+            display: none;
+            color: var(--text-primary);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+        }
+
+        .producto-modal.show {
+            display: block;
+            animation: modalPop 0.3s ease;
+        }
+
+        @keyframes modalPop {
+            0% { opacity: 0; transform: translate(-50%, -40%); }
+            100% { opacity: 1; transform: translate(-50%, -50%); }
+        }
+
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+            z-index: 1999;
+            display: none;
+        }
+
+        .modal-overlay.show {
+            display: block;
+        }
+
+        .modal-emoji {
+            font-size: 60px;
+            text-align: center;
+            margin-bottom: 10px;
+            filter: drop-shadow(0 10px 15px rgba(255,85,0,0.4));
+        }
+
+        .modal-titulo {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--taz-orange);
+            text-align: center;
+            margin-bottom: 15px;
+        }
+
+        .modal-detalle {
+            font-size: 16px;
+            text-align: center;
+            margin-bottom: 20px;
+            padding: 0 10px;
+            line-height: 1.5;
+        }
+
+        .modal-precios {
+            background: rgba(255,85,0,0.1);
+            border-radius: 20px;
+            padding: 15px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .modal-precio-dolar {
+            font-size: 32px;
+            font-weight: 800;
+            color: var(--taz-orange);
+            margin-bottom: 5px;
+        }
+
+        .modal-precio-bs {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--taz-brown);
+        }
+
+        .modal-botones {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+        }
+
+        .modal-btn {
+            flex: 1;
+            padding: 14px;
+            border: none;
+            border-radius: 40px;
+            font-weight: 700;
+            font-size: 14px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .modal-btn-primary {
+            background: var(--taz-gradient);
+            color: white;
+            box-shadow: 0 5px 15px rgba(255,85,0,0.3);
+        }
+
+        .modal-btn-secondary {
+            background: transparent;
+            border: 2px solid var(--taz-orange);
+            color: var(--taz-orange);
+        }
+
+        .modal-btn:active {
+            transform: scale(0.95);
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            font-size: 24px;
+            color: var(--taz-orange);
+            cursor: pointer;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background: rgba(255,85,0,0.1);
         }
 
         .input-container {
@@ -681,8 +829,8 @@
             .productos-grid {
                 grid-template-columns: repeat(2, 1fr);
             }
-            .producto-emoji { font-size: 40px; }
-            .producto-precio-dolar { font-size: 18px; }
+            .producto-emoji { font-size: 28px; }
+            .producto-precio-dolar { font-size: 14px; }
         }
 
         @keyframes fadeInOut {
@@ -752,8 +900,7 @@
     </div>
 
     <script>
-        // ========== SOLUCIÓN URGENTE: DATOS LOCALES DIRECTOS ==========
-        // Eliminar cualquier dato guardado
+        // ========== SOLUCIÓN: DATOS LOCALES DIRECTOS ==========
         localStorage.removeItem('multikap_chat');
         localStorage.removeItem('multikap_cart');
         
@@ -768,28 +915,28 @@
             horario: "Atención digital: Lunes a Domingo - 8:00 AM a 10:00 PM",
             metodos_pago: "Pago Móvil (Tasa BCV), Zelle, Efectivo, Binance Pay (USDT) y Punto de Venta.",
             catalogo_motos: [
-                {"emoji": "🏍️", "nombre": "Freno Delantero", "detalles": "Pastillas y disco, alta duración", "precio": 25},
-                {"emoji": "🔧", "nombre": "Cadena Transmisión", "detalles": "Kit completo, resistencia máxima", "precio": 45},
-                {"emoji": "🛢️", "nombre": "Aceite 20W50", "detalles": "1 litro, motor 4 tiempos", "precio": 12},
-                {"emoji": "🔋", "nombre": "Batería", "detalles": "12V 7Ah, libre mantenimiento", "precio": 60},
-                {"emoji": "💡", "nombre": "Foco LED", "detalles": "Luz blanca, alta potencia", "precio": 15},
-                {"emoji": "⚙️", "nombre": "Kit de Arrastre", "detalles": "Relación 428, alta durabilidad", "precio": 35}
+                {"emoji": "🏍️", "nombre": "Freno Delantero", "detalles": "Pastillas y disco, alta duración. Compatible con la mayoría de las motos 150cc.", "precio": 25},
+                {"emoji": "🔧", "nombre": "Cadena Transmisión", "detalles": "Kit completo, resistencia máxima. Incluye piñón y corona.", "precio": 45},
+                {"emoji": "🛢️", "nombre": "Aceite 20W50", "detalles": "1 litro, motor 4 tiempos. Protección superior para tu motor.", "precio": 12},
+                {"emoji": "🔋", "nombre": "Batería", "detalles": "12V 7Ah, libre mantenimiento. Alta durabilidad y potencia.", "precio": 60},
+                {"emoji": "💡", "nombre": "Foco LED", "detalles": "Luz blanca, alta potencia. Iluminación superior, bajo consumo.", "precio": 15},
+                {"emoji": "⚙️", "nombre": "Kit de Arrastre", "detalles": "Relación 428, alta durabilidad. Mejor rendimiento y agarre.", "precio": 35}
             ],
             catalogo_papeleria: [
-                {"emoji": "📓", "nombre": "Cuaderno Universitario", "detalles": "100 hojas, cuadros / rayas", "precio": 5},
-                {"emoji": "✏️", "nombre": "Lápices (pack 10)", "detalles": "HB #2, grafito negro", "precio": 3},
-                {"emoji": "🖊️", "nombre": "Bolígrafos (pack 10)", "detalles": "Tinta azul/negra, punta fina", "precio": 8},
-                {"emoji": "🎒", "nombre": "Mochila Escolar", "detalles": "Compartimentos, resistente", "precio": 35},
-                {"emoji": "📏", "nombre": "Regla Metálica", "detalles": "30cm, acero inoxidable", "precio": 3},
-                {"emoji": "📌", "nombre": "Resaltadores (pack 6)", "detalles": "Colores surtidos", "precio": 6}
+                {"emoji": "📓", "nombre": "Cuaderno Universitario", "detalles": "100 hojas, cuadros / rayas. Tapa dura, papel de alta calidad.", "precio": 5},
+                {"emoji": "✏️", "nombre": "Lápices (pack 10)", "detalles": "HB #2, grafito negro. Punta resistente, borrable.", "precio": 3},
+                {"emoji": "🖊️", "nombre": "Bolígrafos (pack 10)", "detalles": "Tinta azul/negra, punta fina. Escritura suave y duradera.", "precio": 8},
+                {"emoji": "🎒", "nombre": "Mochila Escolar", "detalles": "Compartimentos, resistente. Material impermeable, varios colores.", "precio": 35},
+                {"emoji": "📏", "nombre": "Regla Metálica", "detalles": "30cm, acero inoxidable. Graduación precisa, borde recto.", "precio": 3},
+                {"emoji": "📌", "nombre": "Resaltadores (pack 6)", "detalles": "Colores surtidos. Tinta fluorescente, no traspasa el papel.", "precio": 6}
             ],
             catalogo_hogar: [
-                {"emoji": "🧹", "nombre": "Escoba", "detalles": "Cerdas duras, mango largo", "precio": 10},
-                {"emoji": "🧽", "nombre": "Esponjas (pack 3)", "detalles": "Multiuso, anti-rayas", "precio": 4},
-                {"emoji": "🧴", "nombre": "Detergente 5L", "detalles": "Líquido, aroma a limón", "precio": 15},
-                {"emoji": "🏠", "nombre": "Ambientador", "detalles": "Spray 400ml, lavanda", "precio": 7},
-                {"emoji": "🧺", "nombre": "Cesto para Ropa", "detalles": "Plástico resistente, 50L", "precio": 22},
-                {"emoji": "🧼", "nombre": "Jabón Líquido", "detalles": "1L, antibacterial", "precio": 9}
+                {"emoji": "🧹", "nombre": "Escoba", "detalles": "Cerdas duras, mango largo. Ideal para todo tipo de pisos.", "precio": 10},
+                {"emoji": "🧽", "nombre": "Esponjas (pack 3)", "detalles": "Multiuso, anti-rayas. 3 capas, absorción superior.", "precio": 4},
+                {"emoji": "🧴", "nombre": "Detergente 5L", "detalles": "Líquido, aroma a limón. Concentrado, rinde más.", "precio": 15},
+                {"emoji": "🏠", "nombre": "Ambientador", "detalles": "Spray 400ml, lavanda. Elimina olores, frescura duradera.", "precio": 7},
+                {"emoji": "🧺", "nombre": "Cesto para Ropa", "detalles": "Plástico resistente, 50L. Con asas, fácil de transportar.", "precio": 22},
+                {"emoji": "🧼", "nombre": "Jabón Líquido", "detalles": "1L, antibacterial. pH neutro, suave con las manos.", "precio": 9}
             ]
         };
         
@@ -801,8 +948,9 @@
         let currentAdvisorIcon = '🏍️';
         let cart = [];
         let messages = [];
+        let productoActual = null;
         
-        // Catálogos (directamente desde CONFIG)
+        // Catálogos
         let catalogo_motos = CONFIG.catalogo_motos;
         let catalogo_papeleria = CONFIG.catalogo_papeleria;
         let catalogo_hogar = CONFIG.catalogo_hogar;
@@ -820,18 +968,77 @@
         const advisorMenu = document.getElementById('advisorMenu');
         const typingText = document.getElementById('typingText');
         
-        // ========== INICIALIZACIÓN ==========
+        // ========== FUNCIÓN DE INICIO ==========
         function init() {
             console.log("✅ Iniciando con datos locales");
-            console.log("📦 Catálogo motos:", catalogo_motos.length, "productos");
-            console.log("📦 Catálogo papelería:", catalogo_papeleria.length, "productos");
-            console.log("📦 Catálogo hogar:", catalogo_hogar.length, "productos");
             
-            // Mostrar mensaje de bienvenida
             mostrarMensaje(CONFIG.mensaje_bienvenida, 'bot', true);
             
             updateCartDisplay();
             updateTypingText();
+            crearModalDetalles();
+        }
+
+        // ========== MODAL DE DETALLES ==========
+        function crearModalDetalles() {
+            // Verificar si ya existen
+            if (document.getElementById('productoModal')) return;
+            
+            // Overlay
+            const overlay = document.createElement('div');
+            overlay.className = 'modal-overlay';
+            overlay.id = 'modalOverlay';
+            overlay.onclick = cerrarModal;
+            document.body.appendChild(overlay);
+            
+            // Modal
+            const modal = document.createElement('div');
+            modal.className = 'producto-modal';
+            modal.id = 'productoModal';
+            modal.innerHTML = `
+                <div class="modal-close" onclick="cerrarModal()">✖</div>
+                <div class="modal-emoji" id="modalEmoji">🏍️</div>
+                <div class="modal-titulo" id="modalTitulo">Producto</div>
+                <div class="modal-detalle" id="modalDetalle">Detalles del producto</div>
+                <div class="modal-precios">
+                    <div class="modal-precio-dolar" id="modalPrecioDolar">$0</div>
+                    <div class="modal-precio-bs" id="modalPrecioBs">Bs 0</div>
+                </div>
+                <div class="modal-botones">
+                    <button class="modal-btn modal-btn-secondary" onclick="cerrarModal()">CERRAR</button>
+                    <button class="modal-btn modal-btn-primary" onclick="agregarDesdeModal()">🛒 AÑADIR</button>
+                </div>
+            `;
+            document.body.appendChild(modal);
+        }
+
+        function verDetalles(producto) {
+            productoActual = producto;
+            
+            const modal = document.getElementById('productoModal');
+            const overlay = document.getElementById('modalOverlay');
+            
+            document.getElementById('modalEmoji').innerText = producto.emoji;
+            document.getElementById('modalTitulo').innerText = producto.nombre;
+            document.getElementById('modalDetalle').innerText = producto.detalles;
+            document.getElementById('modalPrecioDolar').innerText = `$${producto.precio}`;
+            document.getElementById('modalPrecioBs').innerText = `Bs ${(producto.precio * TASA_BCV).toFixed(2)}`;
+            
+            modal.classList.add('show');
+            overlay.classList.add('show');
+        }
+
+        function cerrarModal() {
+            document.getElementById('productoModal')?.classList.remove('show');
+            document.getElementById('modalOverlay')?.classList.remove('show');
+            productoActual = null;
+        }
+
+        function agregarDesdeModal() {
+            if (productoActual) {
+                addToCart(`${productoActual.emoji} ${productoActual.nombre}`, productoActual.precio);
+                cerrarModal();
+            }
         }
 
         // ========== MOSTRAR CATÁLOGO ==========
@@ -851,8 +1058,6 @@
                 titulo = "🏠 TAZ HOGAR";
             }
             
-            console.log(`Mostrando catálogo ${advisor}:`, productos.length, "productos");
-            
             if (!productos || productos.length === 0) {
                 mostrarMensaje("🛍️ No hay productos disponibles en este momento.", 'bot');
                 return;
@@ -865,14 +1070,16 @@
             productos.forEach(p => {
                 const precioBs = (p.precio * tasa).toFixed(2);
                 const nombreProducto = p.nombre.replace(/'/g, "\\'").replace(/"/g, '&quot;');
+                const productoJSON = JSON.stringify(p).replace(/'/g, "\\'");
+                
                 html += `
-                    <div class="producto-card-catalogo">
+                    <div class="producto-card-catalogo" onclick='verDetalles(${productoJSON})'>
                         <div class="producto-emoji">${p.emoji}</div>
                         <div class="producto-nombre">${p.nombre}</div>
-                        <div class="producto-detalles">${p.detalles}</div>
+                        <div class="producto-detalles">${p.detalles.substring(0, 30)}...</div>
                         <div class="producto-precio-dolar">$${p.precio}</div>
                         <div class="producto-precio-bs">Bs ${precioBs}</div>
-                        <button class="producto-add-catalogo" onclick="addToCart('${p.emoji} ${nombreProducto}', ${p.precio})">
+                        <button class="producto-add-catalogo" onclick="event.stopPropagation(); addToCart('${p.emoji} ${nombreProducto}', ${p.precio})">
                             🛒 AÑADIR
                         </button>
                     </div>
@@ -952,17 +1159,17 @@
             
             startThinking();
             
-            // Simular respuesta para preguntas comunes
+            // Simular respuesta
             setTimeout(() => {
                 stopThinking();
                 
                 let respuesta = "";
                 if (texto.toLowerCase().includes('horario')) {
-                    respuesta = "⏰ Nuestros horarios de atención son:\n\n* Lunes a Domingo: 8:00 AM a 10:00 PM";
+                    respuesta = CONFIG.horario;
                 } else if (texto.toLowerCase().includes('pago') || texto.toLowerCase().includes('pagos')) {
-                    respuesta = "💳 Aceptamos:\n* Pago Móvil (Tasa BCV)\n* Zelle\n* Efectivo\n* Binance Pay (USDT)\n* Punto de Venta";
+                    respuesta = CONFIG.metodos_pago;
                 } else if (texto.toLowerCase().includes('ubicación') || texto.toLowerCase().includes('ubicacion')) {
-                    respuesta = "📍 " + CONFIG.ubicacion;
+                    respuesta = CONFIG.ubicacion;
                 } else {
                     respuesta = "⚡ Gracias por tu mensaje. ¿En qué más puedo ayudarte? Puedes preguntar por horarios, formas de pago, o ver el catálogo.";
                 }
@@ -1227,7 +1434,6 @@
             updateTypingText();
         }
 
-        // Iniciar la app
         window.onload = init;
     </script>
 </body>
