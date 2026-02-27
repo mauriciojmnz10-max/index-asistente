@@ -314,12 +314,12 @@
             letter-spacing: 1px;
         }
 
-        /* ===== TARJETAS MÁS PEQUEÑAS ===== */
+        /* ===== TARJETAS SUPER PEQUEÑAS ===== */
         .productos-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
-            gap: 8px;
-            margin: 8px 0;
+            grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+            gap: 6px;
+            margin: 5px 0;
             width: 100%;
         }
 
@@ -328,85 +328,68 @@
             backdrop-filter: blur(10px);
             -webkit-backdrop-filter: blur(10px);
             border: 1px solid var(--taz-orange);
-            border-radius: 16px;
-            padding: 10px 6px;
+            border-radius: 12px;
+            padding: 8px 4px;
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 4px;
+            gap: 2px;
             cursor: pointer;
             transition: all 0.2s;
-            box-shadow: 0 4px 10px rgba(255, 85, 0, 0.15);
+            box-shadow: 0 2px 6px rgba(255, 85, 0, 0.15);
         }
 
         .producto-card-catalogo:active {
-            transform: scale(0.96);
-            background: rgba(255, 85, 0, 0.15);
-            border-color: var(--taz-orange);
-        }
-
-        .producto-emoji {
-            font-size: 32px;
-            filter: drop-shadow(0 4px 6px rgba(255,85,0,0.3));
-            margin-bottom: 2px;
+            transform: scale(0.95);
+            background: rgba(255, 85, 0, 0.2);
         }
 
         .producto-nombre {
             font-weight: 600;
-            font-size: 13px;
+            font-size: 11px;
             text-align: center;
             color: var(--text-primary);
+            line-height: 1.2;
             margin-bottom: 2px;
-            line-height: 1.2;
-        }
-
-        .producto-detalles {
-            font-size: 10px;
-            color: var(--text-primary);
-            opacity: 0.7;
-            text-align: center;
-            margin-bottom: 4px;
-            font-style: italic;
-            line-height: 1.2;
-            display: -webkit-box;
-            -webkit-line-clamp: 2;
-            -webkit-box-orient: vertical;
+            white-space: nowrap;
             overflow: hidden;
-            height: 24px;
+            text-overflow: ellipsis;
+            max-width: 80px;
         }
 
         .producto-precio-dolar {
             font-weight: 700;
             color: var(--taz-orange);
-            font-size: 16px;
-            text-shadow: 0 1px 3px rgba(255,85,0,0.2);
+            font-size: 13px;
+            text-shadow: 0 1px 2px rgba(255,85,0,0.2);
         }
 
         .producto-precio-bs {
             font-weight: 500;
             color: var(--taz-brown);
-            font-size: 11px;
-            margin-bottom: 6px;
+            font-size: 9px;
+            margin-bottom: 2px;
         }
 
         .producto-add-catalogo {
             background: var(--taz-gradient);
             color: white;
             border: none;
-            border-radius: 30px;
-            padding: 6px 10px;
-            font-size: 11px;
+            border-radius: 20px;
+            padding: 4px 6px;
+            font-size: 9px;
             font-weight: 600;
             cursor: pointer;
             width: 100%;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
-            box-shadow: 0 2px 8px rgba(255,85,0,0.3);
+            letter-spacing: 0.3px;
+            box-shadow: 0 2px 5px rgba(255,85,0,0.3);
+            margin-top: 2px;
         }
 
         .producto-add-catalogo:active {
             transform: translateY(-1px);
-            box-shadow: 0 4px 12px rgba(255,85,0,0.5);
+            box-shadow: 0 3px 8px rgba(255,85,0,0.5);
         }
 
         /* ===== MODAL DE DETALLES ===== */
@@ -457,7 +440,7 @@
         }
 
         .modal-emoji {
-            font-size: 60px;
+            font-size: 70px;
             text-align: center;
             margin-bottom: 10px;
             filter: drop-shadow(0 10px 15px rgba(255,85,0,0.4));
@@ -477,6 +460,9 @@
             margin-bottom: 20px;
             padding: 0 10px;
             line-height: 1.5;
+            background: rgba(255,85,0,0.05);
+            border-radius: 15px;
+            padding: 15px;
         }
 
         .modal-precios {
@@ -818,7 +804,7 @@
             }
             
             .productos-grid {
-                grid-template-columns: repeat(3, 1fr);
+                grid-template-columns: repeat(4, 1fr);
             }
         }
 
@@ -827,10 +813,10 @@
             .logo-text { font-size: 2rem; }
             .msg { max-width: 90%; }
             .productos-grid {
-                grid-template-columns: repeat(2, 1fr);
+                grid-template-columns: repeat(3, 1fr);
             }
-            .producto-emoji { font-size: 28px; }
-            .producto-precio-dolar { font-size: 14px; }
+            .producto-nombre { font-size: 10px; }
+            .producto-precio-dolar { font-size: 12px; }
         }
 
         @keyframes fadeInOut {
@@ -915,28 +901,28 @@
             horario: "Atención digital: Lunes a Domingo - 8:00 AM a 10:00 PM",
             metodos_pago: "Pago Móvil (Tasa BCV), Zelle, Efectivo, Binance Pay (USDT) y Punto de Venta.",
             catalogo_motos: [
-                {"emoji": "🏍️", "nombre": "Freno Delantero", "detalles": "Pastillas y disco, alta duración. Compatible con la mayoría de las motos 150cc.", "precio": 25},
-                {"emoji": "🔧", "nombre": "Cadena Transmisión", "detalles": "Kit completo, resistencia máxima. Incluye piñón y corona.", "precio": 45},
-                {"emoji": "🛢️", "nombre": "Aceite 20W50", "detalles": "1 litro, motor 4 tiempos. Protección superior para tu motor.", "precio": 12},
-                {"emoji": "🔋", "nombre": "Batería", "detalles": "12V 7Ah, libre mantenimiento. Alta durabilidad y potencia.", "precio": 60},
-                {"emoji": "💡", "nombre": "Foco LED", "detalles": "Luz blanca, alta potencia. Iluminación superior, bajo consumo.", "precio": 15},
-                {"emoji": "⚙️", "nombre": "Kit de Arrastre", "detalles": "Relación 428, alta durabilidad. Mejor rendimiento y agarre.", "precio": 35}
+                {"emoji": "🏍️", "nombre": "Freno Delantero", "detalles": "Pastillas y disco, alta duración. Compatible con la mayoría de las motos 150cc. Incluye juego de pastillas de alto rendimiento.", "precio": 25},
+                {"emoji": "🔧", "nombre": "Cadena Transmisión", "detalles": "Kit completo, resistencia máxima. Incluye piñón y corona reforzados. 120 eslabones, para motos 150-200cc.", "precio": 45},
+                {"emoji": "🛢️", "nombre": "Aceite 20W50", "detalles": "1 litro, motor 4 tiempos. Protección superior para tu motor. Lubricante mineral de alta calidad.", "precio": 12},
+                {"emoji": "🔋", "nombre": "Batería", "detalles": "12V 7Ah, libre mantenimiento. Alta durabilidad y potencia. Ideal para motos y cuatriciclos.", "precio": 60},
+                {"emoji": "💡", "nombre": "Foco LED", "detalles": "Luz blanca, alta potencia. Iluminación superior, bajo consumo. 6000K, 12V, fácil instalación.", "precio": 15},
+                {"emoji": "⚙️", "nombre": "Kit de Arrastre", "detalles": "Relación 428, alta durabilidad. Mejor rendimiento y agarre. Incluye piñón y corona de acero.", "precio": 35}
             ],
             catalogo_papeleria: [
-                {"emoji": "📓", "nombre": "Cuaderno Universitario", "detalles": "100 hojas, cuadros / rayas. Tapa dura, papel de alta calidad.", "precio": 5},
-                {"emoji": "✏️", "nombre": "Lápices (pack 10)", "detalles": "HB #2, grafito negro. Punta resistente, borrable.", "precio": 3},
-                {"emoji": "🖊️", "nombre": "Bolígrafos (pack 10)", "detalles": "Tinta azul/negra, punta fina. Escritura suave y duradera.", "precio": 8},
-                {"emoji": "🎒", "nombre": "Mochila Escolar", "detalles": "Compartimentos, resistente. Material impermeable, varios colores.", "precio": 35},
-                {"emoji": "📏", "nombre": "Regla Metálica", "detalles": "30cm, acero inoxidable. Graduación precisa, borde recto.", "precio": 3},
-                {"emoji": "📌", "nombre": "Resaltadores (pack 6)", "detalles": "Colores surtidos. Tinta fluorescente, no traspasa el papel.", "precio": 6}
+                {"emoji": "📓", "nombre": "Cuaderno Universitario", "detalles": "100 hojas, cuadros / rayas. Tapa dura, papel de alta calidad. Ideal para la universidad.", "precio": 5},
+                {"emoji": "✏️", "nombre": "Lápices (pack 10)", "detalles": "HB #2, grafito negro. Punta resistente, borrable. Excelente para escritura y dibujo.", "precio": 3},
+                {"emoji": "🖊️", "nombre": "Bolígrafos (pack 10)", "detalles": "Tinta azul/negra, punta fina. Escritura suave y duradera. Retráctiles con grip antideslizante.", "precio": 8},
+                {"emoji": "🎒", "nombre": "Mochila Escolar", "detalles": "Compartimentos, resistente. Material impermeable, varios colores. Con correas acolchadas.", "precio": 35},
+                {"emoji": "📏", "nombre": "Regla Metálica", "detalles": "30cm, acero inoxidable. Graduación precisa, borde recto. Con escala en cm y pulgadas.", "precio": 3},
+                {"emoji": "📌", "nombre": "Resaltadores (pack 6)", "detalles": "Colores surtidos. Tinta fluorescente, no traspasa el papel. Ideal para estudio.", "precio": 6}
             ],
             catalogo_hogar: [
-                {"emoji": "🧹", "nombre": "Escoba", "detalles": "Cerdas duras, mango largo. Ideal para todo tipo de pisos.", "precio": 10},
-                {"emoji": "🧽", "nombre": "Esponjas (pack 3)", "detalles": "Multiuso, anti-rayas. 3 capas, absorción superior.", "precio": 4},
-                {"emoji": "🧴", "nombre": "Detergente 5L", "detalles": "Líquido, aroma a limón. Concentrado, rinde más.", "precio": 15},
-                {"emoji": "🏠", "nombre": "Ambientador", "detalles": "Spray 400ml, lavanda. Elimina olores, frescura duradera.", "precio": 7},
-                {"emoji": "🧺", "nombre": "Cesto para Ropa", "detalles": "Plástico resistente, 50L. Con asas, fácil de transportar.", "precio": 22},
-                {"emoji": "🧼", "nombre": "Jabón Líquido", "detalles": "1L, antibacterial. pH neutro, suave con las manos.", "precio": 9}
+                {"emoji": "🧹", "nombre": "Escoba", "detalles": "Cerdas duras, mango largo. Ideal para todo tipo de pisos. Con recogedor incluido.", "precio": 10},
+                {"emoji": "🧽", "nombre": "Esponjas (pack 3)", "detalles": "Multiuso, anti-rayas. 3 capas, absorción superior. No raya superficies delicadas.", "precio": 4},
+                {"emoji": "🧴", "nombre": "Detergente 5L", "detalles": "Líquido, aroma a limón. Concentrado, rinde más. Elimina grasa fácilmente.", "precio": 15},
+                {"emoji": "🏠", "nombre": "Ambientador", "detalles": "Spray 400ml, lavanda. Elimina olores, frescura duradera. Aroma natural.", "precio": 7},
+                {"emoji": "🧺", "nombre": "Cesto para Ropa", "detalles": "Plástico resistente, 50L. Con asas, fácil de transportar. Tapa incluida.", "precio": 22},
+                {"emoji": "🧼", "nombre": "Jabón Líquido", "detalles": "1L, antibacterial. pH neutro, suave con las manos. Elimina el 99.9% de bacterias.", "precio": 9}
             ]
         };
         
@@ -1006,7 +992,7 @@
                 </div>
                 <div class="modal-botones">
                     <button class="modal-btn modal-btn-secondary" onclick="cerrarModal()">CERRAR</button>
-                    <button class="modal-btn modal-btn-primary" onclick="agregarDesdeModal()">🛒 AÑADIR</button>
+                    <button class="modal-btn modal-btn-primary" onclick="agregarDesdeModal()">🛒 AÑADIR AL CARRITO</button>
                 </div>
             `;
             document.body.appendChild(modal);
@@ -1074,13 +1060,11 @@
                 
                 html += `
                     <div class="producto-card-catalogo" onclick='verDetalles(${productoJSON})'>
-                        <div class="producto-emoji">${p.emoji}</div>
                         <div class="producto-nombre">${p.nombre}</div>
-                        <div class="producto-detalles">${p.detalles.substring(0, 30)}...</div>
                         <div class="producto-precio-dolar">$${p.precio}</div>
                         <div class="producto-precio-bs">Bs ${precioBs}</div>
                         <button class="producto-add-catalogo" onclick="event.stopPropagation(); addToCart('${p.emoji} ${nombreProducto}', ${p.precio})">
-                            🛒 AÑADIR
+                            🛒
                         </button>
                     </div>
                 `;
