@@ -299,7 +299,6 @@
             font-weight: 500;
         }
 
-        /* ===== ESTILO CATÁLOGO ===== */
         .catalogo-container {
             width: 100%;
             margin: 5px 0;
@@ -401,7 +400,6 @@
             transform: translateY(-2px);
             box-shadow: 0 8px 20px rgba(255,85,0,0.6);
         }
-        /* ========================== */
 
         .input-container {
             position: fixed;
@@ -686,6 +684,13 @@
             .producto-emoji { font-size: 40px; }
             .producto-precio-dolar { font-size: 18px; }
         }
+
+        @keyframes fadeInOut {
+            0% { opacity: 0; transform: translateX(-50%) translateY(20px); }
+            15% { opacity: 1; transform: translateX(-50%) translateY(0); }
+            85% { opacity: 1; transform: translateX(-50%) translateY(0); }
+            100% { opacity: 0; transform: translateX(-50%) translateY(-20px); }
+        }
     </style>
 </head>
 <body>
@@ -759,10 +764,10 @@
         let cart = JSON.parse(localStorage.getItem('multikap_cart')) || [];
         let messages = JSON.parse(localStorage.getItem('multikap_chat')) || [];
         
-        // Catálogos (se cargarán desde el JSON)
-        let catalogo_motos = ["catalogo_motos"];
-        let catalogo_papeleria = ["catalogo_papeleria"];
-        let catalogo_hogar = ["catalogo_hogar"];
+        // Catálogos (CORREGIDO: ahora son arrays vacíos que se llenarán desde el JSON)
+        let catalogo_motos = [];
+        let catalogo_papeleria = [];
+        let catalogo_hogar = [];
         
         // Elementos
         const chatWindow = document.getElementById('chat-window');
@@ -777,93 +782,80 @@
         const advisorMenu = document.getElementById('advisorMenu');
         const typingText = document.getElementById('typingText');
         
-       // ========== FUNCIÓN DE INICIO CORREGIDA CON DEPURACIÓN ==========
-async function init() {
-    try {
-        // Cargar configuración desde el backend
-        const res = await fetch(`${API_BASE}/config`);
-        CONFIG = await res.json();
-        
-        // ===== DEPURACIÓN: Ver qué está llegando exactamente =====
-        console.log("🔍 CONFIG COMPLETO:", CONFIG);
-        console.log("🔍 Tipo de CONFIG:", typeof CONFIG);
-        console.log("🔍 ¿CONFIG es array?", Array.isArray(CONFIG));
-        console.log("🔍 Propiedades de CONFIG:", Object.keys(CONFIG));
-        console.log("🔍 catalogo_motos existe?", CONFIG.hasOwnProperty('catalogo_motos'));
-        console.log("🔍 catalogo_motos valor:", CONFIG.catalogo_motos);
-        console.log("🔍 catalogo_motos es array?", Array.isArray(CONFIG.catalogo_motos));
-        // ========================================================
-        
-        // ===== CARGAR CATÁLOGOS =====
-        if (CONFIG.catalogo_motos && Array.isArray(CONFIG.catalogo_motos) && CONFIG.catalogo_motos.length > 0) {
-            catalogo_motos = CONFIG.catalogo_motos;
-            console.log("✅ Catálogo motos cargado:", catalogo_motos.length, "productos");
-        } else {
-            console.warn("⚠️ No se encontró catalogo_motos válido en CONFIG");
-            // Fallback: datos de ejemplo para probar
-            catalogo_motos = [
-                {"emoji": "🏍️", "nombre": "Freno Delantero", "detalles": "Pastillas y disco", "precio": 25},
-                {"emoji": "🔧", "nombre": "Cadena", "detalles": "Kit completo", "precio": 45}
-            ];
+        // ========== FUNCIÓN DE INICIO CORREGIDA ==========
+        async function init() {
+            try {
+                // Cargar configuración desde el backend
+                const res = await fetch(`${API_BASE}/config`);
+                CONFIG = await res.json();
+                
+                console.log("✅ Configuración cargada:", CONFIG);
+                
+                // CORREGIDO: Asignar correctamente los catálogos
+                if (CONFIG.catalogo_motos && Array.isArray(CONFIG.catalogo_motos)) {
+                    catalogo_motos = CONFIG.catalogo_motos;
+                    console.log("✅ Catálogo motos cargado:", catalogo_motos.length, "productos");
+                }
+                
+                if (CONFIG.catalogo_papeleria && Array.isArray(CONFIG.catalogo_papeleria)) {
+                    catalogo_papeleria = CONFIG.catalogo_papeleria;
+                    console.log("✅ Catálogo papelería cargado:", catalogo_papeleria.length, "productos");
+                }
+                
+                if (CONFIG.catalogo_hogar && Array.isArray(CONFIG.catalogo_hogar)) {
+                    catalogo_hogar = CONFIG.catalogo_hogar;
+                    console.log("✅ Catálogo hogar cargado:", catalogo_hogar.length, "productos");
+                }
+                
+                // Cargar mensajes guardados
+                messages.forEach(msg => {
+                    mostrarMensaje(msg.text, msg.sender, msg.hasButtons, msg.hasWS, false);
+                });
+                
+                // SOLO mostrar mensaje de bienvenida si no hay historial
+                if (messages.length === 0) {
+                    mostrarMensaje(CONFIG.mensaje_bienvenida || "⚡ **¡Hola! Soy Taz, tu asistente virtual de MultiKAP.** ⚡\n\nTengo varios modos de asesoramiento que puedes ver en el botón naranja de la parte superior derecha (🏍️).\n\nSelecciona un asesor para ver nuestro **catálogo completo** con precios en $ y Bs.", 'bot', true);
+                }
+                
+                updateCartDisplay();
+                updateTypingText();
+                
+            } catch (e) {
+                console.error("❌ Error en init:", e);
+                
+                // Datos de ejemplo para modo offline
+                catalogo_motos = [
+                    {"emoji": "🏍️", "nombre": "Freno Delantero", "detalles": "Pastillas y disco, alta duración", "precio": 25},
+                    {"emoji": "🔧", "nombre": "Cadena Transmisión", "detalles": "Kit completo, resistencia máxima", "precio": 45},
+                    {"emoji": "🛢️", "nombre": "Aceite 20W50", "detalles": "1 litro, motor 4 tiempos", "precio": 12},
+                    {"emoji": "🔋", "nombre": "Batería", "detalles": "12V 7Ah, libre mantenimiento", "precio": 60},
+                    {"emoji": "💡", "nombre": "Foco LED", "detalles": "Luz blanca, alta potencia", "precio": 15},
+                    {"emoji": "⚙️", "nombre": "Kit de Arrastre", "detalles": "Relación 428, alta durabilidad", "precio": 35}
+                ];
+                
+                catalogo_papeleria = [
+                    {"emoji": "📓", "nombre": "Cuaderno Universitario", "detalles": "100 hojas, cuadros / rayas", "precio": 5},
+                    {"emoji": "✏️", "nombre": "Lápices (pack 10)", "detalles": "HB #2, grafito negro", "precio": 3},
+                    {"emoji": "🖊️", "nombre": "Bolígrafos (pack 10)", "detalles": "Tinta azul/negra, punta fina", "precio": 8},
+                    {"emoji": "🎒", "nombre": "Mochila Escolar", "detalles": "Compartimentos, resistente", "precio": 35},
+                    {"emoji": "📏", "nombre": "Regla Metálica", "detalles": "30cm, acero inoxidable", "precio": 3},
+                    {"emoji": "📌", "nombre": "Resaltadores (pack 6)", "detalles": "Colores surtidos", "precio": 6}
+                ];
+                
+                catalogo_hogar = [
+                    {"emoji": "🧹", "nombre": "Escoba", "detalles": "Cerdas duras, mango largo", "precio": 10},
+                    {"emoji": "🧽", "nombre": "Esponjas (pack 3)", "detalles": "Multiuso, anti-rayas", "precio": 4},
+                    {"emoji": "🧴", "nombre": "Detergente 5L", "detalles": "Líquido, aroma a limón", "precio": 15},
+                    {"emoji": "🏠", "nombre": "Ambientador", "detalles": "Spray 400ml, lavanda", "precio": 7},
+                    {"emoji": "🧺", "nombre": "Cesto para Ropa", "detalles": "Plástico resistente, 50L", "precio": 22},
+                    {"emoji": "🧼", "nombre": "Jabón Líquido", "detalles": "1L, antibacterial", "precio": 9}
+                ];
+                
+                if (messages.length === 0) {
+                    mostrarMensaje("⚡ **¡Hola! Soy Taz, tu asistente virtual de MultiKAP.** ⚡\n\nTengo varios modos de asesoramiento que puedes ver en el botón naranja de la parte superior derecha (🏍️).\n\nSelecciona un asesor para ver nuestro **catálogo completo** con precios en $ y Bs.", 'bot', true);
+                }
+            }
         }
-        
-        if (CONFIG.catalogo_papeleria && Array.isArray(CONFIG.catalogo_papeleria) && CONFIG.catalogo_papeleria.length > 0) {
-            catalogo_papeleria = CONFIG.catalogo_papeleria;
-            console.log("✅ Catálogo papelería cargado:", catalogo_papeleria.length, "productos");
-        } else {
-            console.warn("⚠️ No se encontró catalogo_papeleria válido en CONFIG");
-            catalogo_papeleria = [
-                {"emoji": "📓", "nombre": "Cuaderno", "detalles": "100 hojas", "precio": 5},
-                {"emoji": "✏️", "nombre": "Lápices", "detalles": "Pack 10", "precio": 3}
-            ];
-        }
-        
-        if (CONFIG.catalogo_hogar && Array.isArray(CONFIG.catalogo_hogar) && CONFIG.catalogo_hogar.length > 0) {
-            catalogo_hogar = CONFIG.catalogo_hogar;
-            console.log("✅ Catálogo hogar cargado:", catalogo_hogar.length, "productos");
-        } else {
-            console.warn("⚠️ No se encontró catalogo_hogar válido en CONFIG");
-            catalogo_hogar = [
-                {"emoji": "🧹", "nombre": "Escoba", "detalles": "Cerdas duras", "precio": 10},
-                {"emoji": "🧽", "nombre": "Esponjas", "detalles": "Pack 3", "precio": 4}
-            ];
-        }
-        
-        // Cargar mensajes guardados
-        messages.forEach(msg => {
-            mostrarMensaje(msg.text, msg.sender, msg.hasButtons, msg.hasWS, false);
-        });
-        
-        // SOLO mostrar mensaje de bienvenida si no hay historial
-        if (messages.length === 0) {
-            mostrarMensaje(CONFIG.mensaje_bienvenida || "⚡ **¡Hola! Soy Taz, tu asistente virtual de MultiKAP.** ⚡\n\nTengo varios modos de asesoramiento que puedes ver en el botón naranja de la parte superior derecha (🏍️).\n\nSelecciona un asesor para ver nuestro **catálogo completo** con precios en $ y Bs.", 'bot', true);
-        }
-        
-        updateCartDisplay();
-        updateTypingText();
-    } catch (e) {
-        console.error("❌ Error en init:", e);
-        console.log("Error de conexión, usando modo offline con datos de ejemplo");
-        
-        // Datos de ejemplo para modo offline
-        catalogo_motos = [
-            {"emoji": "🏍️", "nombre": "Freno Delantero", "detalles": "Pastillas y disco", "precio": 25},
-            {"emoji": "🔧", "nombre": "Cadena", "detalles": "Kit completo", "precio": 45}
-        ];
-        catalogo_papeleria = [
-            {"emoji": "📓", "nombre": "Cuaderno", "detalles": "100 hojas", "precio": 5},
-            {"emoji": "✏️", "nombre": "Lápices", "detalles": "Pack 10", "precio": 3}
-        ];
-        catalogo_hogar = [
-            {"emoji": "🧹", "nombre": "Escoba", "detalles": "Cerdas duras", "precio": 10},
-            {"emoji": "🧽", "nombre": "Esponjas", "detalles": "Pack 3", "precio": 4}
-        ];
-        
-        if (messages.length === 0) {
-            mostrarMensaje("⚡ **¡Hola! Soy Taz, tu asistente virtual de MultiKAP.** ⚡\n\nTengo varios modos de asesoramiento que puedes ver en el botón naranja de la parte superior derecha (🏍️).\n\nSelecciona un asesor para ver nuestro **catálogo completo** con precios en $ y Bs.", 'bot', true);
-        }
-    }
-}
 
         // ========== MOSTRAR CATÁLOGO ==========
         function mostrarCatalogo(advisor) {
@@ -1001,7 +993,7 @@ async function init() {
                     body: JSON.stringify({ 
                         mensaje: texto, 
                         historial: historial,
-                        advisor: currentAdvisor  // Importante: enviamos el asesor actual
+                        advisor: currentAdvisor
                     })
                 });
                 
@@ -1011,7 +1003,7 @@ async function init() {
                 stopThinking();
                 
                 if (data.tasa) {
-                    TASA_BCV = data.tasa; // Actualizar tasa
+                    TASA_BCV = data.tasa;
                 }
                 
                 if (data.respuesta) {
@@ -1290,18 +1282,6 @@ async function init() {
         }
 
         window.onload = init;
-
-        // Animación para el toast
-        const style = document.createElement('style');
-        style.innerHTML = `
-            @keyframes fadeInOut {
-                0% { opacity: 0; transform: translateX(-50%) translateY(20px); }
-                15% { opacity: 1; transform: translateX(-50%) translateY(0); }
-                85% { opacity: 1; transform: translateX(-50%) translateY(0); }
-                100% { opacity: 0; transform: translateX(-50%) translateY(-20px); }
-            }
-        `;
-        document.head.appendChild(style);
     </script>
 </body>
 </html>
