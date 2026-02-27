@@ -753,7 +753,6 @@
 
     <script>
         // ========== LIMPIAR LOCALSTORAGE AL INICIAR ==========
-        // Esto eliminará cualquier historial guardado anteriormente
         localStorage.removeItem('multikap_chat');
         localStorage.removeItem('multikap_cart');
         
@@ -768,6 +767,7 @@
         let currentAdvisorIcon = '🏍️';
         let cart = [];
         let messages = [];
+        let catalogsLoaded = false; // Bandera para saber si los catálogos están cargados
         
         // Catálogos
         let catalogo_motos = [];
@@ -790,6 +790,9 @@
         // ========== FUNCIÓN DE INICIO ==========
         async function init() {
             try {
+                // Mostrar mensaje de carga
+                mostrarMensaje("⚡ Cargando catálogos...", 'bot', false, false, true);
+                
                 // Cargar configuración desde el backend
                 const res = await fetch(`${API_BASE}/config`);
                 CONFIG = await res.json();
@@ -799,18 +802,29 @@
                 // Asignar catálogos
                 if (CONFIG.catalogo_motos && Array.isArray(CONFIG.catalogo_motos)) {
                     catalogo_motos = CONFIG.catalogo_motos;
+                    console.log("✅ Catálogo motos cargado:", catalogo_motos.length, "productos");
                 }
                 
                 if (CONFIG.catalogo_papeleria && Array.isArray(CONFIG.catalogo_papeleria)) {
                     catalogo_papeleria = CONFIG.catalogo_papeleria;
+                    console.log("✅ Catálogo papelería cargado:", catalogo_papeleria.length, "productos");
                 }
                 
                 if (CONFIG.catalogo_hogar && Array.isArray(CONFIG.catalogo_hogar)) {
                     catalogo_hogar = CONFIG.catalogo_hogar;
+                    console.log("✅ Catálogo hogar cargado:", catalogo_hogar.length, "productos");
                 }
                 
-                // SOLO mostrar mensaje de bienvenida
-                mostrarMensaje(CONFIG.mensaje_bienvenida || "⚡ **¡Hola! Soy Taz, tu asistente virtual de MultiKAP.** ⚡\n\nTengo varios modos de asesoramiento que puedes ver en el botón naranja de la parte superior derecha (🏍️).\n\nSelecciona un asesor para ver nuestro **catálogo completo** con precios en $ y Bs.", 'bot', true);
+                catalogsLoaded = true;
+                
+                // Limpiar el mensaje de carga
+                chatWindow.innerHTML = '';
+                messages = [];
+                
+                // MOSTRAR MENSAJE DE BIENVENIDA COMPLETO
+                const mensajeBienvenida = CONFIG.mensaje_bienvenida || "⚡ **¡Hola! Soy Taz, tu asistente virtual de MultiKAP.** ⚡\n\nTengo varios modos de asesoramiento que puedes ver en el botón naranja de la parte superior derecha (🏍️).\n\nSelecciona un asesor para ver nuestro **catálogo completo** con precios en $ y Bs.";
+                
+                mostrarMensaje(mensajeBienvenida, 'bot', true);
                 
                 updateCartDisplay();
                 updateTypingText();
@@ -846,12 +860,23 @@
                     {"emoji": "🧼", "nombre": "Jabón Líquido", "detalles": "1L, antibacterial", "precio": 9}
                 ];
                 
+                catalogsLoaded = true;
+                
+                // Limpiar el chat y mostrar bienvenida en modo offline
+                chatWindow.innerHTML = '';
+                messages = [];
+                
                 mostrarMensaje("⚡ **¡Hola! Soy Taz, tu asistente virtual de MultiKAP.** ⚡\n\nTengo varios modos de asesoramiento que puedes ver en el botón naranja de la parte superior derecha (🏍️).\n\nSelecciona un asesor para ver nuestro **catálogo completo** con precios en $ y Bs.", 'bot', true);
             }
         }
 
         // ========== MOSTRAR CATÁLOGO ==========
         function mostrarCatalogo(advisor) {
+            if (!catalogsLoaded) {
+                mostrarMensaje("⏳ Los catálogos aún se están cargando. Por favor espera un momento...", 'bot');
+                return;
+            }
+            
             let productos = [];
             let titulo = "";
             let tasa = TASA_BCV;
@@ -922,11 +947,6 @@
         }
 
         function mostrarMensaje(texto, remitente, conBotones = false, mostrarWS = false, guardar = true) {
-            // Limpiar el chat si es el primer mensaje
-            if (messages.length === 0) {
-                chatWindow.innerHTML = '';
-            }
-            
             const div = document.createElement('div');
             div.className = `msg ${remitente}`;
             const content = document.createElement('div');
@@ -1254,7 +1274,7 @@
         }
         setInterval(draw, 60);
 
-        // Cargar preferencias guardadas (solo tema y asesor, no el chat)
+        // Cargar preferencias guardadas (solo tema y asesor)
         const savedTheme = localStorage.getItem('multikap_theme');
         if (savedTheme === 'dark') {
             document.body.classList.add('dark-mode');
