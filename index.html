@@ -953,60 +953,22 @@
     </div>
 
     <script>
-        // ========== LIMPIAR LOCALSTORAGE ==========
-        localStorage.removeItem('multikap_chat');
-        localStorage.removeItem('multikap_cart');
-        
-        // ========== CONFIGURACIÓN LOCAL ==========
-        const CONFIG = {
-            nombre_tienda: "MULTIKAP",
-            tagline: "TAZ 2080 • CAOS ORGANIZADO",
-            color_primario: "#ff5500",
-            contacto_whatsapp: "584120000000",
-            mensaje_bienvenida: "⚡ **¡Hola! Soy Taz, tu asistente virtual de MultiKAP.** ⚡\n\nTengo varios modos de asesoramiento que puedes ver en el botón naranja de la parte superior derecha (🏍️).\n\nSelecciona un asesor para ver nuestro **catálogo completo** con precios en $ y Bs.",
-            ubicacion: "Disponible en línea las 24/7. Envíos a toda Venezuela.",
-            horario: "Atención digital: Lunes a Domingo - 8:00 AM a 10:00 PM",
-            metodos_pago: "Pago Móvil (Tasa BCV), Zelle, Efectivo, Binance Pay (USDT) y Punto de Venta.",
-            catalogo_motos: [
-                {"emoji": "🏍️", "nombre": "Freno Delantero", "detalles": "Pastillas y disco, alta duración. Compatible con la mayoría de las motos 150cc. Incluye juego de pastillas de alto rendimiento.", "precio": 25},
-                {"emoji": "🔧", "nombre": "Cadena Transmisión", "detalles": "Kit completo, resistencia máxima. Incluye piñón y corona reforzados. 120 eslabones, para motos 150-200cc.", "precio": 45},
-                {"emoji": "🛢️", "nombre": "Aceite 20W50", "detalles": "1 litro, motor 4 tiempos. Protección superior para tu motor. Lubricante mineral de alta calidad.", "precio": 12},
-                {"emoji": "🔋", "nombre": "Batería", "detalles": "12V 7Ah, libre mantenimiento. Alta durabilidad y potencia. Ideal para motos y cuatriciclos.", "precio": 60},
-                {"emoji": "💡", "nombre": "Foco LED", "detalles": "Luz blanca, alta potencia. Iluminación superior, bajo consumo. 6000K, 12V, fácil instalación.", "precio": 15},
-                {"emoji": "⚙️", "nombre": "Kit de Arrastre", "detalles": "Relación 428, alta durabilidad. Mejor rendimiento y agarre. Incluye piñón y corona de acero.", "precio": 35}
-            ],
-            catalogo_papeleria: [
-                {"emoji": "📓", "nombre": "Cuaderno Universitario", "detalles": "100 hojas, cuadros / rayas. Tapa dura, papel de alta calidad. Ideal para la universidad.", "precio": 5},
-                {"emoji": "✏️", "nombre": "Lápices (pack 10)", "detalles": "HB #2, grafito negro. Punta resistente, borrable. Excelente para escritura y dibujo.", "precio": 3},
-                {"emoji": "🖊️", "nombre": "Bolígrafos (pack 10)", "detalles": "Tinta azul/negra, punta fina. Escritura suave y duradera. Retráctiles con grip antideslizante.", "precio": 8},
-                {"emoji": "🎒", "nombre": "Mochila Escolar", "detalles": "Compartimentos, resistente. Material impermeable, varios colores. Con correas acolchadas.", "precio": 35},
-                {"emoji": "📏", "nombre": "Regla Metálica", "detalles": "30cm, acero inoxidable. Graduación precisa, borde recto. Con escala en cm y pulgadas.", "precio": 3},
-                {"emoji": "📌", "nombre": "Resaltadores (pack 6)", "detalles": "Colores surtidos. Tinta fluorescente, no traspasa el papel. Ideal para estudio.", "precio": 6}
-            ],
-            catalogo_hogar: [
-                {"emoji": "🧹", "nombre": "Escoba", "detalles": "Cerdas duras, mango largo. Ideal para todo tipo de pisos. Con recogedor incluido.", "precio": 10},
-                {"emoji": "🧽", "nombre": "Esponjas (pack 3)", "detalles": "Multiuso, anti-rayas. 3 capas, absorción superior. No raya superficies delicadas.", "precio": 4},
-                {"emoji": "🧴", "nombre": "Detergente 5L", "detalles": "Líquido, aroma a limón. Concentrado, rinde más. Elimina grasa fácilmente.", "precio": 15},
-                {"emoji": "🏠", "nombre": "Ambientador", "detalles": "Spray 400ml, lavanda. Elimina olores, frescura duradera. Aroma natural.", "precio": 7},
-                {"emoji": "🧺", "nombre": "Cesto para Ropa", "detalles": "Plástico resistente, 50L. Con asas, fácil de transportar. Tapa incluida.", "precio": 22},
-                {"emoji": "🧼", "nombre": "Jabón Líquido", "detalles": "1L, antibacterial. pH neutro, suave con las manos. Elimina el 99.9% de bacterias.", "precio": 9}
-            ]
-        };
-        
+        // ========== CONFIGURACIÓN IGUAL A LA PANADERÍA ==========
+        const API_BASE = 'https://asistente-javier.onrender.com';
+        let CONFIG = {};
         let historial = [];
-        let TASA_BCV = 60;
+        let tasaBCV = 60; // Valor inicial, se actualizará desde el backend
         
         // Estado de la app
         let currentAdvisor = 'motos';
         let currentAdvisorIcon = '🏍️';
-        let cart = [];
-        let messages = [];
-        let productoActual = null;
+        let cart = JSON.parse(localStorage.getItem('multikap_cart')) || [];
+        let messages = JSON.parse(localStorage.getItem('multikap_chat')) || [];
         
         // Catálogos
-        let catalogo_motos = CONFIG.catalogo_motos;
-        let catalogo_papeleria = CONFIG.catalogo_papeleria;
-        let catalogo_hogar = CONFIG.catalogo_hogar;
+        let catalogo_motos = [];
+        let catalogo_papeleria = [];
+        let catalogo_hogar = [];
         
         // Elementos
         const chatWindow = document.getElementById('chat-window');
@@ -1020,16 +982,40 @@
         const advisorIcon = document.getElementById('advisorIcon');
         const advisorMenu = document.getElementById('advisorMenu');
         const typingText = document.getElementById('typingText');
+        let productoActual = null;
         
         // ========== FUNCIÓN DE INICIO ==========
-        function init() {
-            console.log("✅ Iniciando con datos locales");
-            
-            mostrarMensaje(CONFIG.mensaje_bienvenida, 'bot', true);
-            
-            updateCartDisplay();
-            updateTypingText();
-            crearModalDetalles();
+        async function init() {
+            try {
+                // Cargar configuración desde el backend (IGUAL QUE LA PANADERÍA)
+                const res = await fetch(`${API_BASE}/config`);
+                CONFIG = await res.json();
+                
+                console.log("✅ Configuración cargada:", CONFIG);
+                
+                // Cargar catálogos
+                if (CONFIG.catalogo_motos) catalogo_motos = CONFIG.catalogo_motos;
+                if (CONFIG.catalogo_papeleria) catalogo_papeleria = CONFIG.catalogo_papeleria;
+                if (CONFIG.catalogo_hogar) catalogo_hogar = CONFIG.catalogo_hogar;
+                
+                // Cargar mensajes guardados
+                messages.forEach(msg => {
+                    mostrarMensaje(msg.text, msg.sender, msg.hasButtons, msg.hasWS, false);
+                });
+                
+                // Mostrar mensaje de bienvenida solo si no hay historial
+                if (messages.length === 0) {
+                    mostrarMensaje(CONFIG.mensaje_bienvenida || "⚡ **¡Hola! Soy Taz, tu asistente virtual de MultiKAP.** ⚡", 'bot', true);
+                }
+                
+                crearModalDetalles();
+                updateCartDisplay();
+                updateTypingText();
+                
+            } catch (e) {
+                console.error("❌ Error en init:", e);
+                mostrarMensaje("⚡ Error de conexión. Usando modo offline.", 'bot');
+            }
         }
 
         // ========== MODAL DE DETALLES ==========
@@ -1069,7 +1055,17 @@
             document.getElementById('modalTitulo').innerText = producto.nombre;
             document.getElementById('modalDetalle').innerText = producto.detalles;
             document.getElementById('modalPrecioDolar').innerText = `$${producto.precio}`;
-            document.getElementById('modalPrecioBs').innerHTML = `Bs ${(producto.precio * TASA_BCV).toFixed(2)} <span class="modal-aprox">aprox.</span>`;
+            
+            // Obtener tasa actualizada del backend para el modal
+            fetch(`${API_BASE}/tasa-bcv`)
+                .then(res => res.json())
+                .then(data => {
+                    const tasa = data.tasa || 60;
+                    document.getElementById('modalPrecioBs').innerHTML = `Bs ${(producto.precio * tasa).toFixed(2)} <span class="modal-aprox">aprox.</span>`;
+                })
+                .catch(() => {
+                    document.getElementById('modalPrecioBs').innerHTML = `Bs ${(producto.precio * 60).toFixed(2)} <span class="modal-aprox">aprox.</span>`;
+                });
             
             document.getElementById('productoModal').classList.add('show');
             document.getElementById('modalOverlay').classList.add('show');
@@ -1092,7 +1088,6 @@
         function mostrarCatalogo(advisor) {
             let productos = [];
             let titulo = "";
-            let tasa = TASA_BCV;
             
             if (advisor === 'motos') {
                 productos = catalogo_motos;
@@ -1115,7 +1110,6 @@
             html += `<div class="productos-grid">`;
             
             productos.forEach(p => {
-                const precioBs = (p.precio * tasa).toFixed(2);
                 const nombreProducto = p.nombre.replace(/'/g, "\\'").replace(/"/g, '&quot;');
                 const productoJSON = JSON.stringify(p).replace(/'/g, "\\'");
                 
@@ -1125,7 +1119,7 @@
                         <div class="producto-precios-container">
                             <span class="producto-precio-dolar">$${p.precio}</span>
                             <span class="producto-precio-separador">-</span>
-                            <span class="producto-precio-bs">Bs${precioBs}</span>
+                            <span class="producto-precio-bs" id="precio-${p.nombre.replace(/\s/g, '')}">Bs...</span>
                             <span class="producto-aprox">aprox.</span>
                         </div>
                         <button class="producto-add-catalogo" onclick="event.stopPropagation(); addToCart('${p.emoji} ${nombreProducto}', ${p.precio})">
@@ -1143,6 +1137,20 @@
             content.innerHTML = html;
             div.appendChild(content);
             chatWindow.appendChild(div);
+            
+            // Actualizar precios con la tasa actual
+            fetch(`${API_BASE}/tasa-bcv`)
+                .then(res => res.json())
+                .then(data => {
+                    const tasa = data.tasa || 60;
+                    productos.forEach(p => {
+                        const elemento = document.getElementById(`precio-${p.nombre.replace(/\s/g, '')}`);
+                        if (elemento) {
+                            elemento.innerText = `Bs${(p.precio * tasa).toFixed(2)}`;
+                        }
+                    });
+                })
+                .catch(() => {});
             
             messages.push({
                 text: "🛍️ [Catálogo mostrado]",
@@ -1175,7 +1183,7 @@
 
             if (mostrarWS) {
                 const btn = document.createElement('a');
-                btn.href = `https://wa.me/${CONFIG.contacto_whatsapp}`;
+                btn.href = `https://wa.me/${CONFIG.contacto_whatsapp || '584120000000'}`;
                 btn.className = 'whatsapp-btn';
                 btn.target = "_blank";
                 btn.rel = "noopener noreferrer";
@@ -1198,7 +1206,7 @@
             scrollToBottom();
         }
 
-        function enviarMensaje() {
+        async function enviarMensaje() {
             const input = document.getElementById('user-input');
             const texto = input.value.trim();
             if(!texto) return;
@@ -1208,25 +1216,36 @@
             
             startThinking();
             
-            setTimeout(() => {
+            try {
+                const res = await fetch(`${API_BASE}/chat`, {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({ 
+                        mensaje: texto, 
+                        historial: historial,
+                        advisor: currentAdvisor
+                    })
+                });
+                
+                const data = await res.json();
                 stopThinking();
                 
-                let respuesta = "";
-                if (texto.toLowerCase().includes('horario')) {
-                    respuesta = CONFIG.horario;
-                } else if (texto.toLowerCase().includes('pago') || texto.toLowerCase().includes('pagos')) {
-                    respuesta = CONFIG.metodos_pago;
-                } else if (texto.toLowerCase().includes('ubicación') || texto.toLowerCase().includes('ubicacion')) {
-                    respuesta = CONFIG.ubicacion;
-                } else {
-                    respuesta = "⚡ Gracias por tu mensaje. ¿En qué más puedo ayudarte? Puedes preguntar por horarios, formas de pago, o ver el catálogo.";
+                if (data.respuesta) {
+                    historial.push(
+                        {role: "user", content: texto}, 
+                        {role: "assistant", content: data.respuesta}
+                    );
+                    
+                    mostrarMensaje(data.respuesta, 'bot', false, data.mostrar_whatsapp);
+                    
+                    if (navigator.vibrate) navigator.vibrate(50);
+                    playMessageSound();
                 }
-                
-                mostrarMensaje(respuesta, 'bot', false, false);
-                
-                if (navigator.vibrate) navigator.vibrate(50);
-                playMessageSound();
-            }, 1000);
+            } catch (e) {
+                console.error("Error:", e);
+                stopThinking();
+                mostrarMensaje("⚡ Taz tuvo un problema de conexión. ¿Repites?", 'bot');
+            }
         }
 
         // ========== SELECTOR DE ASESORES ==========
@@ -1350,7 +1369,17 @@
                     `;
                 });
                 cartItems.innerHTML = html;
-                cartTotal.innerText = `Total: $${total} (Bs ${(total * TASA_BCV).toFixed(2)})`;
+                
+                // Obtener tasa para mostrar total en Bs
+                fetch(`${API_BASE}/tasa-bcv`)
+                    .then(res => res.json())
+                    .then(data => {
+                        const tasa = data.tasa || 60;
+                        cartTotal.innerText = `Total: $${total} (Bs ${(total * tasa).toFixed(2)})`;
+                    })
+                    .catch(() => {
+                        cartTotal.innerText = `Total: $${total}`;
+                    });
             }
         }
 
@@ -1365,24 +1394,32 @@
             updateCartDisplay();
         }
 
-        function sendCartToWhatsApp() {
+        async function sendCartToWhatsApp() {
             if (cart.length === 0) {
                 alert('¡El carrito está vacío!');
                 return;
             }
             
+            // Obtener tasa actualizada
+            let tasa = 60;
+            try {
+                const res = await fetch(`${API_BASE}/tasa-bcv`);
+                const data = await res.json();
+                tasa = data.tasa || 60;
+            } catch (e) {}
+            
             let mensaje = "🛒 *Pedido MultiKAP - TAZ 2080*%0A%0A";
             let total = 0;
             
             cart.forEach(item => {
-                mensaje += `• ${item.producto}: $${item.precio} (Bs ${(item.precio * TASA_BCV).toFixed(2)})%0A`;
+                mensaje += `• ${item.producto}: $${item.precio} (Bs ${(item.precio * tasa).toFixed(2)})%0A`;
                 total += item.precio;
             });
             
-            mensaje += `%0A*Total: $${total} (Bs ${(total * TASA_BCV).toFixed(2)})*%0A`;
+            mensaje += `%0A*Total: $${total} (Bs ${(total * tasa).toFixed(2)})*%0A`;
             mensaje += `%0AAsesor: Taz ${currentAdvisorIcon}`;
             
-            window.open(`https://wa.me/${CONFIG.contacto_whatsapp}?text=${mensaje}`, '_blank');
+            window.open(`https://wa.me/${CONFIG.contacto_whatsapp || '584120000000'}?text=${mensaje}`, '_blank');
             
             cart = [];
             localStorage.setItem('multikap_cart', JSON.stringify(cart));
