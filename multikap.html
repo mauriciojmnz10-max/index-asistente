@@ -314,11 +314,11 @@
             letter-spacing: 1px;
         }
 
-        /* ===== TARJETAS CON ALTURA FIJA Y SCROLL INTERNO ===== */
+        /* ===== TARJETAS CON ALTURA FIJA ===== */
         .productos-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
-            gap: 12px;
+            gap: 10px;
             margin: 10px 0;
             width: 100%;
         }
@@ -336,8 +336,7 @@
             transition: all 0.2s;
             box-shadow: 0 4px 10px rgba(255, 85, 0, 0.2);
             width: 100%;
-            height: 150px; /* Altura fija para móvil */
-            overflow: hidden; /* Oculta el contenido que desborda */
+            height: 140px;
         }
 
         .producto-card-catalogo:active {
@@ -345,48 +344,21 @@
             background: rgba(255, 85, 0, 0.15);
         }
 
-        /* Contenedor con scroll para el contenido */
-        .producto-contenido {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            overflow-y: auto; /* Scroll vertical si es necesario */
-            padding-right: 2px; /* Espacio para el scroll */
-            margin-bottom: 4px;
-            scrollbar-width: thin; /* Scroll más delgado en Firefox */
-            scrollbar-color: var(--taz-orange) rgba(255,85,0,0.1); /* Color del scroll */
-        }
-
-        /* Estilo del scroll para Chrome/Safari */
-        .producto-contenido::-webkit-scrollbar {
-            width: 4px;
-        }
-
-        .producto-contenido::-webkit-scrollbar-track {
-            background: rgba(255,85,0,0.1);
-            border-radius: 4px;
-        }
-
-        .producto-contenido::-webkit-scrollbar-thumb {
-            background: var(--taz-orange);
-            border-radius: 4px;
-        }
-
-        /* NOMBRE - ARRIBA (siempre visible) */
         .producto-nombre {
             font-weight: 700;
             font-size: 13px;
             text-align: center;
             color: var(--text-primary);
             line-height: 1.3;
-            margin-bottom: 6px;
+            margin-bottom: 4px;
             width: 100%;
-            white-space: normal;
-            word-break: break-word;
-            flex-shrink: 0; /* No se encoge */
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            min-height: 32px;
         }
 
-        /* PRECIOS - MEDIO (con scroll si es necesario) */
         .producto-precios-container {
             display: flex;
             align-items: center;
@@ -396,16 +368,14 @@
             padding: 6px 4px;
             border-radius: 20px;
             width: 100%;
-            margin-bottom: 6px;
+            margin-bottom: 8px;
             flex-wrap: wrap;
-            flex-shrink: 0; /* No se encoge */
         }
 
         .producto-precio-dolar {
             font-weight: 800;
             color: var(--taz-orange);
             font-size: 14px;
-            white-space: nowrap;
         }
 
         .producto-precio-separador {
@@ -418,18 +388,14 @@
             font-weight: 600;
             color: var(--taz-brown);
             font-size: 12px;
-            white-space: nowrap;
         }
 
         .producto-aprox {
             font-size: 8px;
             color: var(--taz-brown);
             opacity: 0.7;
-            margin-left: 2px;
-            white-space: nowrap;
         }
 
-        /* BOTÓN - SIEMPRE VISIBLE ABAJO */
         .producto-add-catalogo {
             background: var(--taz-gradient);
             color: white;
@@ -443,8 +409,7 @@
             text-transform: uppercase;
             letter-spacing: 0.3px;
             box-shadow: 0 2px 8px rgba(255,85,0,0.4);
-            flex-shrink: 0; /* No se encoge */
-            margin-top: auto; /* Se pega al fondo */
+            margin-top: auto;
         }
 
         .producto-add-catalogo:active {
@@ -452,65 +417,153 @@
             box-shadow: 0 4px 12px rgba(255,85,0,0.6);
         }
 
-        /* Media query para tablets y desktop */
-        @media (min-width: 768px) {
-            .productos-grid {
-                grid-template-columns: repeat(3, 1fr);
-                gap: 15px;
-            }
-            
-            .producto-card-catalogo {
-                height: 160px; /* Un poco más alto en desktop */
-                padding: 12px 10px;
-            }
-            
-            .producto-nombre {
-                font-size: 14px;
-            }
-            
-            .producto-precio-dolar {
-                font-size: 15px;
-            }
-            
-            .producto-precio-bs {
-                font-size: 13px;
-            }
-            
-            .producto-add-catalogo {
-                padding: 8px 10px;
-                font-size: 12px;
-            }
+        /* ===== MODAL DE DETALLES ===== */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+            z-index: 1999;
         }
 
-        /* Para pantallas muy pequeñas */
-        @media (max-width: 360px) {
-            .productos-grid {
-                gap: 8px;
-            }
-            
-            .producto-card-catalogo {
-                height: 140px; /* Un poco más pequeño */
-                padding: 8px 6px;
-            }
-            
-            .producto-precios-container {
-                flex-direction: column;
-                gap: 2px;
-                padding: 5px 3px;
-            }
-            
-            .producto-precio-separador {
-                display: none;
-            }
-            
-            .producto-nombre {
-                font-size: 12px;
-            }
-            
-            .producto-add-catalogo {
-                padding: 6px 6px;
-                font-size: 10px;
-            }
+        .modal-overlay.show {
+            display: block;
+        }
+
+        .producto-modal {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 85%;
+            max-width: 340px;
+            background: var(--glass-primary);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 3px solid var(--taz-orange);
+            border-radius: 30px;
+            padding: 25px 20px;
+            z-index: 2000;
+            color: var(--text-primary);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+        }
+
+        .producto-modal.show {
+            display: block;
+            animation: modalPop 0.3s ease;
+        }
+
+        @keyframes modalPop {
+            0% { opacity: 0; transform: translate(-50%, -40%); }
+            100% { opacity: 1; transform: translate(-50%, -50%); }
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            font-size: 24px;
+            color: var(--taz-orange);
+            cursor: pointer;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background: rgba(255,85,0,0.1);
+        }
+
+        .modal-emoji {
+            font-size: 70px;
+            text-align: center;
+            margin-bottom: 10px;
+            filter: drop-shadow(0 10px 15px rgba(255,85,0,0.4));
+        }
+
+        .modal-titulo {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--taz-orange);
+            text-align: center;
+            margin-bottom: 15px;
+        }
+
+        .modal-detalle {
+            font-size: 16px;
+            text-align: center;
+            margin-bottom: 20px;
+            padding: 15px;
+            line-height: 1.5;
+            background: rgba(255,85,0,0.05);
+            border-radius: 15px;
+        }
+
+        .modal-precios {
+            background: rgba(255,85,0,0.1);
+            border-radius: 20px;
+            padding: 15px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .modal-precio-dolar {
+            font-size: 32px;
+            font-weight: 800;
+            color: var(--taz-orange);
+            margin-bottom: 5px;
+        }
+
+        .modal-precio-bs {
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--taz-brown);
+        }
+
+        .modal-aprox {
+            font-size: 12px;
+            color: var(--taz-brown);
+            opacity: 0.7;
+            margin-left: 5px;
+        }
+
+        .modal-botones {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+        }
+
+        .modal-btn {
+            flex: 1;
+            padding: 14px;
+            border: none;
+            border-radius: 40px;
+            font-weight: 700;
+            font-size: 14px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .modal-btn-primary {
+            background: var(--taz-gradient);
+            color: white;
+            box-shadow: 0 5px 15px rgba(255,85,0,0.3);
+        }
+
+        .modal-btn-secondary {
+            background: transparent;
+            border: 2px solid var(--taz-orange);
+            color: var(--taz-orange);
+        }
+
+        .modal-btn:active {
+            transform: scale(0.95);
         }
 
         .input-container {
@@ -755,7 +808,6 @@
             text-decoration: none;
         }
 
-        /* Media query para tablets y desktop */
         @media (min-width: 768px) {
             body {
                 position: relative;
@@ -780,6 +832,36 @@
             
             .cart-modal {
                 right: calc(50% - 400px);
+            }
+            
+            .productos-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+            
+            .producto-card-catalogo {
+                height: 150px;
+            }
+        }
+
+        @media (max-width: 380px) {
+            .taz-logo-img { width: 85px; height: 85px; margin-bottom: -30px; }
+            .logo-text { font-size: 2rem; }
+            .productos-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .producto-card-catalogo {
+                height: 135px;
+                padding: 8px 5px;
+            }
+            .producto-nombre {
+                font-size: 12px;
+                -webkit-line-clamp: 2;
+            }
+            .producto-precio-dolar {
+                font-size: 13px;
+            }
+            .producto-precio-bs {
+                font-size: 11px;
             }
         }
 
@@ -823,6 +905,23 @@
         <div id="cartItems"></div>
         <div class="cart-total" id="cartTotal">Total: $0</div>
         <button class="cart-ws-btn" onclick="sendCartToWhatsApp()">💰 CONCRETAR COMPRA POR WHATSAPP</button>
+    </div>
+    
+    <div class="modal-overlay" id="modalOverlay"></div>
+    
+    <div class="producto-modal" id="productoModal">
+        <div class="modal-close" onclick="cerrarModal()">✖</div>
+        <div class="modal-emoji" id="modalEmoji">🏍️</div>
+        <div class="modal-titulo" id="modalTitulo">Producto</div>
+        <div class="modal-detalle" id="modalDetalle">Detalles del producto</div>
+        <div class="modal-precios">
+            <div class="modal-precio-dolar" id="modalPrecioDolar">$0</div>
+            <div class="modal-precio-bs" id="modalPrecioBs">Bs 0 <span class="modal-aprox">aprox.</span></div>
+        </div>
+        <div class="modal-botones">
+            <button class="modal-btn modal-btn-secondary" onclick="cerrarModal()">CERRAR</button>
+            <button class="modal-btn modal-btn-primary" onclick="agregarDesdeModal()">🛒 AÑADIR</button>
+        </div>
     </div>
     
     <header id="mainHeader">
@@ -946,39 +1045,9 @@
             
             updateCartDisplay();
             updateTypingText();
-            crearModalDetalles();
         }
 
-        // ========== MODAL DE DETALLES ==========
-        function crearModalDetalles() {
-            if (document.getElementById('productoModal')) return;
-            
-            const overlay = document.createElement('div');
-            overlay.className = 'modal-overlay';
-            overlay.id = 'modalOverlay';
-            overlay.onclick = cerrarModal;
-            document.body.appendChild(overlay);
-            
-            const modal = document.createElement('div');
-            modal.className = 'producto-modal';
-            modal.id = 'productoModal';
-            modal.innerHTML = `
-                <div class="modal-close" onclick="cerrarModal()">✖</div>
-                <div class="modal-emoji" id="modalEmoji">🏍️</div>
-                <div class="modal-titulo" id="modalTitulo">Producto</div>
-                <div class="modal-detalle" id="modalDetalle">Detalles del producto</div>
-                <div class="modal-precios">
-                    <div class="modal-precio-dolar" id="modalPrecioDolar">$0</div>
-                    <div class="modal-precio-bs" id="modalPrecioBs">Bs 0 <span class="modal-aprox">aprox.</span></div>
-                </div>
-                <div class="modal-botones">
-                    <button class="modal-btn modal-btn-secondary" onclick="cerrarModal()">CERRAR</button>
-                    <button class="modal-btn modal-btn-primary" onclick="agregarDesdeModal()">🛒 AÑADIR</button>
-                </div>
-            `;
-            document.body.appendChild(modal);
-        }
-
+        // ========== FUNCIONES DEL MODAL ==========
         function verDetalles(producto) {
             productoActual = producto;
             
@@ -993,8 +1062,8 @@
         }
 
         function cerrarModal() {
-            document.getElementById('productoModal')?.classList.remove('show');
-            document.getElementById('modalOverlay')?.classList.remove('show');
+            document.getElementById('productoModal').classList.remove('show');
+            document.getElementById('modalOverlay').classList.remove('show');
             productoActual = null;
         }
 
@@ -1033,18 +1102,16 @@
             productos.forEach(p => {
                 const precioBs = (p.precio * TASA_BCV).toFixed(2);
                 const nombreProducto = p.nombre.replace(/'/g, "\\'").replace(/"/g, '&quot;');
-                const productoJSON = JSON.stringify(p).replace(/'/g, "\\'");
+                const productoJSON = JSON.stringify(p).replace(/'/g, "\\'").replace(/"/g, '&quot;');
                 
                 html += `
                     <div class="producto-card-catalogo" onclick='verDetalles(${productoJSON})'>
-                        <div class="producto-contenido">
-                            <div class="producto-nombre">${p.nombre}</div>
-                            <div class="producto-precios-container">
-                                <span class="producto-precio-dolar">$${p.precio}</span>
-                                <span class="producto-precio-separador">-</span>
-                                <span class="producto-precio-bs">Bs${precioBs}</span>
-                                <span class="producto-aprox">aprox.</span>
-                            </div>
+                        <div class="producto-nombre">${p.nombre}</div>
+                        <div class="producto-precios-container">
+                            <span class="producto-precio-dolar">$${p.precio}</span>
+                            <span class="producto-precio-separador">-</span>
+                            <span class="producto-precio-bs">Bs${precioBs}</span>
+                            <span class="producto-aprox">aprox.</span>
                         </div>
                         <button class="producto-add-catalogo" onclick="event.stopPropagation(); addToCart('${p.emoji} ${nombreProducto}', ${p.precio})">
                             🛒 AÑADIR
