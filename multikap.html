@@ -6,7 +6,6 @@
     <title>MultiKAP • TAZ 2080</title>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700&family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
-        /* ===== TU CSS (MANTENLO IGUAL) ===== */
         :root {
             --taz-orange: #ff5500;
             --taz-orange-dark: #cc4400;
@@ -969,25 +968,60 @@
     </div>
 
     <script>
-        // ========== CONFIGURACIÓN ==========
-        const API_BASE = 'https://asistente-javier.onrender.com'; // Cambia a tu URL real de Render
-        const STORE_ID = 'multikap';
+        // ========== LIMPIAR LOCALSTORAGE ==========
+        localStorage.removeItem('multikap_chat');
+        localStorage.removeItem('multikap_cart');
         
-        let CONFIG = {};
+        // ========== CONFIGURACIÓN LOCAL ==========
+        const CONFIG = {
+            nombre_tienda: "MULTIKAP",
+            tagline: "TAZ 2080 • CAOS ORGANIZADO",
+            color_primario: "#ff5500",
+            contacto_whatsapp: "584120000000",
+            mensaje_bienvenida: "⚡ **¡Hola! Soy Taz, tu asistente virtual de MultiKAP.** ⚡\n\nTengo varios modos de asesoramiento que puedes ver en el botón naranja de la parte superior derecha (🏍️).\n\nSelecciona un asesor para ver nuestro **catálogo completo** con precios en $ y Bs.",
+            ubicacion: "Disponible en línea las 24/7. Envíos a toda Venezuela.",
+            horario: "Atención digital: Lunes a Domingo - 8:00 AM a 10:00 PM",
+            metodos_pago: "Pago Móvil (Tasa BCV), Zelle, Efectivo, Binance Pay (USDT) y Punto de Venta.",
+            catalogo_motos: [
+                {"emoji": "🏍️", "nombre": "Freno Delantero", "detalles": "Pastillas y disco, alta duración. Compatible con la mayoría de las motos 150cc. Incluye juego de pastillas de alto rendimiento.", "precio": 25},
+                {"emoji": "🔧", "nombre": "Cadena Transmisión", "detalles": "Kit completo, resistencia máxima. Incluye piñón y corona reforzados. 120 eslabones, para motos 150-200cc.", "precio": 45},
+                {"emoji": "🛢️", "nombre": "Aceite 20W50", "detalles": "1 litro, motor 4 tiempos. Protección superior para tu motor. Lubricante mineral de alta calidad.", "precio": 12},
+                {"emoji": "🔋", "nombre": "Batería", "detalles": "12V 7Ah, libre mantenimiento. Alta durabilidad y potencia. Ideal para motos y cuatriciclos.", "precio": 60},
+                {"emoji": "💡", "nombre": "Foco LED", "detalles": "Luz blanca, alta potencia. Iluminación superior, bajo consumo. 6000K, 12V, fácil instalación.", "precio": 15},
+                {"emoji": "⚙️", "nombre": "Kit de Arrastre", "detalles": "Relación 428, alta durabilidad. Mejor rendimiento y agarre. Incluye piñón y corona de acero.", "precio": 35}
+            ],
+            catalogo_papeleria: [
+                {"emoji": "📓", "nombre": "Cuaderno Universitario", "detalles": "100 hojas, cuadros / rayas. Tapa dura, papel de alta calidad. Ideal para la universidad.", "precio": 5},
+                {"emoji": "✏️", "nombre": "Lápices (pack 10)", "detalles": "HB #2, grafito negro. Punta resistente, borrable. Excelente para escritura y dibujo.", "precio": 3},
+                {"emoji": "🖊️", "nombre": "Bolígrafos (pack 10)", "detalles": "Tinta azul/negra, punta fina. Escritura suave y duradera. Retráctiles con grip antideslizante.", "precio": 8},
+                {"emoji": "🎒", "nombre": "Mochila Escolar", "detalles": "Compartimentos, resistente. Material impermeable, varios colores. Con correas acolchadas.", "precio": 35},
+                {"emoji": "📏", "nombre": "Regla Metálica", "detalles": "30cm, acero inoxidable. Graduación precisa, borde recto. Con escala en cm y pulgadas.", "precio": 3},
+                {"emoji": "📌", "nombre": "Resaltadores (pack 6)", "detalles": "Colores surtidos. Tinta fluorescente, no traspasa el papel. Ideal para estudio.", "precio": 6}
+            ],
+            catalogo_hogar: [
+                {"emoji": "🧹", "nombre": "Escoba", "detalles": "Cerdas duras, mango largo. Ideal para todo tipo de pisos. Con recogedor incluido.", "precio": 10},
+                {"emoji": "🧽", "nombre": "Esponjas (pack 3)", "detalles": "Multiuso, anti-rayas. 3 capas, absorción superior. No raya superficies delicadas.", "precio": 4},
+                {"emoji": "🧴", "nombre": "Detergente 5L", "detalles": "Líquido, aroma a limón. Concentrado, rinde más. Elimina grasa fácilmente.", "precio": 15},
+                {"emoji": "🏠", "nombre": "Ambientador", "detalles": "Spray 400ml, lavanda. Elimina olores, frescura duradera. Aroma natural.", "precio": 7},
+                {"emoji": "🧺", "nombre": "Cesto para Ropa", "detalles": "Plástico resistente, 50L. Con asas, fácil de transportar. Tapa incluida.", "precio": 22},
+                {"emoji": "🧼", "nombre": "Jabón Líquido", "detalles": "1L, antibacterial. pH neutro, suave con las manos. Elimina el 99.9% de bacterias.", "precio": 9}
+            ]
+        };
+        
         let historial = [];
         let TASA_BCV = 60;
         
         // Estado de la app
         let currentAdvisor = 'motos';
         let currentAdvisorIcon = '🏍️';
-        let cart = JSON.parse(localStorage.getItem('multikap_cart')) || [];
-        let messages = JSON.parse(localStorage.getItem('multikap_chat')) || [];
+        let cart = [];
+        let messages = [];
         let productoActual = null;
         
-        // Catálogos (se llenarán desde el backend)
-        let catalogo_motos = [];
-        let catalogo_papeleria = [];
-        let catalogo_hogar = [];
+        // Catálogos
+        let catalogo_motos = CONFIG.catalogo_motos;
+        let catalogo_papeleria = CONFIG.catalogo_papeleria;
+        let catalogo_hogar = CONFIG.catalogo_hogar;
         
         // Elementos
         const chatWindow = document.getElementById('chat-window');
@@ -1002,51 +1036,10 @@
         const advisorMenu = document.getElementById('advisorMenu');
         const typingText = document.getElementById('typingText');
         
-        // ========== FUNCIÓN PARA CARGAR CONFIGURACIÓN ==========
-        async function cargarConfiguracion() {
-            try {
-                const response = await fetch(`${API_BASE}/config/${STORE_ID}`);
-                if (!response.ok) throw new Error('Error cargando configuración');
-                CONFIG = await response.json();
-                
-                // Cargar catálogos
-                catalogo_motos = CONFIG.catalogo_motos || [];
-                catalogo_papeleria = CONFIG.catalogo_papeleria || [];
-                catalogo_hogar = CONFIG.catalogo_hogar || [];
-                
-                console.log("✅ Configuración cargada:", CONFIG.nombre_tienda);
-                return true;
-            } catch (error) {
-                console.error("Error cargando configuración:", error);
-                // Fallback a datos locales
-                CONFIG = {
-                    nombre_tienda: "MULTIKAP",
-                    tagline: "TAZ 2080 • CAOS ORGANIZADO",
-                    color_primario: "#ff5500",
-                    contacto_whatsapp: "584120000000",
-                    mensaje_bienvenida: "⚡ **¡Hola! Soy Taz, tu asistente virtual de MultiKAP.** ⚡",
-                    horario: "Atención digital: Lunes a Domingo - 8:00 AM a 10:00 PM",
-                    metodos_pago: "Pago Móvil, Zelle, Efectivo, Binance Pay, Punto de Venta",
-                    ubicacion: "Disponible en línea 24/7. Envíos a toda Venezuela."
-                };
-                catalogo_motos = [
-                    {"emoji": "🏍️", "nombre": "Freno Delantero", "detalles": "Pastillas y disco, alta duración", "precio": 25},
-                    {"emoji": "🔧", "nombre": "Cadena Transmisión", "detalles": "Kit completo, resistencia máxima", "precio": 45}
-                ];
-                catalogo_papeleria = [
-                    {"emoji": "📓", "nombre": "Cuaderno Universitario", "detalles": "100 hojas, cuadros / rayas", "precio": 5}
-                ];
-                catalogo_hogar = [
-                    {"emoji": "🧹", "nombre": "Escoba", "detalles": "Cerdas duras, mango largo", "precio": 10}
-                ];
-                return false;
-            }
-        }
-        
         // ========== FUNCIÓN PARA OBTENER TASA ACTUALIZADA ==========
         async function obtenerTasaBCV() {
             try {
-                const response = await fetch(`${API_BASE}/tasa-bcv`);
+                const response = await fetch('https://asistente-javier.onrender.com/tasa-bcv');
                 const data = await response.json();
                 TASA_BCV = data.tasa || 60;
                 console.log("✅ Tasa BCV actualizada:", TASA_BCV);
@@ -1059,28 +1052,15 @@
         async function init() {
             console.log("✅ Iniciando MultiKAP");
             
-            // Limpiar localStorage si es necesario
-            if (!localStorage.getItem('multikap_initialized')) {
-                localStorage.removeItem('multikap_chat');
-                localStorage.removeItem('multikap_cart');
-                localStorage.setItem('multikap_initialized', 'true');
-            }
-            
-            // Cargar configuración del backend
-            await cargarConfiguracion();
+            // Limpiar cualquier dato previo
+            chatWindow.innerHTML = '';
+            messages = [];
             
             // Obtener tasa actualizada
             await obtenerTasaBCV();
             
-            // Cargar mensajes guardados
-            messages.forEach(msg => {
-                mostrarMensaje(msg.text, msg.sender, msg.hasButtons, msg.hasWS, false);
-            });
-            
-            // Mostrar mensaje de bienvenida solo si no hay historial
-            if (messages.length === 0) {
-                mostrarMensaje(CONFIG.mensaje_bienvenida, 'bot', true);
-            }
+            // Mostrar mensaje de bienvenida
+            mostrarMensaje(CONFIG.mensaje_bienvenida, 'bot', true);
             
             updateCartDisplay();
             updateTypingText();
@@ -1247,19 +1227,12 @@
                     hasWS: mostrarWS,
                     timestamp: new Date().toISOString()
                 });
-                
-                if (messages.length > 50) {
-                    messages = messages.slice(-50);
-                }
-                
-                localStorage.setItem('multikap_chat', JSON.stringify(messages));
             }
             
             scrollToBottom();
         }
 
-        // ========== ENVIAR MENSAJE CON IA ==========
-        async function enviarMensaje() {
+        function enviarMensaje() {
             const input = document.getElementById('user-input');
             const texto = input.value.trim();
             if(!texto) return;
@@ -1269,58 +1242,25 @@
             
             startThinking();
             
-            try {
-                const response = await fetch(`${API_BASE}/chat/${STORE_ID}`, {
-                    method: 'POST',
-                    headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({ 
-                        mensaje: texto, 
-                        historial: historial,
-                        advisor: currentAdvisor
-                    })
-                });
-                
-                if (!response.ok) throw new Error('Error en la respuesta');
-                
-                const data = await response.json();
+            setTimeout(() => {
                 stopThinking();
                 
-                if (data.respuesta) {
-                    historial.push(
-                        {role: "user", content: texto}, 
-                        {role: "assistant", content: data.respuesta}
-                    );
-                    
-                    if (historial.length > 20) {
-                        historial = historial.slice(-20);
-                    }
-                    
-                    if (data.tasa) {
-                        TASA_BCV = data.tasa;
-                    }
-                    
-                    mostrarMensaje(data.respuesta, 'bot', false, data.mostrar_whatsapp);
-                    
-                    if (navigator.vibrate) navigator.vibrate(50);
-                    playMessageSound();
-                }
-            } catch (error) {
-                console.error("Error en chat:", error);
-                stopThinking();
-                
-                // Fallback a respuestas locales
                 let respuesta = "";
                 if (texto.toLowerCase().includes('horario')) {
                     respuesta = CONFIG.horario;
-                } else if (texto.toLowerCase().includes('pago')) {
+                } else if (texto.toLowerCase().includes('pago') || texto.toLowerCase().includes('pagos')) {
                     respuesta = CONFIG.metodos_pago;
-                } else if (texto.toLowerCase().includes('ubicación')) {
+                } else if (texto.toLowerCase().includes('ubicación') || texto.toLowerCase().includes('ubicacion')) {
                     respuesta = CONFIG.ubicacion;
                 } else {
-                    respuesta = "⚡ Taz está teniendo problemas de conexión. ¿Te gustaría ver nuestro catálogo?";
+                    respuesta = "⚡ Gracias por tu mensaje. ¿En qué más puedo ayudarte? Puedes preguntar por horarios, formas de pago, o ver el catálogo.";
                 }
+                
                 mostrarMensaje(respuesta, 'bot', false, false);
-            }
+                
+                if (navigator.vibrate) navigator.vibrate(50);
+                playMessageSound();
+            }, 1000);
         }
 
         // ========== SELECTOR DE ASESORES ==========
