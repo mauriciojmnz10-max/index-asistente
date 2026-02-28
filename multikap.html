@@ -142,6 +142,10 @@
             position: relative;
         }
 
+        .theme-toggle:active, .advisor-toggle:active { 
+            transform: scale(0.9); 
+        }
+
         .advisor-menu {
             position: absolute;
             top: 48px;
@@ -160,7 +164,9 @@
             z-index: 1002;
         }
 
-        .advisor-menu.show { display: flex; }
+        .advisor-menu.show { 
+            display: flex; 
+        }
 
         .advisor-option {
             padding: 12px;
@@ -176,7 +182,8 @@
             transition: 0.2s;
         }
 
-        .advisor-option:hover, .advisor-option:active,
+        .advisor-option:hover, 
+        .advisor-option:active,
         .advisor-option.active {
             background: var(--taz-orange);
             color: white;
@@ -279,6 +286,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            flex-shrink: 0;
         }
 
         .producto-precios-container {
@@ -288,6 +296,7 @@
             text-align: center;
             font-size: 12px;
             margin-bottom: 12px;
+            flex-shrink: 0;
         }
 
         .producto-precio-dolar {
@@ -312,7 +321,14 @@
             cursor: pointer;
             width: 100%;
             text-transform: uppercase;
+            letter-spacing: 0.3px;
             box-shadow: 0 2px 8px rgba(255,85,0,0.4);
+            flex-shrink: 0;
+        }
+
+        .producto-add-catalogo:active {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(255,85,0,0.6);
         }
 
         .modal-overlay {
@@ -328,7 +344,9 @@
             z-index: 1999;
         }
 
-        .modal-overlay.show { display: block; }
+        .modal-overlay.show {
+            display: block;
+        }
 
         .producto-modal {
             display: none;
@@ -373,6 +391,10 @@
             justify-content: center;
             border-radius: 50%;
             background: rgba(255,85,0,0.1);
+        }
+
+        .modal-close:active {
+            transform: scale(0.9);
         }
 
         .modal-emoji {
@@ -456,6 +478,10 @@
             color: var(--taz-orange);
         }
 
+        .modal-btn:active {
+            transform: scale(0.95);
+        }
+
         .input-container {
             position: fixed;
             bottom: 50px;
@@ -472,6 +498,7 @@
             box-shadow: 0 10px 30px rgba(0,0,0,0.2);
             z-index: 1000;
             backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
         }
 
         input {
@@ -506,13 +533,22 @@
             transition: 0.3s;
         }
 
+        .send-btn:active { 
+            transform: scale(0.9); 
+        }
+
         .quick-replies { 
             display: flex; 
             overflow-x: auto; 
             gap: 8px;
             padding: 10px 0;
+            scrollbar-width: none; 
         }
         
+        .quick-replies::-webkit-scrollbar { 
+            display: none; 
+        }
+
         .btn-quick { 
             background: var(--glass-primary);
             border: 1px solid var(--taz-orange); 
@@ -522,8 +558,18 @@
             font-size: 12px;
             font-weight: 600; 
             backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
             cursor: pointer;
+            transition: all 0.2s;
             white-space: nowrap;
+        }
+
+        .btn-quick:active {
+            background: var(--taz-orange);
+            color: white;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 10px rgba(255, 85, 0, 0.2);
         }
 
         #typing { 
@@ -537,16 +583,88 @@
             padding: 8px 20px;
             border-radius: 30px;
             backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            z-index: 1000;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
             border: 1px solid var(--taz-orange);
+            align-items: center;
+            gap: 8px;
+            font-weight: 500;
         }
 
         @media (min-width: 768px) {
+            body {
+                position: relative;
+                height: 100vh;
+                max-width: 1200px;
+                margin: 0 auto;
+            }
+            
+            #chat-window {
+                max-width: 800px;
+                margin: 0 auto;
+                width: 100%;
+                padding-left: 30px;
+                padding-right: 30px;
+            }
+            
+            .input-container {
+                max-width: 700px;
+            }
+            
             .productos-grid {
                 grid-template-columns: repeat(3, 1fr);
             }
+            
             .producto-card-catalogo {
                 min-height: 210px;
             }
+        }
+
+        @media (max-width: 380px) {
+            .taz-logo-img { 
+                width: 70px; 
+                height: 70px; 
+            }
+            
+            .logo-text { 
+                font-size: 1.8rem; 
+            }
+            
+            .msg { 
+                max-width: 90%; 
+            }
+            
+            .productos-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .producto-card-catalogo {
+                min-height: 190px;
+                padding: 10px 6px;
+            }
+            
+            .producto-nombre {
+                font-size: 12px;
+                min-height: 32px;
+            }
+            
+            .producto-precios-container {
+                font-size: 11px;
+                padding: 6px 4px;
+            }
+            
+            .producto-add-catalogo {
+                padding: 8px;
+                font-size: 10px;
+            }
+        }
+
+        @keyframes fadeInOut {
+            0% { opacity: 0; transform: translateX(-50%) translateY(20px); }
+            15% { opacity: 1; transform: translateX(-50%) translateY(0); }
+            85% { opacity: 1; transform: translateX(-50%) translateY(0); }
+            100% { opacity: 0; transform: translateX(-50%) translateY(-20px); }
         }
     </style>
 </head>
@@ -646,13 +764,14 @@
         const advisorMenu = document.getElementById('advisorMenu');
         
         function init() {
+            console.log("✅ Iniciando MultiKAP");
             chatWindow.innerHTML = '';
             mostrarMensaje(CONFIG.mensaje_bienvenida, 'bot', true);
         }
 
         function verDetalles(producto) {
             productoActual = producto;
-            document.getElementById('modalEmoji').innerText = producto.emoji;
+            document.getElementById('modalEmoji').innerText = producto.emoji || '📦';
             document.getElementById('modalTitulo').innerText = producto.nombre;
             document.getElementById('modalDetalle').innerText = producto.desc;
             document.getElementById('modalPrecioDolar').innerText = `$${producto.precio}`;
@@ -693,8 +812,10 @@
             
             productos.forEach(p => {
                 const precioBs = (p.precio * TASA_BCV).toFixed(2);
+                const productoJSON = JSON.stringify(p).replace(/'/g, "\\'");
+                
                 html += `
-                    <div class="producto-card-catalogo" onclick='verDetalles(${JSON.stringify(p).replace(/'/g, "\\'")})'>
+                    <div class="producto-card-catalogo" onclick='verDetalles(${productoJSON})'>
                         <div class="producto-nombre">${p.nombre}</div>
                         <div class="producto-precios-container">
                             <span class="producto-precio-dolar">$${p.precio}</span> | <span class="producto-precio-bs">Bs${precioBs}</span>
@@ -734,18 +855,19 @@
             scrollToBottom();
         }
 
-        // ===== FUNCIÓN CORREGIDA: PRIMERO VERIFICA, LUEGO SIMULA =====
         function enviarMensaje() {
             const input = document.getElementById('user-input');
             const texto = input.value.trim();
             if(!texto) return;
             
+            // Mostrar mensaje del usuario inmediatamente
             mostrarMensaje(texto, 'user');
             input.value = '';
             
-            let low = texto.toLowerCase();
+            // Convertir a minúsculas para comparar
+            const low = texto.toLowerCase();
             
-            // VERIFICACIÓN INMEDIATA - SIN ESPERAR
+            // Verificar palabras clave INMEDIATAMENTE
             if (low.includes("catálogo") || low.includes("catalogo") || low.includes("productos")) {
                 mostrarCatalogo(currentAdvisor);
                 return;
@@ -776,13 +898,12 @@
                 return;
             }
             
-            // Si no coincide con nada, mostrar mensaje genérico
+            // Si llegamos aquí, no es una palabra clave conocida
             typingIndicator.style.display = 'block';
             
             setTimeout(() => {
                 typingIndicator.style.display = 'none';
                 mostrarMensaje("⚡ Gracias por tu mensaje. ¿En qué más puedo ayudarte? Puedes preguntar por horarios, formas de pago, o ver el catálogo.", 'bot', true);
-                if (navigator.vibrate) navigator.vibrate(50);
             }, 800);
         }
 
@@ -799,12 +920,18 @@
             btn.classList.add('active');
             advisorMenu.classList.remove('show');
             
-            let msg = advisor === 'motos' ? "🏍️ Ahora estás en **TAZ MOTOS**. Aquí tienes nuestro catálogo:" :
-                       advisor === 'papeleria' ? "📚 Cambiaste a **TAZ PAPELERÍA**. Mira nuestros útiles:" :
-                       "🏠 Cambiaste a **TAZ HOGAR**. Estos son nuestros productos:";
+            let msg = '';
+            if (advisor === 'motos') {
+                msg = "🏍️ Ahora estás en **TAZ MOTOS**. Aquí tienes nuestro catálogo de repuestos:";
+            } else if (advisor === 'papeleria') {
+                msg = "📚 Cambiaste a **TAZ PAPELERÍA**. Mira nuestros útiles escolares:";
+            } else {
+                msg = "🏠 Cambiaste a **TAZ HOGAR**. Estos son nuestros productos de limpieza:";
+            }
             
             mostrarMensaje(msg, 'bot');
             mostrarCatalogo(advisor);
+            
             localStorage.setItem('multikap_advisor', advisor);
         }
 
@@ -813,19 +940,35 @@
             localStorage.setItem('multikap_cart', JSON.stringify(cart));
             
             const toast = document.createElement('div');
-            toast.style.cssText = 'position:fixed; bottom:120px; left:50%; transform:translateX(-50%); background:var(--taz-gradient); color:white; padding:10px 20px; border-radius:30px; font-weight:bold; z-index:2000; animation:fadeInOut 1.5s ease;';
+            toast.style.position = 'fixed';
+            toast.style.bottom = '120px';
+            toast.style.left = '50%';
+            toast.style.transform = 'translateX(-50%)';
+            toast.style.background = 'var(--taz-gradient)';
+            toast.style.color = 'white';
+            toast.style.padding = '10px 20px';
+            toast.style.borderRadius = '30px';
+            toast.style.fontSize = '14px';
+            toast.style.fontWeight = 'bold';
+            toast.style.zIndex = '2000';
+            toast.style.boxShadow = '0 5px 20px rgba(0,0,0,0.3)';
+            toast.style.animation = 'fadeInOut 1.5s ease';
             toast.innerText = '✅ Añadido al carrito';
             document.body.appendChild(toast);
+            
             setTimeout(() => toast.remove(), 1500);
         }
 
         function scrollToBottom() {
-            setTimeout(() => chatWindow.scrollTop = chatWindow.scrollHeight, 100);
+            setTimeout(() => { 
+                chatWindow.scrollTop = chatWindow.scrollHeight;
+            }, 100);
         }
 
         function toggleTheme() {
             document.body.classList.toggle('dark-mode');
-            document.querySelector('.theme-toggle').innerText = document.body.classList.contains('dark-mode') ? '☀️' : '🌙';
+            const themeBtn = document.querySelector('.theme-toggle');
+            themeBtn.innerText = document.body.classList.contains('dark-mode') ? '☀️' : '🌙';
             localStorage.setItem('multikap_theme', document.body.classList.contains('dark-mode') ? 'dark' : 'light');
         }
 
@@ -838,11 +981,14 @@
             if (e.key === 'Enter') { 
                 e.preventDefault();
                 enviarMensaje(); 
+                document.getElementById('user-input').blur(); 
             } 
         });
 
         document.addEventListener('click', (e) => {
-            if (!e.target.closest('.advisor-toggle')) advisorMenu.classList.remove('show');
+            if (!e.target.closest('.advisor-toggle')) {
+                advisorMenu.classList.remove('show');
+            }
         });
 
         // Canvas animado
@@ -867,14 +1013,16 @@
             ctx.globalAlpha = 0.2;
             
             for (let i = 0; i < drops.length; i++) {
-                ctx.fillText("MULTIKAP"[Math.floor(Math.random() * 8)], i * 20, drops[i] * 20);
-                if (drops[i] * 20 > canvas.height && Math.random() > 0.975) drops[i] = 0;
+                const text = "MULTIKAP"[Math.floor(Math.random() * 8)];
+                ctx.fillText(text, i * 20, drops[i] * 20);
+                if (drops[i] * 20 > canvas.height && Math.random() > 0.975) {
+                    drops[i] = 0;
+                }
                 drops[i]++;
             }
         }
         setInterval(draw, 60);
 
-        // Cargar preferencias
         const savedTheme = localStorage.getItem('multikap_theme');
         if (savedTheme === 'dark') {
             document.body.classList.add('dark-mode');
@@ -883,13 +1031,34 @@
         
         const savedAdvisor = localStorage.getItem('multikap_advisor');
         if (savedAdvisor) {
+            if (savedAdvisor === 'motos') {
+                currentAdvisorIcon = '🏍️';
+                advisorIcon.innerText = '🏍️';
+                document.querySelectorAll('.advisor-option')[0].classList.add('active');
+            } else if (savedAdvisor === 'papeleria') {
+                currentAdvisorIcon = '📚';
+                advisorIcon.innerText = '📚';
+                document.querySelectorAll('.advisor-option')[1].classList.add('active');
+            } else if (savedAdvisor === 'hogar') {
+                currentAdvisorIcon = '🏠';
+                advisorIcon.innerText = '🏠';
+                document.querySelectorAll('.advisor-option')[2].classList.add('active');
+            }
             currentAdvisor = savedAdvisor;
-            currentAdvisorIcon = savedAdvisor === 'motos' ? '🏍️' : savedAdvisor === 'papeleria' ? '📚' : '🏠';
-            advisorIcon.innerText = currentAdvisorIcon;
-            document.querySelectorAll('.advisor-option')[savedAdvisor === 'motos' ? 0 : savedAdvisor === 'papeleria' ? 1 : 2].classList.add('active');
         }
 
         window.onload = init;
+
+        const style = document.createElement('style');
+        style.innerHTML = `
+            @keyframes fadeInOut {
+                0% { opacity: 0; transform: translateX(-50%) translateY(20px); }
+                15% { opacity: 1; transform: translateX(-50%) translateY(0); }
+                85% { opacity: 1; transform: translateX(-50%) translateY(0); }
+                100% { opacity: 0; transform: translateX(-50%) translateY(-20px); }
+            }
+        `;
+        document.head.appendChild(style);
     </script>
 </body>
 </html>
