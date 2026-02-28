@@ -161,6 +161,7 @@
             color: white;
         }
 
+        /* ===== HEADER CON BOTÓN IZQUIERDO ===== */
         header {
             padding: env(safe-area-inset-top) 15px 15px 15px;
             text-align: center;
@@ -170,6 +171,9 @@
             z-index: 100;
             position: relative;
             max-height: 130px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         header::after {
@@ -199,6 +203,35 @@
         @keyframes linePulse {
             from { box-shadow: 0 0 20px #ff5500; }
             to { box-shadow: 0 0 40px #ff5500, 0 0 60px #ff884d; }
+        }
+
+        /* ===== BOTÓN DE CATÁLOGO EN HEADER (IZQUIERDA) ===== */
+        .header-catalogo-btn {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: var(--taz-gradient);
+            color: white;
+            text-decoration: none;
+            font-size: 0.8rem;
+            font-weight: 600;
+            padding: 0.5rem 1rem;
+            border-radius: 2rem;
+            border: 2px solid white;
+            box-shadow: 0 5px 15px rgba(255,85,0,0.3);
+            transition: all 0.3s;
+            z-index: 20;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            white-space: nowrap;
+        }
+        .header-catalogo-btn:hover {
+            transform: translateY(-50%) scale(1.05);
+            box-shadow: 0 5px 20px rgba(255,85,0,0.5);
+        }
+        .header-catalogo-btn:active {
+            transform: translateY(-50%) scale(0.95);
         }
 
         .logo-container {
@@ -745,33 +778,6 @@
             transform: scale(0.9); 
         }
 
-        /* ===== BOTÓN DE CATÁLOGO (NUEVO) ===== */
-        .catalogo-link {
-            position: fixed;
-            bottom: 100px;
-            right: 90px;
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            background: var(--taz-gradient);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 24px;
-            text-decoration: none;
-            box-shadow: 0 5px 20px rgba(255,85,0,0.5);
-            z-index: 1000;
-            border: 2px solid white;
-            transition: transform 0.3s;
-        }
-        .catalogo-link:hover {
-            transform: scale(1.1);
-        }
-        .catalogo-link:active {
-            transform: scale(0.9);
-        }
-
         .cart-count {
             position: absolute;
             top: -5px;
@@ -903,17 +909,39 @@
                 padding: 10px 12px;
                 font-size: 12px;
             }
+
+            .header-catalogo-btn {
+                font-size: 1rem;
+                padding: 0.6rem 1.2rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .header-catalogo-btn {
+                font-size: 0.7rem;
+                padding: 0.4rem 0.8rem;
+                left: 10px;
+            }
+            .logo-text {
+                font-size: 1.8rem;
+                letter-spacing: 3px;
+            }
+            .taz-logo-img {
+                width: 80px;
+                height: 80px;
+            }
         }
 
         @media (max-width: 380px) {
             .taz-logo-img { 
-                width: 85px; 
-                height: 85px; 
-                margin-bottom: -30px; 
+                width: 70px; 
+                height: 70px; 
+                margin-bottom: -25px; 
             }
             
             .logo-text { 
-                font-size: 2rem; 
+                font-size: 1.5rem; 
+                letter-spacing: 2px;
             }
             
             .msg { 
@@ -945,6 +973,11 @@
             .producto-add-catalogo {
                 padding: 6px 8px;
                 font-size: 10px;
+            }
+
+            .header-catalogo-btn {
+                font-size: 0.65rem;
+                padding: 0.3rem 0.6rem;
             }
         }
 
@@ -984,11 +1017,6 @@
         <span class="cart-count" id="cartCount">0</span>
     </div>
     
-    <!-- Botón de catálogo (NUEVO) -->
-    <a href="Catalogo.html" class="catalogo-link">
-        📚
-    </a>
-    
     <div class="cart-modal" id="cartModal">
         <h3 style="margin-bottom: 10px; color: var(--taz-orange);">🛍️ Carrito Taz</h3>
         <div id="cartItems"></div>
@@ -1013,6 +1041,10 @@
     </div>
     
     <header id="mainHeader">
+        <!-- BOTÓN DE CATÁLOGO EN HEADER (IZQUIERDA) -->
+        <a href="Catalogo.html" class="header-catalogo-btn">
+            📋 VER CATÁLOGO COMPLETO
+        </a>
         <div class="logo-container">
             <div class="logo-text">MULTIKAP</div>
             <img src="https://i.postimg.cc/SRN4tL6c/FB-IMG-1772076157470-1.jpg" class="taz-logo-img" id="tazLogo" alt="MultiKAP Logo">
@@ -1038,9 +1070,6 @@
 
     <script>
         // ========== CONFIGURACIÓN INICIAL ==========
-        // NO eliminar el carrito al iniciar (quitamos localStorage.removeItem)
-        // Solo limpiamos el chat si es necesario
-        
         const CONFIG = {
             nombre_tienda: "MULTIKAP",
             tagline: "TAZ 2080 • CAOS ORGANIZADO",
@@ -1080,7 +1109,6 @@
         let TASA_BCV = 60;
         let currentAdvisor = 'motos';
         let currentAdvisorIcon = '🏍️';
-        // Cargar carrito desde localStorage (compartido con catálogo)
         let cart = JSON.parse(localStorage.getItem('multikap_cart')) || [];
         let messages = JSON.parse(localStorage.getItem('multikap_chat')) || [];
         let productoActual = null;
@@ -1229,7 +1257,6 @@
                 qDiv.className = 'quick-replies';
                 qDiv.innerHTML = `
                     <button class="btn-quick" onclick="mostrarCatalogo('${currentAdvisor}')">📋 Ver catálogo</button>
-                    <button class="btn-quick" onclick="window.location.href='Catalogo.html'">📚 CATÁLOGO COMPLETO</button>
                     <button class="btn-quick" onclick="auto('Horarios')">⏰ Horarios</button>
                     <button class="btn-quick" onclick="auto('Formas de pago')">💳 Pagos</button>
                 `;
@@ -1482,10 +1509,9 @@
         function toggleTheme() {
             document.body.classList.toggle('dark-mode');
             const themeBtn = document.querySelector('.theme-toggle');
-            const isLight = document.body.classList.contains('dark-mode');
-            themeBtn.innerText = isLight ? '☀️' : '🌙';
-            // Usar la misma clave que el catálogo para compartir tema
-            localStorage.setItem('catalogo_theme', isLight ? 'dark' : 'light');
+            const isDark = document.body.classList.contains('dark-mode');
+            themeBtn.innerText = isDark ? '☀️' : '🌙';
+            localStorage.setItem('catalogo_theme', isDark ? 'dark' : 'light');
         }
 
         function auto(texto) { 
@@ -1542,7 +1568,6 @@
         }
         setInterval(draw, 60);
 
-        // Cargar tema guardado (usando la misma clave del catálogo)
         const savedTheme = localStorage.getItem('catalogo_theme');
         if (savedTheme === 'dark') {
             document.body.classList.add('dark-mode');
