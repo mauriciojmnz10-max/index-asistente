@@ -190,6 +190,17 @@
             z-index: 1;
         }
 
+        header.brilliant-line::after {
+            box-shadow: 0 0 30px #ff5500, 0 0 60px #ff5500;
+            opacity: 1;
+            animation: linePulse 0.8s infinite alternate;
+        }
+
+        @keyframes linePulse {
+            from { box-shadow: 0 0 20px #ff5500; }
+            to { box-shadow: 0 0 40px #ff5500, 0 0 60px #ff884d; }
+        }
+
         .logo-container {
             display: flex;
             flex-direction: column;
@@ -734,6 +745,33 @@
             transform: scale(0.9); 
         }
 
+        /* ===== BOTÓN DE CATÁLOGO (NUEVO) ===== */
+        .catalogo-link {
+            position: fixed;
+            bottom: 100px;
+            right: 90px;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: var(--taz-gradient);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 24px;
+            text-decoration: none;
+            box-shadow: 0 5px 20px rgba(255,85,0,0.5);
+            z-index: 1000;
+            border: 2px solid white;
+            transition: transform 0.3s;
+        }
+        .catalogo-link:hover {
+            transform: scale(1.1);
+        }
+        .catalogo-link:active {
+            transform: scale(0.9);
+        }
+
         .cart-count {
             position: absolute;
             top: -5px;
@@ -923,7 +961,7 @@
     <canvas id="canvas-bg"></canvas>
     
     <div class="floating-buttons">
-        <div class="theme-toggle" onclick="toggleTheme()">🌙</div>
+        <div class="theme-toggle" onclick="toggleTheme()" id="themeToggle">🌙</div>
         <div class="advisor-toggle" onclick="toggleAdvisorMenu()">
             <span id="advisorIcon">🏍️</span>
             <div class="advisor-menu" id="advisorMenu">
@@ -940,10 +978,16 @@
         </div>
     </div>
     
+    <!-- Carrito -->
     <div class="cart-container" onclick="toggleCart()">
         🛒
         <span class="cart-count" id="cartCount">0</span>
     </div>
+    
+    <!-- Botón de catálogo (NUEVO) -->
+    <a href="Catalogo.html" class="catalogo-link">
+        📚
+    </a>
     
     <div class="cart-modal" id="cartModal">
         <h3 style="margin-bottom: 10px; color: var(--taz-orange);">🛍️ Carrito Taz</h3>
@@ -994,8 +1038,8 @@
 
     <script>
         // ========== CONFIGURACIÓN INICIAL ==========
-        localStorage.removeItem('multikap_chat');
-        localStorage.removeItem('multikap_cart');
+        // NO eliminar el carrito al iniciar (quitamos localStorage.removeItem)
+        // Solo limpiamos el chat si es necesario
         
         const CONFIG = {
             nombre_tienda: "MULTIKAP",
@@ -1036,6 +1080,7 @@
         let TASA_BCV = 60;
         let currentAdvisor = 'motos';
         let currentAdvisorIcon = '🏍️';
+        // Cargar carrito desde localStorage (compartido con catálogo)
         let cart = JSON.parse(localStorage.getItem('multikap_cart')) || [];
         let messages = JSON.parse(localStorage.getItem('multikap_chat')) || [];
         let productoActual = null;
@@ -1184,6 +1229,7 @@
                 qDiv.className = 'quick-replies';
                 qDiv.innerHTML = `
                     <button class="btn-quick" onclick="mostrarCatalogo('${currentAdvisor}')">📋 Ver catálogo</button>
+                    <button class="btn-quick" onclick="window.location.href='Catalogo.html'">📚 CATÁLOGO COMPLETO</button>
                     <button class="btn-quick" onclick="auto('Horarios')">⏰ Horarios</button>
                     <button class="btn-quick" onclick="auto('Formas de pago')">💳 Pagos</button>
                 `;
@@ -1436,8 +1482,10 @@
         function toggleTheme() {
             document.body.classList.toggle('dark-mode');
             const themeBtn = document.querySelector('.theme-toggle');
-            themeBtn.innerText = document.body.classList.contains('dark-mode') ? '☀️' : '🌙';
-            localStorage.setItem('multikap_theme', document.body.classList.contains('dark-mode') ? 'dark' : 'light');
+            const isLight = document.body.classList.contains('dark-mode');
+            themeBtn.innerText = isLight ? '☀️' : '🌙';
+            // Usar la misma clave que el catálogo para compartir tema
+            localStorage.setItem('catalogo_theme', isLight ? 'dark' : 'light');
         }
 
         function auto(texto) { 
@@ -1494,7 +1542,8 @@
         }
         setInterval(draw, 60);
 
-        const savedTheme = localStorage.getItem('multikap_theme');
+        // Cargar tema guardado (usando la misma clave del catálogo)
+        const savedTheme = localStorage.getItem('catalogo_theme');
         if (savedTheme === 'dark') {
             document.body.classList.add('dark-mode');
             document.querySelector('.theme-toggle').innerText = '☀️';
