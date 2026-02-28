@@ -161,7 +161,7 @@
             color: white;
         }
 
-        /* ===== HEADER CON BOTÓN IZQUIERDO ===== */
+        /* ===== HEADER CON BOTÓN COMPACTO ===== */
         header {
             padding: env(safe-area-inset-top) 15px 15px 15px;
             text-align: center;
@@ -205,7 +205,7 @@
             to { box-shadow: 0 0 40px #ff5500, 0 0 60px #ff884d; }
         }
 
-        /* ===== BOTÓN DE CATÁLOGO EN HEADER (IZQUIERDA) ===== */
+        /* ===== BOTÓN DE CATÁLOGO REDISEÑADO ===== */
         .header-catalogo-btn {
             position: absolute;
             left: 15px;
@@ -216,7 +216,7 @@
             text-decoration: none;
             font-size: 0.8rem;
             font-weight: 600;
-            padding: 0.5rem 1rem;
+            padding: 0.4rem 0.8rem;
             border-radius: 2rem;
             border: 2px solid white;
             box-shadow: 0 5px 15px rgba(255,85,0,0.3);
@@ -225,6 +225,9 @@
             letter-spacing: 0.5px;
             text-transform: uppercase;
             white-space: nowrap;
+            display: flex;
+            align-items: center;
+            gap: 5px;
         }
         .header-catalogo-btn:hover {
             transform: translateY(-50%) scale(1.05);
@@ -241,6 +244,7 @@
             gap: 2px;
             position: relative;
             z-index: 2;
+            margin: 0 auto;
         }
 
         .taz-logo-img {
@@ -858,6 +862,7 @@
             text-decoration: none;
         }
 
+        /* ===== MEDIA QUERIES MEJORADAS ===== */
         @media (min-width: 768px) {
             body {
                 position: relative;
@@ -911,73 +916,67 @@
             }
 
             .header-catalogo-btn {
-                font-size: 1rem;
-                padding: 0.6rem 1.2rem;
+                font-size: 0.9rem;
+                padding: 0.5rem 1rem;
+                left: 20px;
+            }
+        }
+
+        @media (max-width: 767px) {
+            .header-catalogo-btn {
+                font-size: 0.7rem;
+                padding: 0.3rem 0.6rem;
+                left: 10px;
+                gap: 3px;
+            }
+            
+            .logo-text {
+                font-size: 1.8rem;
+                letter-spacing: 3px;
+            }
+            
+            .taz-logo-img {
+                width: 80px;
+                height: 80px;
+                margin-bottom: -30px;
             }
         }
 
         @media (max-width: 480px) {
             .header-catalogo-btn {
-                font-size: 0.7rem;
-                padding: 0.4rem 0.8rem;
-                left: 10px;
+                font-size: 0.65rem;
+                padding: 0.25rem 0.5rem;
+                left: 8px;
             }
+            
             .logo-text {
-                font-size: 1.8rem;
-                letter-spacing: 3px;
+                font-size: 1.5rem;
+                letter-spacing: 2px;
             }
+            
             .taz-logo-img {
-                width: 80px;
-                height: 80px;
+                width: 70px;
+                height: 70px;
+                margin-bottom: -25px;
             }
         }
 
         @media (max-width: 380px) {
-            .taz-logo-img { 
-                width: 70px; 
-                height: 70px; 
-                margin-bottom: -25px; 
+            .header-catalogo-btn {
+                font-size: 0.6rem;
+                padding: 0.2rem 0.4rem;
+                left: 5px;
             }
             
             .logo-text { 
-                font-size: 1.5rem; 
-                letter-spacing: 2px;
+                font-size: 1.2rem; 
+                letter-spacing: 1px;
             }
             
-            .msg { 
-                max-width: 90%; 
-            }
-            
-            .productos-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-            
-            .producto-card-catalogo {
-                height: 140px;
-                padding: 8px 5px;
-            }
-            
-            .producto-nombre {
-                font-size: 12px;
-                -webkit-line-clamp: 2;
-            }
-            
-            .producto-precio-dolar {
-                font-size: 13px;
-            }
-            
-            .producto-precio-bs {
-                font-size: 11px;
-            }
-            
-            .producto-add-catalogo {
-                padding: 6px 8px;
-                font-size: 10px;
-            }
-
-            .header-catalogo-btn {
-                font-size: 0.65rem;
-                padding: 0.3rem 0.6rem;
+            .taz-logo-img { 
+                width: 60px; 
+                height: 60px; 
+                margin-bottom: -20px; 
             }
         }
 
@@ -1041,9 +1040,9 @@
     </div>
     
     <header id="mainHeader">
-        <!-- BOTÓN DE CATÁLOGO EN HEADER (IZQUIERDA) -->
+        <!-- BOTÓN DE CATÁLOGO COMPACTO Y VISIBLE -->
         <a href="Catalogo.html" class="header-catalogo-btn">
-            📋 VER CATÁLOGO COMPLETO
+            <span>📋</span> CAT
         </a>
         <div class="logo-container">
             <div class="logo-text">MULTIKAP</div>
