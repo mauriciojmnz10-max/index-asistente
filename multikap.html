@@ -69,106 +69,6 @@
             pointer-events: none;
         }
 
-        .canvas-border {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            border: 2px solid rgba(255, 85, 0, 0.15);
-            pointer-events: none;
-            z-index: -1;
-            box-sizing: border-box;
-        }
-
-        /* ===== BOTONES FLOTANTES ===== */
-        .floating-buttons {
-            position: fixed;
-            top: calc(env(safe-area-inset-top) + 10px);
-            right: 15px;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            z-index: 1001;
-        }
-
-        .theme-toggle, .advisor-toggle {
-            width: 45px;
-            height: 45px;
-            border-radius: 50%;
-            background: var(--glass-primary);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            border: 2px solid var(--taz-orange);
-            color: var(--taz-orange);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 20px;
-            cursor: pointer;
-            box-shadow: 0 5px 15px rgba(255, 85, 0, 0.3);
-            transition: 0.3s;
-            position: relative;
-        }
-
-        .theme-toggle:active, .advisor-toggle:active { 
-            transform: scale(0.9); 
-        }
-
-        /* ===== MENÚ DE ASESORES ===== */
-        .advisor-menu {
-            position: absolute;
-            top: 50px;
-            right: 0;
-            background: var(--glass-primary);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 2px solid var(--taz-orange);
-            border-radius: 20px;
-            padding: 8px;
-            display: none;
-            flex-direction: column;
-            gap: 5px;
-            min-width: 180px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-            z-index: 1002;
-        }
-
-        .advisor-menu.show { 
-            display: flex; 
-        }
-
-        .advisor-option {
-            padding: 12px 15px;
-            border-radius: 15px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            color: var(--text-primary);
-            cursor: pointer;
-            transition: 0.2s;
-            white-space: nowrap;
-            border: none;
-            background: transparent;
-            width: 100%;
-            font-size: 14px;
-            font-weight: 500;
-        }
-
-        .advisor-option:hover, .advisor-option:active {
-            background: var(--taz-orange);
-            color: white;
-        }
-
-        .advisor-option.active {
-            background: var(--taz-orange);
-            color: white;
-        }
-
-        body.dark-mode .taz-logo-img {
-            filter: sepia(0.5) hue-rotate(-10deg);
-        }
-
         /* ===== HEADER ===== */
         header {
             padding: env(safe-area-inset-top) 15px 15px 15px;
@@ -200,18 +100,6 @@
             opacity: 0.9;
             box-shadow: 0 0 15px #ff5500;
             z-index: 1;
-            transition: box-shadow 0.3s, opacity 0.3s;
-        }
-
-        header.brilliant-line::after {
-            box-shadow: 0 0 30px #ff5500, 0 0 60px #ff5500;
-            opacity: 1;
-            animation: linePulse 0.8s infinite alternate;
-        }
-
-        @keyframes linePulse {
-            from { box-shadow: 0 0 20px #ff5500; }
-            to { box-shadow: 0 0 40px #ff5500, 0 0 60px #ff884d; }
         }
 
         .logo-container {
@@ -224,35 +112,25 @@
         }
 
         .taz-logo-img {
-            width: 100px;
-            height: 100px;
+            width: 80px;
+            height: 80px;
             border-radius: 50%;
             object-fit: cover;
-            border: 4px solid #ff5500;
-            box-shadow: 0 10px 30px rgba(255, 85, 0, 0.5);
+            border: 3px solid #ff5500;
+            box-shadow: 0 5px 20px rgba(255, 85, 0, 0.4);
+            margin-top: 5px;
             animation: bounce 6s ease-in-out infinite;
-            order: 2;
-            margin-bottom: -35px;
-            margin-top: -5px;
-            position: relative;
-            z-index: 10;
-            transition: box-shadow 0.3s;
-            will-change: transform;
-        }
-
-        .taz-logo-img.bouncing {
-            box-shadow: 0 20px 40px rgba(255, 85, 0, 0.8), 0 0 30px #ff5500;
         }
 
         @keyframes bounce { 
             0%, 100% { transform: translateY(0); } 
-            50% { transform: translateY(-10px); } 
+            50% { transform: translateY(-5px); } 
         }
 
         .logo-text {
             font-family: 'Playfair Display', serif;
-            font-size: 2.5rem;
-            letter-spacing: 6px;
+            font-size: 2.2rem;
+            letter-spacing: 5px;
             background: var(--taz-gradient);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
@@ -261,9 +139,90 @@
             text-transform: uppercase;
             filter: drop-shadow(0 4px 10px rgba(255, 85, 0, 0.4));
             line-height: 1.1;
-            order: 1;
+        }
+
+        /* ===== BOTONES FLOTANTES ===== */
+        .floating-buttons {
+            position: fixed;
+            top: 15px;
+            right: 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            z-index: 1001;
+        }
+
+        .theme-toggle, .advisor-toggle {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            background: var(--glass-primary);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 2px solid var(--taz-orange);
+            color: var(--taz-orange);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(255, 85, 0, 0.3);
+            transition: 0.3s;
             position: relative;
-            z-index: 4;
+        }
+
+        .theme-toggle:active, .advisor-toggle:active { 
+            transform: scale(0.9); 
+        }
+
+        /* ===== MENÚ DE ASESORES ===== */
+        .advisor-menu {
+            position: absolute;
+            top: 48px;
+            right: 0;
+            background: var(--glass-primary);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 2.5px solid var(--taz-orange);
+            border-radius: 20px;
+            padding: 8px;
+            display: none;
+            flex-direction: column;
+            gap: 5px;
+            min-width: 170px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            z-index: 1002;
+        }
+
+        .advisor-menu.show { 
+            display: flex; 
+        }
+
+        .advisor-option {
+            padding: 12px;
+            border-radius: 12px;
+            border: none;
+            background: transparent;
+            color: var(--text-primary);
+            text-align: left;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            width: 100%;
+            transition: 0.2s;
+        }
+
+        .advisor-option:hover, .advisor-option:active {
+            background: var(--taz-orange);
+            color: white;
+        }
+
+        .advisor-option.active {
+            background: var(--taz-orange);
+            color: white;
+        }
+
+        body.dark-mode .taz-logo-img {
+            filter: sepia(0.5) hue-rotate(-10deg);
         }
 
         /* ===== VENTANA DE CHAT ===== */
@@ -274,7 +233,7 @@
             display: flex;
             flex-direction: column;
             gap: 15px;
-            padding-bottom: 180px; 
+            padding-bottom: 250px; 
             -webkit-overflow-scrolling: touch;
             margin-top: 10px;
         }
@@ -282,27 +241,26 @@
         /* ===== BURBUJAS DE MENSAJE ===== */
         .msg {
             max-width: 85%;
-            padding: 16px 22px;
+            padding: 15px 20px;
             font-size: 15px;
-            border-radius: 24px;
+            border-radius: 20px;
             line-height: 1.5;
-            backdrop-filter: blur(15px);
-            -webkit-backdrop-filter: blur(15px);
-            border: 1px solid rgba(255, 85, 0, 0.3);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid var(--glass-border);
             box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.1);
             animation: messageGlow 0.5s ease;
         }
 
         @keyframes messageGlow {
-            0% { opacity: 0; transform: translateY(10px); box-shadow: 0 0 0 rgba(255,85,0,0); }
-            50% { opacity: 0.8; transform: translateY(0); box-shadow: 0 0 30px rgba(255,85,0,0.3); }
-            100% { opacity: 1; transform: translateY(0); box-shadow: 0 8px 32px 0 rgba(0,0,0,0.1); }
+            0% { opacity: 0; transform: translateY(10px); }
+            100% { opacity: 1; transform: translateY(0); }
         }
 
         .bot { 
             align-self: flex-start; 
             background: var(--glass-primary);
-            border-left: 5px solid var(--taz-orange);
+            border-left: 4px solid var(--taz-orange);
             color: var(--text-primary);
             border-top-left-radius: 4px;
         }
@@ -310,13 +268,13 @@
         .user { 
             align-self: flex-end; 
             background: var(--bubble-user);
-            border-right: 5px solid var(--taz-brown);
+            border-right: 4px solid var(--taz-brown);
             color: var(--text-primary);
             border-top-right-radius: 4px;
             font-weight: 500;
         }
 
-        /* ===== ESTILOS DEL CATÁLOGO ===== */
+        /* ===== CATÁLOGO DE PRODUCTOS ===== */
         .catalogo-container {
             width: 100%;
             margin: 5px 0;
@@ -344,16 +302,16 @@
             background: var(--glass-primary);
             backdrop-filter: blur(10px);
             -webkit-backdrop-filter: blur(10px);
-            border: 2px solid var(--taz-orange);
-            border-radius: 16px;
-            padding: 12px 8px;
+            border: 1.5px solid var(--taz-orange);
+            border-radius: 18px;
+            padding: 12px 10px;
             display: flex;
             flex-direction: column;
             cursor: pointer;
             transition: all 0.2s;
             box-shadow: 0 4px 10px rgba(255, 85, 0, 0.2);
             width: 100%;
-            height: 150px;
+            min-height: 200px;
         }
 
         .producto-card-catalogo:active {
@@ -367,71 +325,50 @@
             text-align: center;
             color: var(--text-primary);
             line-height: 1.3;
+            min-height: 35px;
             margin-bottom: 8px;
             width: 100%;
-            display: -webkit-box;
-            -webkit-line-clamp: 2;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-            min-height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             flex-shrink: 0;
         }
 
         .producto-precios-container {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 4px;
             background: rgba(255,85,0,0.1);
-            padding: 8px 6px;
-            border-radius: 20px;
+            padding: 8px 5px;
+            border-radius: 12px;
+            text-align: center;
+            font-size: 12px;
+            margin-bottom: 12px;
             width: 100%;
-            margin-bottom: 10px;
-            flex-wrap: wrap;
             flex-shrink: 0;
         }
 
         .producto-precio-dolar {
             font-weight: 800;
             color: var(--taz-orange);
-            font-size: 14px;
-            white-space: nowrap;
-        }
-
-        .producto-precio-separador {
-            color: var(--taz-brown);
-            font-weight: 600;
-            font-size: 11px;
         }
 
         .producto-precio-bs {
             font-weight: 600;
             color: var(--taz-brown);
-            font-size: 12px;
-            white-space: nowrap;
-        }
-
-        .producto-aprox {
-            font-size: 8px;
-            color: var(--taz-brown);
-            opacity: 0.7;
-            white-space: nowrap;
         }
 
         .producto-add-catalogo {
+            margin-top: auto;
             background: var(--taz-gradient);
             color: white;
             border: none;
-            border-radius: 30px;
-            padding: 8px 10px;
-            font-size: 11px;
+            border-radius: 20px;
+            padding: 10px;
             font-weight: 700;
+            font-size: 11px;
             cursor: pointer;
             width: 100%;
             text-transform: uppercase;
             letter-spacing: 0.3px;
             box-shadow: 0 2px 8px rgba(255,85,0,0.4);
-            margin-top: auto;
             flex-shrink: 0;
         }
 
@@ -465,13 +402,13 @@
             left: 50%;
             transform: translate(-50%, -50%);
             width: 85%;
-            max-width: 340px;
-            background: var(--glass-primary);
+            max-width: 350px;
+            background: var(--bg-primary);
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
             border: 3px solid var(--taz-orange);
             border-radius: 30px;
-            padding: 25px 20px;
+            padding: 25px;
             z-index: 2000;
             color: var(--text-primary);
             box-shadow: 0 20px 40px rgba(0,0,0,0.4);
@@ -508,14 +445,14 @@
         }
 
         .modal-emoji {
-            font-size: 70px;
+            font-size: 50px;
             text-align: center;
             margin-bottom: 10px;
             filter: drop-shadow(0 10px 15px rgba(255,85,0,0.4));
         }
 
         .modal-titulo {
-            font-size: 24px;
+            font-size: 22px;
             font-weight: 700;
             color: var(--taz-orange);
             text-align: center;
@@ -523,38 +460,38 @@
         }
 
         .modal-detalle {
-            font-size: 16px;
+            font-size: 15px;
             text-align: center;
             margin-bottom: 20px;
-            padding: 15px;
+            padding: 10px;
             line-height: 1.5;
             background: rgba(255,85,0,0.05);
-            border-radius: 15px;
+            border-radius: 12px;
         }
 
         .modal-precios {
             background: rgba(255,85,0,0.1);
-            border-radius: 20px;
-            padding: 15px;
+            border-radius: 15px;
+            padding: 12px;
             margin-bottom: 20px;
             text-align: center;
         }
 
         .modal-precio-dolar {
-            font-size: 32px;
+            font-size: 28px;
             font-weight: 800;
             color: var(--taz-orange);
-            margin-bottom: 5px;
+            margin-bottom: 3px;
         }
 
         .modal-precio-bs {
-            font-size: 20px;
+            font-size: 18px;
             font-weight: 600;
             color: var(--taz-brown);
         }
 
         .modal-aprox {
-            font-size: 12px;
+            font-size: 11px;
             color: var(--taz-brown);
             opacity: 0.7;
             margin-left: 5px;
@@ -568,11 +505,11 @@
 
         .modal-btn {
             flex: 1;
-            padding: 14px;
+            padding: 12px;
             border: none;
-            border-radius: 40px;
+            border-radius: 30px;
             font-weight: 700;
-            font-size: 14px;
+            font-size: 13px;
             cursor: pointer;
             transition: 0.2s;
         }
@@ -596,18 +533,18 @@
         /* ===== INPUT Y BOTÓN DE ENVÍO ===== */
         .input-container {
             position: fixed;
-            bottom: 30px; 
+            bottom: 50px;
             left: 50%;
             transform: translateX(-50%);
-            width: 92%;
+            width: 90%;
             max-width: 500px;
             background: var(--glass-primary);
-            padding: 6px 6px 6px 25px;
-            border-radius: 60px;
+            padding: 8px 8px 8px 25px;
+            border-radius: 50px;
             display: flex;
             align-items: center;
             border: 2px solid var(--taz-orange);
-            box-shadow: 0 15px 35px rgba(255, 85, 0, 0.25);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
             z-index: 1000;
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
@@ -620,7 +557,7 @@
             background: transparent;
             color: var(--text-primary);
             font-size: 16px;
-            padding: 14px 0;
+            padding: 12px 0;
             font-family: 'Montserrat', sans-serif;
         }
 
@@ -633,14 +570,14 @@
             background: var(--taz-gradient);
             color: white;
             border: none;
-            width: 52px;
-            height: 52px;
+            width: 48px;
+            height: 48px;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            font-size: 24px;
+            font-size: 22px;
             box-shadow: 0 5px 15px rgba(255, 85, 0, 0.4);
             transition: 0.3s;
         }
@@ -654,7 +591,7 @@
             display: flex; 
             overflow-x: auto; 
             gap: 8px;
-            padding: 10px 0 5px 0;
+            padding: 10px 0;
             scrollbar-width: none; 
         }
         
@@ -666,10 +603,10 @@
             background: var(--glass-primary);
             border: 1px solid var(--taz-orange); 
             color: var(--taz-orange-dark); 
-            padding: 6px 14px;
+            padding: 8px 16px;
             border-radius: 30px; 
             font-size: 12px;
-            font-weight: 500; 
+            font-weight: 600; 
             backdrop-filter: blur(10px);
             -webkit-backdrop-filter: blur(10px);
             box-shadow: 0 2px 5px rgba(0,0,0,0.05);
@@ -694,7 +631,7 @@
             color: var(--taz-orange-dark); 
             display: none; 
             background: var(--glass-primary);
-            padding: 10px 22px;
+            padding: 8px 20px;
             border-radius: 30px;
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
@@ -706,148 +643,6 @@
             font-weight: 500;
         }
 
-        .typing-dots {
-            display: inline-flex;
-            gap: 4px;
-            margin-left: 5px;
-        }
-
-        .typing-dots span {
-            width: 6px;
-            height: 6px;
-            border-radius: 50%;
-            background: var(--taz-orange);
-            display: inline-block;
-            animation: typingBounce 1.4s infinite ease-in-out both;
-        }
-
-        .typing-dots span:nth-child(1) { animation-delay: -0.32s; }
-        .typing-dots span:nth-child(2) { animation-delay: -0.16s; }
-
-        @keyframes typingBounce {
-            0%, 80%, 100% { transform: scale(0.6); opacity: 0.6; }
-            40% { transform: scale(1); opacity: 1; }
-        }
-
-        .taz-thinking {
-            display: inline-block;
-            animation: thinkingSpin 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55) infinite;
-            font-size: 16px;
-            will-change: transform;
-        }
-
-        @keyframes thinkingSpin {
-            0% { transform: rotate(0deg) scale(1); }
-            25% { transform: rotate(90deg) scale(1.3); }
-            50% { transform: rotate(180deg) scale(1); }
-            75% { transform: rotate(270deg) scale(1.3); }
-            100% { transform: rotate(360deg) scale(1); }
-        }
-
-        /* ===== CARRITO DE COMPRAS ===== */
-        .cart-container {
-            position: fixed;
-            bottom: 100px;
-            right: 15px;
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            background: var(--taz-gradient);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 24px;
-            cursor: pointer;
-            z-index: 1000;
-            box-shadow: 0 5px 20px rgba(255,85,0,0.5);
-            transition: 0.3s;
-        }
-
-        .cart-container:active { 
-            transform: scale(0.9); 
-        }
-
-        .cart-count {
-            position: absolute;
-            top: -5px;
-            right: -5px;
-            background: var(--taz-brown);
-            color: white;
-            border-radius: 50%;
-            width: 24px;
-            height: 24px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 12px;
-            font-weight: bold;
-            border: 2px solid white;
-        }
-
-        .cart-modal {
-            position: fixed;
-            bottom: 170px;
-            right: 15px;
-            width: 280px;
-            max-width: 90%;
-            background: var(--glass-primary);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 2px solid var(--taz-orange);
-            border-radius: 20px;
-            padding: 15px;
-            z-index: 1001;
-            display: none;
-            color: var(--text-primary);
-        }
-
-        .cart-modal.show { 
-            display: block; 
-        }
-
-        .cart-item {
-            display: flex;
-            justify-content: space-between;
-            padding: 8px 0;
-            border-bottom: 1px solid rgba(255,85,0,0.2);
-        }
-
-        .cart-total {
-            font-weight: bold;
-            margin: 10px 0;
-            color: var(--taz-orange);
-        }
-
-        .cart-ws-btn {
-            background: #25d366;
-            color: white;
-            border: none;
-            padding: 14px;
-            border-radius: 30px;
-            width: 100%;
-            font-weight: bold;
-            cursor: pointer;
-            font-size: 14px;
-            margin-top: 5px;
-        }
-
-        .whatsapp-btn {
-            background: #25d366;
-            color: white;
-            border: none;
-            padding: 12px 20px;
-            border-radius: 30px;
-            width: 100%;
-            font-weight: bold;
-            cursor: pointer;
-            font-size: 14px;
-            margin-top: 10px;
-            display: block;
-            text-align: center;
-            text-decoration: none;
-        }
-
         /* ===== MEDIA QUERIES ===== */
         @media (min-width: 768px) {
             body {
@@ -855,8 +650,6 @@
                 height: 100vh;
                 max-width: 1200px;
                 margin: 0 auto;
-                border-left: 1px solid rgba(255,85,0,0.2);
-                border-right: 1px solid rgba(255,85,0,0.2);
             }
             
             #chat-window {
@@ -871,46 +664,23 @@
                 max-width: 700px;
             }
             
-            .cart-modal {
-                right: calc(50% - 400px);
-            }
-            
             .productos-grid {
                 grid-template-columns: repeat(3, 1fr);
             }
             
             .producto-card-catalogo {
-                height: 160px;
-                padding: 14px 10px;
-            }
-            
-            .producto-nombre {
-                font-size: 14px;
-            }
-            
-            .producto-precio-dolar {
-                font-size: 15px;
-            }
-            
-            .producto-precio-bs {
-                font-size: 13px;
-            }
-            
-            .producto-add-catalogo {
-                padding: 10px 12px;
-                font-size: 12px;
+                min-height: 210px;
             }
         }
 
         @media (max-width: 380px) {
             .taz-logo-img { 
-                width: 85px; 
-                height: 85px; 
-                margin-bottom: -30px; 
+                width: 70px; 
+                height: 70px; 
             }
             
             .logo-text { 
-                font-size: 2rem; 
+                font-size: 1.8rem; 
             }
             
             .msg { 
@@ -922,40 +692,29 @@
             }
             
             .producto-card-catalogo {
-                height: 140px;
-                padding: 8px 5px;
+                min-height: 190px;
+                padding: 10px 6px;
             }
             
             .producto-nombre {
                 font-size: 12px;
-                -webkit-line-clamp: 2;
+                min-height: 32px;
             }
             
-            .producto-precio-dolar {
-                font-size: 13px;
-            }
-            
-            .producto-precio-bs {
+            .producto-precios-container {
                 font-size: 11px;
+                padding: 6px 4px;
             }
             
             .producto-add-catalogo {
-                padding: 6px 8px;
+                padding: 8px;
                 font-size: 10px;
             }
-        }
-
-        @keyframes fadeInOut {
-            0% { opacity: 0; transform: translateX(-50%) translateY(20px); }
-            15% { opacity: 1; transform: translateX(-50%) translateY(0); }
-            85% { opacity: 1; transform: translateX(-50%) translateY(0); }
-            100% { opacity: 0; transform: translateX(-50%) translateY(-20px); }
         }
     </style>
 </head>
 <body>
     <!-- Fondo animado -->
-    <div class="canvas-border"></div>
     <canvas id="canvas-bg"></canvas>
     
     <!-- Botones flotantes -->
@@ -964,34 +723,35 @@
         <div class="advisor-toggle" onclick="toggleAdvisorMenu()">
             <span id="advisorIcon">🏍️</span>
             <div class="advisor-menu" id="advisorMenu">
-                <button class="advisor-option active" onclick="switchAdvisor('motos', '🏍️', this)">
-                    <span>🏍️</span> Taz Motos
-                </button>
-                <button class="advisor-option" onclick="switchAdvisor('papeleria', '📚', this)">
-                    <span>📚</span> Taz Papelería
-                </button>
-                <button class="advisor-option" onclick="switchAdvisor('hogar', '🏠', this)">
-                    <span>🏠</span> Taz Hogar
-                </button>
+                <button class="advisor-option active" onclick="switchAdvisor('motos', '🏍️', this)">🏍️ Taz Motos</button>
+                <button class="advisor-option" onclick="switchAdvisor('papeleria', '📚', this)">📚 Taz Papelería</button>
+                <button class="advisor-option" onclick="switchAdvisor('hogar', '🏠', this)">🏠 Taz Hogar</button>
             </div>
         </div>
     </div>
     
-    <!-- Carrito -->
-    <div class="cart-container" onclick="toggleCart()">
-        🛒
-        <span class="cart-count" id="cartCount">0</span>
-    </div>
+    <!-- Header -->
+    <header>
+        <div class="logo-container">
+            <div class="logo-text">MULTIKAP</div>
+            <img src="https://i.postimg.cc/SRN4tL6c/FB-IMG-1772076157470-1.jpg" class="taz-logo-img" alt="MultiKAP Logo">
+        </div>
+    </header>
+
+    <!-- Ventana de chat -->
+    <div id="chat-window"></div>
     
-    <div class="cart-modal" id="cartModal">
-        <h3 style="margin-bottom: 10px; color: var(--taz-orange);">🛍️ Carrito Taz</h3>
-        <div id="cartItems"></div>
-        <div class="cart-total" id="cartTotal">Total: $0</div>
-        <button class="cart-ws-btn" onclick="sendCartToWhatsApp()">💰 CONCRETAR COMPRA POR WHATSAPP</button>
+    <!-- Indicador de escritura -->
+    <div id="typing">⚡ Taz está procesando...</div>
+
+    <!-- Input de mensaje -->
+    <div class="input-container">
+        <input type="text" id="user-input" placeholder="Escribe a Taz..." autocomplete="off">
+        <button class="send-btn" onclick="enviarMensaje()">⚡</button>
     </div>
-    
-    <!-- Modal de detalles de producto -->
-    <div class="modal-overlay" id="modalOverlay"></div>
+
+    <!-- Modal de detalles -->
+    <div class="modal-overlay" id="modalOverlay" onclick="cerrarModal()"></div>
     <div class="producto-modal" id="productoModal">
         <div class="modal-close" onclick="cerrarModal()">✖</div>
         <div class="modal-emoji" id="modalEmoji">🏍️</div>
@@ -1006,80 +766,44 @@
             <button class="modal-btn modal-btn-primary" onclick="agregarDesdeModal()">🛒 AÑADIR</button>
         </div>
     </div>
-    
-    <!-- Header -->
-    <header id="mainHeader">
-        <div class="logo-container">
-            <div class="logo-text">MULTIKAP</div>
-            <img src="https://i.postimg.cc/SRN4tL6c/FB-IMG-1772076157470-1.jpg" class="taz-logo-img" id="tazLogo" alt="MultiKAP Logo">
-        </div>
-    </header>
-
-    <!-- Ventana de chat -->
-    <div id="chat-window"></div>
-    
-    <!-- Indicador de escritura -->
-    <div id="typing">
-        <span class="taz-thinking">⚡</span>
-        <span id="typingText">Taz Motos está pensando</span>
-        <div class="typing-dots">
-            <span></span>
-            <span></span>
-            <span></span>
-        </div>
-    </div>
-
-    <!-- Input de mensaje -->
-    <div class="input-container">
-        <input type="text" id="user-input" placeholder="Escribe aquí..." autocomplete="off">
-        <button class="send-btn" onclick="enviarMensaje()">⚡</button>
-    </div>
 
     <script>
         // ========== CONFIGURACIÓN INICIAL ==========
-        // Limpiar localStorage al iniciar para evitar mensajes antiguos
+        // Limpiar localStorage al iniciar
         localStorage.removeItem('multikap_chat');
         localStorage.removeItem('multikap_cart');
         
         // Configuración de la tienda
         const CONFIG = {
-            nombre_tienda: "MULTIKAP",
-            tagline: "TAZ 2080 • CAOS ORGANIZADO",
-            color_primario: "#ff5500",
+            tasa: 60,
             contacto_whatsapp: "584120000000",
             mensaje_bienvenida: "⚡ **¡Hola! Soy Taz, tu asistente virtual de MultiKAP.** ⚡\n\nTengo varios modos de asesoramiento que puedes ver en el botón naranja de la parte superior derecha (🏍️).\n\nSelecciona un asesor para ver nuestro **catálogo completo** con precios en $ y Bs.",
-            ubicacion: "Disponible en línea las 24/7. Envíos a toda Venezuela.",
-            horario: "Atención digital: Lunes a Domingo - 8:00 AM a 10:00 PM",
-            metodos_pago: "Pago Móvil (Tasa BCV), Zelle, Efectivo, Binance Pay (USDT) y Punto de Venta.",
-            catalogo_motos: [
-                {"emoji": "🏍️", "nombre": "Freno Delantero", "detalles": "Pastillas y disco, alta duración. Compatible con la mayoría de las motos 150cc. Incluye juego de pastillas de alto rendimiento.", "precio": 25},
-                {"emoji": "🔧", "nombre": "Cadena Transmisión", "detalles": "Kit completo, resistencia máxima. Incluye piñón y corona reforzados. 120 eslabones, para motos 150-200cc.", "precio": 45},
-                {"emoji": "🛢️", "nombre": "Aceite 20W50", "detalles": "1 litro, motor 4 tiempos. Protección superior para tu motor. Lubricante mineral de alta calidad.", "precio": 12},
-                {"emoji": "🔋", "nombre": "Batería", "detalles": "12V 7Ah, libre mantenimiento. Alta durabilidad y potencia. Ideal para motos y cuatriciclos.", "precio": 60},
-                {"emoji": "💡", "nombre": "Foco LED", "detalles": "Luz blanca, alta potencia. Iluminación superior, bajo consumo. 6000K, 12V, fácil instalación.", "precio": 15},
-                {"emoji": "⚙️", "nombre": "Kit de Arrastre", "detalles": "Relación 428, alta durabilidad. Mejor rendimiento y agarre. Incluye piñón y corona de acero.", "precio": 35}
-            ],
-            catalogo_papeleria: [
-                {"emoji": "📓", "nombre": "Cuaderno Universitario", "detalles": "100 hojas, cuadros / rayas. Tapa dura, papel de alta calidad. Ideal para la universidad.", "precio": 5},
-                {"emoji": "✏️", "nombre": "Lápices (pack 10)", "detalles": "HB #2, grafito negro. Punta resistente, borrable. Excelente para escritura y dibujo.", "precio": 3},
-                {"emoji": "🖊️", "nombre": "Bolígrafos (pack 10)", "detalles": "Tinta azul/negra, punta fina. Escritura suave y duradera. Retráctiles con grip antideslizante.", "precio": 8},
-                {"emoji": "🎒", "nombre": "Mochila Escolar", "detalles": "Compartimentos, resistente. Material impermeable, varios colores. Con correas acolchadas.", "precio": 35},
-                {"emoji": "📏", "nombre": "Regla Metálica", "detalles": "30cm, acero inoxidable. Graduación precisa, borde recto. Con escala en cm y pulgadas.", "precio": 3},
-                {"emoji": "📌", "nombre": "Resaltadores (pack 6)", "detalles": "Colores surtidos. Tinta fluorescente, no traspasa el papel. Ideal para estudio.", "precio": 6}
-            ],
-            catalogo_hogar: [
-                {"emoji": "🧹", "nombre": "Escoba", "detalles": "Cerdas duras, mango largo. Ideal para todo tipo de pisos. Con recogedor incluido.", "precio": 10},
-                {"emoji": "🧽", "nombre": "Esponjas (pack 3)", "detalles": "Multiuso, anti-rayas. 3 capas, absorción superior. No raya superficies delicadas.", "precio": 4},
-                {"emoji": "🧴", "nombre": "Detergente 5L", "detalles": "Líquido, aroma a limón. Concentrado, rinde más. Elimina grasa fácilmente.", "precio": 15},
-                {"emoji": "🏠", "nombre": "Ambientador", "detalles": "Spray 400ml, lavanda. Elimina olores, frescura duradera. Aroma natural.", "precio": 7},
-                {"emoji": "🧺", "nombre": "Cesto para Ropa", "detalles": "Plástico resistente, 50L. Con asas, fácil de transportar. Tapa incluida.", "precio": 22},
-                {"emoji": "🧼", "nombre": "Jabón Líquido", "detalles": "1L, antibacterial. pH neutro, suave con las manos. Elimina el 99.9% de bacterias.", "precio": 9}
-            ]
+            horario: "⏰ **Horario de atención:** Lunes a Domingo - 8:00 AM a 10:00 PM",
+            metodos_pago: "💳 **Métodos de pago:** Pago Móvil, Zelle, Efectivo, Binance Pay y Punto de Venta",
+            ubicacion: "📍 **Ubicación:** Disponible en línea 24/7. Envíos a toda Venezuela.",
+            catalogos: {
+                motos: [
+                    {nombre: "Kit de Arrastre 428", desc: "Kit completo reforzado para motos 150cc-200cc. Incluye piñón y corona de acero.", precio: 45},
+                    {nombre: "Pastillas de Freno", desc: "Pastillas cerámicas de alto rendimiento. Compatible con la mayoría de las motos.", precio: 25},
+                    {nombre: "Cadena de Transmisión", desc: "Cadena 120 eslabones, resistencia máxima. Incluye eslabón maestro.", precio: 35},
+                    {nombre: "Aceite 20W50", desc: "Aceite mineral 1 litro para motor 4 tiempos. Protección superior.", precio: 12}
+                ],
+                papeleria: [
+                    {nombre: "Resma Papel Bond", desc: "Resma de papel bond 80gr, tamaño carta. 500 hojas de alta calidad.", precio: 6},
+                    {nombre: "Cuaderno Universitario", desc: "100 hojas cuadros / rayas. Tapa dura, papel de alta calidad.", precio: 5},
+                    {nombre: "Lápices HB (pack 10)", desc: "Lápices de grafito negro HB #2. Punta resistente.", precio: 3}
+                ],
+                hogar: [
+                    {nombre: "Lámpara LED", desc: "Lámpara LED 12W, luz fría 6000K. Ahorra energía, larga duración.", precio: 15},
+                    {nombre: "Escoba + Recogedor", desc: "Escoba de cerdas duras con recogedor incluido. Ideal para todo tipo de pisos.", precio: 10},
+                    {nombre: "Detergente 5L", desc: "Detergente líquido concentrado aroma limón. Rinde más, elimina grasa.", precio: 14}
+                ]
+            }
         };
         
         // ========== VARIABLES GLOBALES ==========
         let historial = [];
-        let TASA_BCV = 60;
+        let TASA_BCV = CONFIG.tasa;
         let currentAdvisor = 'motos';
         let currentAdvisorIcon = '🏍️';
         let cart = [];
@@ -1087,60 +811,41 @@
         let productoActual = null;
         
         // Catálogos
-        let catalogo_motos = CONFIG.catalogo_motos;
-        let catalogo_papeleria = CONFIG.catalogo_papeleria;
-        let catalogo_hogar = CONFIG.catalogo_hogar;
+        let catalogo_motos = CONFIG.catalogos.motos;
+        let catalogo_papeleria = CONFIG.catalogos.papeleria;
+        let catalogo_hogar = CONFIG.catalogos.hogar;
         
         // Elementos del DOM
         const chatWindow = document.getElementById('chat-window');
         const typingIndicator = document.getElementById('typing');
-        const header = document.getElementById('mainHeader');
-        const tazLogo = document.getElementById('tazLogo');
         const cartCount = document.getElementById('cartCount');
         const cartModal = document.getElementById('cartModal');
         const cartItems = document.getElementById('cartItems');
         const cartTotal = document.getElementById('cartTotal');
         const advisorIcon = document.getElementById('advisorIcon');
         const advisorMenu = document.getElementById('advisorMenu');
-        const typingText = document.getElementById('typingText');
-        
-        // ========== FUNCIÓN PARA OBTENER TASA BCV ==========
-        async function obtenerTasaBCV() {
-            try {
-                const response = await fetch('https://asistente-javier.onrender.com/tasa-bcv');
-                const data = await response.json();
-                TASA_BCV = data.tasa || 60;
-                console.log("✅ Tasa BCV actualizada:", TASA_BCV);
-            } catch (error) {
-                console.log("⚠️ Usando tasa por defecto:", TASA_BCV);
-            }
-        }
         
         // ========== FUNCIÓN DE INICIO ==========
-        async function init() {
+        function init() {
             console.log("✅ Iniciando MultiKAP");
             
             // Limpiar cualquier dato previo
             chatWindow.innerHTML = '';
             messages = [];
             
-            // Obtener tasa actualizada
-            await obtenerTasaBCV();
-            
             // Mostrar mensaje de bienvenida
             mostrarMensaje(CONFIG.mensaje_bienvenida, 'bot', true);
             
             updateCartDisplay();
-            updateTypingText();
         }
 
         // ========== FUNCIONES DEL MODAL ==========
         function verDetalles(producto) {
             productoActual = producto;
             
-            document.getElementById('modalEmoji').innerText = producto.emoji;
+            document.getElementById('modalEmoji').innerText = producto.emoji || '📦';
             document.getElementById('modalTitulo').innerText = producto.nombre;
-            document.getElementById('modalDetalle').innerText = producto.detalles;
+            document.getElementById('modalDetalle').innerText = producto.desc;
             document.getElementById('modalPrecioDolar').innerText = `$${producto.precio}`;
             document.getElementById('modalPrecioBs').innerHTML = `Bs ${(producto.precio * TASA_BCV).toFixed(2)} <span class="modal-aprox">aprox.</span>`;
             
@@ -1156,7 +861,7 @@
 
         function agregarDesdeModal() {
             if (productoActual) {
-                addToCart(`${productoActual.emoji} ${productoActual.nombre}`, productoActual.precio);
+                addToCart(`${productoActual.nombre}`, productoActual.precio);
                 cerrarModal();
             }
         }
@@ -1188,21 +893,15 @@
             
             productos.forEach(p => {
                 const precioBs = (p.precio * TASA_BCV).toFixed(2);
-                const nombreProducto = p.nombre.replace(/'/g, "\\'").replace(/"/g, '&quot;');
-                
-                // Escapar el JSON correctamente
                 const productoJSON = JSON.stringify(p).replace(/'/g, "\\'");
                 
                 html += `
                     <div class="producto-card-catalogo" onclick='verDetalles(${productoJSON})'>
                         <div class="producto-nombre">${p.nombre}</div>
                         <div class="producto-precios-container">
-                            <span class="producto-precio-dolar">$${p.precio}</span>
-                            <span class="producto-precio-separador">-</span>
-                            <span class="producto-precio-bs">Bs${precioBs}</span>
-                            <span class="producto-aprox">aprox.</span>
+                            <span class="producto-precio-dolar">$${p.precio}</span> | <span class="producto-precio-bs">Bs${precioBs}</span>
                         </div>
-                        <button class="producto-add-catalogo" onclick="event.stopPropagation(); addToCart('${p.emoji} ${nombreProducto}', ${p.precio})">
+                        <button class="producto-add-catalogo" onclick="event.stopPropagation(); addToCart('${p.nombre}', ${p.precio})">
                             🛒 AÑADIR
                         </button>
                     </div>
@@ -1213,9 +912,7 @@
             
             const div = document.createElement('div');
             div.className = 'msg bot';
-            const content = document.createElement('div');
-            content.innerHTML = html;
-            div.appendChild(content);
+            div.innerHTML = html;
             chatWindow.appendChild(div);
             
             messages.push({
@@ -1230,32 +927,21 @@
         }
 
         // ========== FUNCIÓN PARA MOSTRAR MENSAJES ==========
-        function mostrarMensaje(texto, remitente, conBotones = false, mostrarWS = false, guardar = true) {
+        function mostrarMensaje(texto, remitente, conBotones = false, guardar = true) {
             const div = document.createElement('div');
             div.className = `msg ${remitente}`;
-            const content = document.createElement('div');
-            content.innerHTML = texto.replace(/\*\*(.*?)\*\*/g, '<b style="color: var(--taz-orange);">$1</b>').replace(/\n/g, '<br>');
-            div.appendChild(content);
+            div.innerHTML = texto.replace(/\*\*(.*?)\*\*/g, '<b style="color: var(--taz-orange);">$1</b>').replace(/\n/g, '<br>');
 
             if (conBotones) {
                 const qDiv = document.createElement('div');
                 qDiv.className = 'quick-replies';
                 qDiv.innerHTML = `
-                    <button class="btn-quick" onclick="mostrarCatalogo('${currentAdvisor}')">📋 Ver catálogo</button>
-                    <button class="btn-quick" onclick="auto('Horarios')">⏰ Horarios</button>
-                    <button class="btn-quick" onclick="auto('Formas de pago')">💳 Pagos</button>
+                    <button class="btn-quick" onclick="autoMsg('Catálogo')">🛍️ Catálogo</button>
+                    <button class="btn-quick" onclick="autoMsg('Horario')">⏰ Horario</button>
+                    <button class="btn-quick" onclick="autoMsg('Ubicación')">📍 Ubicación</button>
+                    <button class="btn-quick" onclick="autoMsg('Pagos')">💳 Pagos</button>
                 `;
                 div.appendChild(qDiv);
-            }
-
-            if (mostrarWS) {
-                const btn = document.createElement('a');
-                btn.href = `https://wa.me/${CONFIG.contacto_whatsapp}`;
-                btn.className = 'whatsapp-btn';
-                btn.target = "_blank";
-                btn.rel = "noopener noreferrer";
-                btn.innerText = '💰 CONCRETAR COMPRA POR WHATSAPP';
-                div.appendChild(btn);
             }
 
             chatWindow.appendChild(div);
@@ -1265,7 +951,7 @@
                     text: texto,
                     sender: remitente,
                     hasButtons: conBotones,
-                    hasWS: mostrarWS,
+                    hasWS: false,
                     timestamp: new Date().toISOString()
                 });
             }
@@ -1273,7 +959,7 @@
             scrollToBottom();
         }
 
-        // ========== FUNCIÓN PARA ENVIAR MENSAJE (CONECTADA AL BACKEND) ==========
+        // ========== FUNCIÓN PARA ENVIAR MENSAJE ==========
         async function enviarMensaje() {
             const input = document.getElementById('user-input');
             const texto = input.value.trim();
@@ -1282,55 +968,40 @@
             mostrarMensaje(texto, 'user');
             input.value = '';
             
-            startThinking();
+            // Mostrar indicador de escritura
+            typingIndicator.style.display = 'block';
             
-            try {
-                const response = await fetch('https://asistente-javier.onrender.com/chat/multikap', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ 
-                        mensaje: texto, 
-                        historial: historial,
-                        advisor: currentAdvisor
-                    })
-                });
+            // Simular tiempo de respuesta
+            setTimeout(() => {
+                typingIndicator.style.display = 'none';
                 
-                if (!response.ok) {
-                    throw new Error(`Error HTTP: ${response.status}`);
+                let low = texto.toLowerCase();
+                let respuesta = "";
+                
+                if (low.includes("catálogo") || low.includes("catalogo") || low.includes("productos")) {
+                    mostrarCatalogo(currentAdvisor);
+                    return;
+                } else if (low.includes("horario")) {
+                    respuesta = CONFIG.horario;
+                } else if (low.includes("pago") || low.includes("pagos")) {
+                    respuesta = CONFIG.metodos_pago;
+                } else if (low.includes("ubicación") || low.includes("ubicacion")) {
+                    respuesta = CONFIG.ubicacion;
+                } else if (low.includes("gracias")) {
+                    respuesta = "¡Con gusto! 😊 Estoy aquí para lo que necesites.";
+                } else if (low.includes("hola") || low.includes("buenas")) {
+                    respuesta = "¡Hola! 👋 ¿En qué puedo ayudarte hoy?";
+                } else {
+                    respuesta = "⚡ Gracias por tu mensaje. ¿En qué más puedo ayudarte? Puedes preguntar por horarios, formas de pago, o ver el catálogo.";
                 }
                 
-                const data = await response.json();
-                stopThinking();
-                
-                if (data.respuesta) {
-                    historial.push(
-                        {role: "user", content: texto}, 
-                        {role: "assistant", content: data.respuesta}
-                    );
-                    
-                    if (historial.length > 20) {
-                        historial = historial.slice(-20);
-                    }
-                    
-                    if (data.tasa) {
-                        TASA_BCV = data.tasa;
-                    }
-                    
-                    mostrarMensaje(data.respuesta, 'bot', false, data.mostrar_whatsapp);
-                    
-                    if (navigator.vibrate) navigator.vibrate(50);
-                    playMessageSound();
+                if (respuesta) {
+                    mostrarMensaje(respuesta, 'bot', true);
                 }
-            } catch (error) {
-                console.error("Error en chat:", error);
-                stopThinking();
                 
-                // Respuesta de fallback amigable
-                let respuesta = "⚡ Taz está teniendo problemas de conexión. Por favor, intenta de nuevo en unos momentos.";
-                mostrarMensaje(respuesta, 'bot', false, false);
-            }
+                if (navigator.vibrate) navigator.vibrate(50);
+                playMessageSound();
+            }, 800);
         }
 
         // ========== FUNCIONES DEL SELECTOR DE ASESORES ==========
@@ -1348,8 +1019,6 @@
             
             advisorMenu.classList.remove('show');
             
-            updateTypingText();
-            
             let msg = '';
             if (advisor === 'motos') msg = "🏍️ Ahora estás en **TAZ MOTOS**. Aquí tienes nuestro catálogo de repuestos:";
             else if (advisor === 'papeleria') msg = "📚 Cambiaste a **TAZ PAPELERÍA**. Mira nuestros útiles escolares:";
@@ -1363,12 +1032,6 @@
             localStorage.setItem('multikap_advisor', advisor);
         }
 
-        function updateTypingText() {
-            if (currentAdvisor === 'motos') typingText.innerText = 'Taz Motos está pensando';
-            else if (currentAdvisor === 'papeleria') typingText.innerText = 'Taz Papelería está pensando';
-            else typingText.innerText = 'Taz Hogar está pensando';
-        }
-
         // ========== FUNCIONES DE EFECTOS ==========
         function playMessageSound() {
             try {
@@ -1377,18 +1040,6 @@
                 audio.volume = 0.2;
                 audio.play().catch(() => {});
             } catch (e) {}
-        }
-
-        function startThinking() {
-            typingIndicator.style.display = 'flex';
-            header.classList.add('brilliant-line');
-            tazLogo.classList.add('bouncing');
-        }
-
-        function stopThinking() {
-            typingIndicator.style.display = 'none';
-            header.classList.remove('brilliant-line');
-            tazLogo.classList.remove('bouncing');
         }
 
         function scrollToBottom() {
@@ -1407,7 +1058,7 @@
             
             const toast = document.createElement('div');
             toast.style.position = 'fixed';
-            toast.style.bottom = '180px';
+            toast.style.bottom = '120px';
             toast.style.left = '50%';
             toast.style.transform = 'translateX(-50%)';
             toast.style.background = 'var(--taz-gradient)';
@@ -1428,67 +1079,8 @@
         }
 
         function updateCartDisplay() {
-            cartCount.innerText = cart.length;
-            
-            if (cartItems) {
-                if (cart.length === 0) {
-                    cartItems.innerHTML = '<p style="opacity:0.7;">Carrito vacío</p>';
-                    cartTotal.innerText = 'Total: $0';
-                    return;
-                }
-                
-                let html = '';
-                let total = 0;
-                cart.forEach((item, i) => {
-                    total += item.precio;
-                    html += `
-                        <div class="cart-item">
-                            <span>${item.producto}</span>
-                            <span>$${item.precio} 
-                                <button onclick="removeFromCart(${i})" style="background:none; border:none; color:red; cursor:pointer;">✖</button>
-                            </span>
-                        </div>
-                    `;
-                });
-                cartItems.innerHTML = html;
-                cartTotal.innerText = `Total: $${total} (Bs ${(total * TASA_BCV).toFixed(2)})`;
-            }
-        }
-
-        function removeFromCart(index) {
-            cart.splice(index, 1);
-            localStorage.setItem('multikap_cart', JSON.stringify(cart));
-            updateCartDisplay();
-        }
-
-        function toggleCart() {
-            cartModal.classList.toggle('show');
-            updateCartDisplay();
-        }
-
-        function sendCartToWhatsApp() {
-            if (cart.length === 0) {
-                alert('¡El carrito está vacío!');
-                return;
-            }
-            
-            let mensaje = "🛒 *Pedido MultiKAP - TAZ 2080*%0A%0A";
-            let total = 0;
-            
-            cart.forEach(item => {
-                mensaje += `• ${item.producto}: $${item.precio} (Bs ${(item.precio * TASA_BCV).toFixed(2)})%0A`;
-                total += item.precio;
-            });
-            
-            mensaje += `%0A*Total: $${total} (Bs ${(total * TASA_BCV).toFixed(2)})*%0A`;
-            mensaje += `%0AAsesor: Taz ${currentAdvisorIcon}`;
-            
-            window.open(`https://wa.me/${CONFIG.contacto_whatsapp}?text=${mensaje}`, '_blank');
-            
-            cart = [];
-            localStorage.setItem('multikap_cart', JSON.stringify(cart));
-            updateCartDisplay();
-            cartModal.classList.remove('show');
+            // Esta función se implementará cuando tengas el carrito en el HTML
+            // Por ahora solo dejamos la estructura
         }
 
         // ========== FUNCIÓN PARA CAMBIAR TEMA ==========
@@ -1500,7 +1092,7 @@
         }
 
         // ========== FUNCIÓN PARA RESPUESTAS RÁPIDAS ==========
-        function auto(texto) { 
+        function autoMsg(texto) { 
             document.getElementById('user-input').value = texto; 
             enviarMensaje(); 
         }
@@ -1518,9 +1110,6 @@
             if (!e.target.closest('.advisor-toggle')) {
                 advisorMenu.classList.remove('show');
             }
-            if (!e.target.closest('.cart-container') && !e.target.closest('.cart-modal')) {
-                cartModal.classList.remove('show');
-            }
         });
 
         // ========== CANVAS ANIMADO ==========
@@ -1534,21 +1123,20 @@
         resizeCanvas();
         window.addEventListener('resize', resizeCanvas);
 
-        const columns = Math.floor(canvas.width / 25);
+        const columns = Math.floor(canvas.width / 20);
         const drops = Array(columns).fill(1);
 
         function draw() {
-            ctx.fillStyle = 'rgba(252, 245, 232, 0.2)';
+            ctx.fillStyle = document.body.classList.contains('dark-mode') ? 'rgba(26, 21, 14, 0.1)' : 'rgba(252, 245, 232, 0.1)';
             ctx.fillRect(0, 0, canvas.width, canvas.height);
             ctx.fillStyle = '#ff5500';
-            ctx.font = '18px "Montserrat"';
+            ctx.font = '15px Montserrat';
             ctx.globalAlpha = 0.2;
             
             for (let i = 0; i < drops.length; i++) {
-                const symbols = '⚡✦✧';
-                const text = symbols[Math.floor(Math.random() * symbols.length)];
-                ctx.fillText(text, i * 25, drops[i] * 25);
-                if (drops[i] * 25 > canvas.height && Math.random() > 0.975) {
+                const text = "MULTIKAP"[Math.floor(Math.random() * 8)];
+                ctx.fillText(text, i * 20, drops[i] * 20);
+                if (drops[i] * 20 > canvas.height && Math.random() > 0.975) {
                     drops[i] = 0;
                 }
                 drops[i]++;
@@ -1579,11 +1167,22 @@
                 document.querySelectorAll('.advisor-option')[2].classList.add('active');
             }
             currentAdvisor = savedAdvisor;
-            updateTypingText();
         }
 
         // Iniciar la aplicación
         window.onload = init;
+
+        // Animación para el toast
+        const style = document.createElement('style');
+        style.innerHTML = `
+            @keyframes fadeInOut {
+                0% { opacity: 0; transform: translateX(-50%) translateY(20px); }
+                15% { opacity: 1; transform: translateX(-50%) translateY(0); }
+                85% { opacity: 1; transform: translateX(-50%) translateY(0); }
+                100% { opacity: 0; transform: translateX(-50%) translateY(-20px); }
+            }
+        `;
+        document.head.appendChild(style);
     </script>
 </body>
 </html>
